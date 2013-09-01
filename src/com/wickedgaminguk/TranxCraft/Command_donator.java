@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.wickedgaminguk.TranxCraft;
 
 import static com.wickedgaminguk.TranxCraft.TranxCraft.Invalid_Usage;
@@ -14,10 +11,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-/**
- *
- * @author Dan
- */
 class Command_donator extends TranxCraft implements CommandExecutor {
 
     public Command_donator(TranxCraft plugin) {

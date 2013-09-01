@@ -1,0 +1,18 @@
+name: TranxCraft
+main: com.wickedgaminguk.TranxCraft.TranxCraft
+version: 1.0
+authors: [HeXeRei452]
+description: The TranxCraft Plugin :)
+commands:
+    tranxcraft:
+      usage: /<command>
+      description: Displays useful information about TranxCraft.
+      aliases: [tc]
+    mong:
+      usage: /<command> <player>
+      description: Kick a player telling him to read the rules.
+      aliases: [noob, GRTFR]
+    donator:
+      usage: /<command> <add|remove|activate>
+      description: Donator Handling.
+      aliases: [dn]

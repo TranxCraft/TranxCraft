@@ -4,6 +4,7 @@ package com.wickedgaminguk.TranxCraft;
 import static com.wickedgaminguk.TranxCraft.TranxCraft.Invalid_Usage;
 import static com.wickedgaminguk.TranxCraft.TranxCraft.logger;
 import static com.wickedgaminguk.TranxCraft.TranxCraft.noPerms;
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,7 +38,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + "-- Basic TranxCraft Information --");
                     sender.sendMessage(ChatColor.AQUA + "Owner: HeXeRei452/WickedGamingUK");
                     sender.sendMessage(ChatColor.AQUA + "Lead Developer: HeXeRei452/WickedGamingUK");
-                    sender.sendMessage(ChatColor.AQUA + "Lead Builder: miwojedk");
+                    sender.sendMessage(ChatColor.AQUA + "Lead Builder: kromeblade");
                     sender.sendMessage(ChatColor.AQUA + "Website: http://www.tranxcraft.com/");
                     sender.sendMessage(ChatColor.AQUA + "Forums: http://www.tranxcraft.com/forums");
                     sender.sendMessage(ChatColor.GREEN + "------------------------");
@@ -112,16 +113,6 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                     }
                     return true;
                 }
-                if(args[0].equalsIgnoreCase("dev")) {
-                    if(args.length > 1){
-                        sender.sendMessage(Invalid_Usage);
-                        return false;
-                    }
-                    sender.sendMessage(ChatColor.GREEN + "-- TranxCraft Plugin Information --");
-                    sender.sendMessage(ChatColor.AQUA + "Plugin Version: " + pluginVersion);
-                    sender.sendMessage(ChatColor.AQUA + "Plugin Author: " + pluginAuthor);
-                    return true;
-                }
                 
                 if(args[0].equalsIgnoreCase("system")) {
                     Player player = getPlayer(args[3]);
@@ -138,7 +129,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             plugin.getConfig().set("Moderators",Moderators);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Moderator, congratulations!");
-                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " moderator");
+                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " moderator Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("Admin")) {
@@ -146,7 +137,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             plugin.getConfig().set("Admins",Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
-                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " admin");
+                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " admin Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("LeadAdmin")) {
@@ -154,7 +145,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             plugin.getConfig().set("Lead_Admins",Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
-                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " leadadmin");
+                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " leadadmin Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("Executive")) {
@@ -162,7 +153,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             plugin.getConfig().set("Executives",Executives);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to an Executive, congratulations!");
-                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " executive");
+                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " executive Spawn");
                         }
                      }
                     
@@ -172,7 +163,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             plugin.getConfig().set("Moderators",Moderators);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been removed from Moderator!");
-                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member");
+                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("Admin")) {
@@ -180,7 +171,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             plugin.getConfig().set("Admins",Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been removed from Admin!");
-                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member");
+                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("LeadAdmin")) {
@@ -188,7 +179,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             plugin.getConfig().set("Lead_Admins",Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been removed from being a lead Admin!");
-                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member");
+                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("Executive")) {
@@ -196,7 +187,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             plugin.getConfig().set("Executives",Executives);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been removed from being an Executive!");
-                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member");
+                            Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                      }
                     

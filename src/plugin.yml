@@ -1,8 +1,9 @@
 name: TranxCraft
 main: com.wickedgaminguk.TranxCraft.TranxCraft
-version: 1.0
+version: 2.0
 authors: [HeXeRei452]
-description: The TranxCraft Plugin :)
+description: The custom developed plugin for TranxCraft.
+website: http://www.tranxcraft.com/
 commands:
     tranxcraft:
       usage: /<command>
@@ -16,3 +17,7 @@ commands:
       usage: /<command> <add|remove|activate>
       description: Donator Handling.
       aliases: [dn]
+    admininfo:
+      usage: /<command>
+      description: How to apply for moderator on TranxCraft.
+      aliases: [ai, modinfo, moderatorinfo, mi, admin, moderator]

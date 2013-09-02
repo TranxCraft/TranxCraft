@@ -63,6 +63,9 @@ public class TranxCraft extends JavaPlugin {
         plugin.getCommand("tranxcraft").setExecutor(new Command_tranxcraft(plugin));
         plugin.getCommand("donator").setExecutor(new Command_donator(plugin));
         plugin.getCommand("admininfo").setExecutor(new Command_admininfo(plugin));
+        plugin.getCommand("c").setExecutor(new Command_c(plugin));
+        plugin.getCommand("a").setExecutor(new Command_a(plugin));
+        plugin.getCommand("s").setExecutor(new Command_s(plugin));        
         
         init();
   }

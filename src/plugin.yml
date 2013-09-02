@@ -21,3 +21,15 @@ commands:
       usage: /<command>
       description: How to apply for moderator on TranxCraft.
       aliases: [ai, modinfo, moderatorinfo, mi, admin, moderator]
+    c:
+      usage: /<command> <player>
+      description: Changes your gamemode or someone elses to creative.
+      aliases: [creative]
+    a:
+      usage: /<command> <player>
+      description: Changes your gamemode or someone elses to adventure.
+      aliases: [adventure]
+    s:
+      usage: /<command> <player>
+      description: Changes your gamemode or someone elses to survival.
+      aliases: [survival]

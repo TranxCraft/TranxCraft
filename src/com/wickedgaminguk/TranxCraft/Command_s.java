@@ -19,7 +19,6 @@ class Command_s extends TranxCraft implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     
         Player sender_p = (Player) sender;
-        Player player = getPlayer(args[0]);
         List<String> Admins = plugin.getConfig().getStringList("Admins");
         
         if (!(sender instanceof Player)) {
@@ -31,18 +30,23 @@ class Command_s extends TranxCraft implements CommandExecutor {
         
         if(args.length == 0) {
             sender_p.setGameMode(GameMode.SURVIVAL);
+            return true;
         }
         
         if(args.length == 1) {
+            Player player = getPlayer(args[0]);
             if(player == sender_p) {
                 sender.sendMessage(ChatColor.AQUA + "Please just use the command without parameters, it's just easier.");
                 sender_p.setGameMode(GameMode.SURVIVAL);
+                return true;
             }
             if(!(player == sender_p) && !Admins.contains(player.getName())) {
                 sender.sendMessage("Only Admins can change other user's gamemode.");
+                return true;
             }
             else {
                 player.setGameMode(GameMode.SURVIVAL);
+                return true;
             }
         }
         

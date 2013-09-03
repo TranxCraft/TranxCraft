@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -94,17 +95,39 @@ public class TranxListener extends TranxCraft implements Listener {
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        List<String> Donators = plugin.getConfig().getStringList("Donators");
             if ((event.getAction().equals(this.RIGHT_CLICK_BLOCK)) && (player.getItemInHand().getType() == Material.FIREWORK)) {
-                player.sendMessage(ChatColor.RED + "You do not have permission to use fireworks.");
+                player.sendMessage(ChatColor.RED + "The Use of Fireworks is not permitted on TranxCraft.");
                 player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
                 event.setCancelled(true);
-            }
+                }
             if ((event.getAction().equals(this.RIGHT_CLICK_BLOCK)) && (player.getItemInHand().getType() == Material.TNT)) {
-                player.sendMessage(ChatColor.RED + "You do not have permission to use TNT.");
+                player.sendMessage(ChatColor.RED + "The Use of Fireworks is not permitted on TranxCraft.");
                 player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
                 event.setCancelled(true);
             }
-  }
+            if ((event.getAction().equals(this.RIGHT_CLICK_BLOCK)) && (player.getItemInHand().getType() == Material.LAVA || player.getItemInHand().getType() == Material.STATIONARY_LAVA)) {
+                player.sendMessage(ChatColor.RED + "The Use of Lava is not permitted on TranxCraft.");
+                player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
+                event.setCancelled(true);
+            }
+            if ((event.getAction().equals(this.RIGHT_CLICK_BLOCK)) && (player.getItemInHand().getType() == Material.WATER || player.getItemInHand().getType() == Material.STATIONARY_WATER)) {
+                player.sendMessage(ChatColor.RED + "The Use of Water is not permitted on TranxCraft.");
+                player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
+                event.setCancelled(true);
+            }
+            if ((event.getAction().equals(this.RIGHT_CLICK_BLOCK)) && (player.getItemInHand().getType() == Material.FIRE)) {
+                player.sendMessage(ChatColor.RED + "The Use of Fire is not permitted on TranxCraft.");
+                player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
+                event.setCancelled(true);
+            }
+    }
+    //Only For TranxCraft Creative
+    @EventHandler
+        public void onDrop(PlayerDropItemEvent event) {
+                event.getItemDrop().remove();
+                event.setCancelled(true);
+    }
     
     private void kickPlayer(Player player, PlayerLoginEvent event) {
     Player[] players = this.plugin.getServer().getOnlinePlayers();

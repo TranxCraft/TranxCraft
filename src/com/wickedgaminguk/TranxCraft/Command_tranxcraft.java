@@ -4,7 +4,6 @@ package com.wickedgaminguk.TranxCraft;
 import static com.wickedgaminguk.TranxCraft.TranxCraft.Invalid_Usage;
 import static com.wickedgaminguk.TranxCraft.TranxCraft.logger;
 import static com.wickedgaminguk.TranxCraft.TranxCraft.noPerms;
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -162,7 +161,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             Moderators.remove(playerName);
                             plugin.getConfig().set("Moderators",Moderators);
                             plugin.saveConfig();
-                            Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been removed from Moderator!");
+                            Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Moderator!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
@@ -170,7 +169,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             Admins.remove(playerName);
                             plugin.getConfig().set("Admins",Admins);
                             plugin.saveConfig();
-                            Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been removed from Admin!");
+                            Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Admin!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
@@ -178,7 +177,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             leadAdmins.remove(playerName);
                             plugin.getConfig().set("Lead_Admins",Admins);
                             plugin.saveConfig();
-                            Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been removed from being a lead Admin!");
+                            Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being a lead Admin!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
@@ -186,7 +185,7 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                             Executives.remove(playerName);
                             plugin.getConfig().set("Executives",Executives);
                             plugin.saveConfig();
-                            Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been removed from being an Executive!");
+                            Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being an Executive!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                      }
@@ -197,4 +196,22 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
         return false;
     }
     
+   
+   public void reloadPlugin(Plugin plugin) {
+       pm.disablePlugin(plugin);
+       pm.enablePlugin(plugin);
+   }
+   public void enablePlugin(Plugin plugin) {
+       pm.enablePlugin(plugin);
+   }
+   public void disablePlugin(Plugin plugin) {
+       pm.disablePlugin(plugin);
+   }
+   public void reloadServer() {
+       Plugin[] plugins = pm.getPlugins();
+
+           for (int x = 0; x < plugins.length; x++) {
+               reloadPlugin(plugins[x]);
+           }
+   }
 }

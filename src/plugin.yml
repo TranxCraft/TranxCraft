@@ -33,3 +33,10 @@ commands:
       usage: /<command> <player>
       description: Changes your gamemode or someone elses to survival.
       aliases: [survival]
+    gtfo:
+      usage: /<command> <player> <reason>
+      description: Ban's a player.
+    fuckoff:
+      usage: /<command> <player>
+      description: Completely fucks over a player.
+      aliases: [doom]

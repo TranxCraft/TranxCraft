@@ -1,8 +1,6 @@
 
 package com.wickedgaminguk.TranxCraft;
 
-import static com.wickedgaminguk.TranxCraft.TranxCraft.Invalid_Usage;
-import static com.wickedgaminguk.TranxCraft.TranxCraft.noPerms;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

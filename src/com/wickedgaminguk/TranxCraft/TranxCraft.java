@@ -13,6 +13,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import net.minecraft.server.v1_6_R2.BanEntry;
+import net.minecraft.server.v1_6_R2.BanList;
+import net.minecraft.server.v1_6_R2.MinecraftServer;
+import net.minecraft.server.v1_6_R2.PlayerList;
+import net.minecraft.server.v1_6_R2.PropertyManager;
 
 public class TranxCraft extends JavaPlugin {
     
@@ -65,7 +70,9 @@ public class TranxCraft extends JavaPlugin {
         plugin.getCommand("admininfo").setExecutor(new Command_admininfo(plugin));
         plugin.getCommand("c").setExecutor(new Command_c(plugin));
         plugin.getCommand("a").setExecutor(new Command_a(plugin));
-        plugin.getCommand("s").setExecutor(new Command_s(plugin));        
+        plugin.getCommand("s").setExecutor(new Command_s(plugin));
+        plugin.getCommand("gtfo").setExecutor(new Command_gtfo(plugin));
+        plugin.getCommand("fuckoff").setExecutor(new Command_fuckoff(plugin));  
         
         init();
   }
@@ -94,4 +101,39 @@ public class TranxCraft extends JavaPlugin {
        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
        logger.log(Level.INFO, "[{0}] Hopefully the Nether and End have unloaded!", pluginName);
    }
+   
+   //Credits to Steven Lawson/Madgeek & Jerom Van Der Sar/DarthSalamon for the banUsername and banIP methods.
+    public static void banUsername(String name, String reason, String source) {
+        name = name.toLowerCase().trim();
+
+        BanEntry entry = new BanEntry(name);
+        
+        if (reason != null) {
+            entry.setReason(reason);
+        }
+        
+        if (source != null) {
+            entry.setSource(source);
+        }
+        
+        BanList nameBans = MinecraftServer.getServer().getPlayerList().getNameBans();
+        nameBans.add(entry);
+    }
+    
+    public static void banIP(String ip, String reason, String source) {
+        ip = ip.toLowerCase().trim();
+        BanEntry entry = new BanEntry(ip);
+        
+        if (reason != null) {
+            entry.setReason(reason);
+        }
+        
+        if (source != null) {
+            entry.setSource(source);
+        }
+        
+        BanList ipBans = MinecraftServer.getServer().getPlayerList().getIPBans();
+        ipBans.add(entry);
+    }
+
 }

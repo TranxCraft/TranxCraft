@@ -135,7 +135,7 @@ public class TranxListener extends TranxCraft implements Listener {
             if (!p.hasPermission("tranxcraft.kickprevent")) {
                 p.kickPlayer(this.kickMessage);
                 event.allow();
-                logger.log(Level.INFO, "Allowed player {0} to join full server by kicking player {1}!", new Object[]{player.getName(), p.getName()});
+                TCP_Util.logger.log(Level.INFO, "Allowed player {0} to join full server by kicking player {1}!", new Object[]{player.getName(), p.getName()});
             }
         }
 

@@ -1,7 +1,6 @@
 
 package com.wickedgaminguk.TranxCraft;
 
-import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -13,7 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-class Command_gtfo extends TranxCraft implements CommandExecutor {
+class Command_gtfo extends TCP_Command implements CommandExecutor {
 
     public Command_gtfo(TranxCraft plugin) {
     this.plugin = plugin;
@@ -22,13 +21,8 @@ class Command_gtfo extends TranxCraft implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         
-        List<String> Executives = plugin.getConfig().getStringList("Executives");
-        List<String> leadAdmins = plugin.getConfig().getStringList("Lead_Admins");
-        List<String> Admins = plugin.getConfig().getStringList("Admins");
-        List<String> Moderators = plugin.getConfig().getStringList("Moderators");
-        
         if(sender instanceof Player && !(sender.hasPermission("tranxcraft.gtfo") || sender.isOp())){
-            sender.sendMessage(noPerms);
+            sender.sendMessage(TCP_Util.noPerms);
             return true;
         }
         
@@ -40,7 +34,14 @@ class Command_gtfo extends TranxCraft implements CommandExecutor {
             return false;
         }
         
-        Player player = getPlayer(args[0]);
+        Player player;
+            try {
+                player = getPlayer(args[0]);
+            }
+            catch (PlayerNotFoundException ex) {
+                sender.sendMessage(ChatColor.RED + ex.getMessage());
+                return true;
+            }
         Player sender_p = (Player) sender;
         
         if(player == null) {
@@ -53,7 +54,7 @@ class Command_gtfo extends TranxCraft implements CommandExecutor {
         }
         
         if(!sender.hasPermission("tranxcraft.gtfo.override")) {
-            if(Moderators.contains(player.getName()) || Admins.contains(player.getName()) || leadAdmins.contains(player.getName()) || Executives.contains(player.getName())) {
+            if(TCP_ModeratorList.Moderators.contains(player.getName()) || TCP_ModeratorList.Admins.contains(player.getName()) || TCP_ModeratorList.leadAdmins.contains(player.getName()) || TCP_ModeratorList.Executives.contains(player.getName())) {
                 sender.sendMessage(ChatColor.RED + "You may not ban " + player.getName());
             }
         }
@@ -82,7 +83,7 @@ class Command_gtfo extends TranxCraft implements CommandExecutor {
         }
         
         //Ban Username
-        TranxCraft.banUsername(player.getName(), ban_reason, null);
+        TCP_Util.banUsername(player.getName(), ban_reason, null);
         
         // kick Player:
         player.kickPlayer(ChatColor.RED + "GTFO" + (ban_reason != null ? ("\nReason: " + ChatColor.YELLOW + ban_reason) : ""));

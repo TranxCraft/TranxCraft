@@ -1,13 +1,9 @@
 
 package com.wickedgaminguk.TranxCraft;
 
-import static com.wickedgaminguk.TranxCraft.TranxCraft.Invalid_Usage;
-import static com.wickedgaminguk.TranxCraft.TranxCraft.logger;
-import static com.wickedgaminguk.TranxCraft.TranxCraft.noPerms;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-class Command_tranxcraft extends TranxCraft implements CommandExecutor {
+class Command_tranxcraft extends TCP_Command implements CommandExecutor {
 
     public Command_tranxcraft(TranxCraft plugin) {
     this.plugin = plugin;
@@ -26,10 +22,6 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         
-        List<String> Executives = plugin.getConfig().getStringList("Executives");
-        List<String> leadAdmins = plugin.getConfig().getStringList("Lead_Admins");
-        List<String> Admins = plugin.getConfig().getStringList("Admins");
-        List<String> Moderators = plugin.getConfig().getStringList("Moderators");
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss");
         Calendar cal = Calendar.getInstance(); 
         
@@ -45,11 +37,11 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                 }
                 if(args[0].equalsIgnoreCase("reload")) {
                     if(!(sender.hasPermission("tranxcraft.reload") || sender.isOp())){
-                        sender.sendMessage(noPerms);
+                        sender.sendMessage(TCP_Util.noPerms);
                         return true;
                     }
                     if(args.length > 2) {
-                        sender.sendMessage(Invalid_Usage);
+                        sender.sendMessage(TCP_Util.Invalid_Usage);
                         return true;
                     }
                     if(args.length == 1) {
@@ -67,18 +59,18 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                         Plugin tPlugin = pm.getPlugin(args[1]);
                         reloadPlugin(tPlugin);
                         sender.sendMessage(ChatColor.GREEN + "[TranxCraft] Plugin %a reloaded.".replaceAll("%a", tPlugin.getName()));
-                        logger.log(Level.INFO, "{0} reloaded {1} at {2}", new Object[]{sender.getName(), tPlugin, dateFormat.format(cal.getTime())});
+                        TCP_Util.logger.log(Level.INFO, "{0} reloaded {1} at {2}", new Object[]{sender.getName(), tPlugin, dateFormat.format(cal.getTime())});
                         return true;
                    }
                 }
                 
                 if(args[0].equalsIgnoreCase("enable")) {
                     if(!(sender.hasPermission("tranxcraft.enable"))){
-                        sender.sendMessage(noPerms);
+                        sender.sendMessage(TCP_Util.noPerms);
                         return true;
                     }
                     if(args.length > 2|| args.length == 0){
-                        sender.sendMessage(Invalid_Usage);
+                        sender.sendMessage(TCP_Util.Invalid_Usage);
                         return false;
                     }
                     if(pm.isPluginEnabled(args[1])) {
@@ -94,11 +86,11 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                 }
                 if(args[0].equalsIgnoreCase("disable")) {
                     if(!(sender.hasPermission("tranxcraft.disable"))) {
-                        sender.sendMessage(noPerms);
+                        sender.sendMessage(TCP_Util.noPerms);
                         return true;
                     }
                     if(args.length > 2 || args.length == 0){
-                        sender.sendMessage(Invalid_Usage);
+                        sender.sendMessage(TCP_Util.Invalid_Usage);
                         return false;
                     }
                     if(!pm.isPluginEnabled(args[1])) {
@@ -114,42 +106,50 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                 }
                 
                 if(args[0].equalsIgnoreCase("system")) {
-                    Player player = getPlayer(args[3]);
+                    Player player;
+                    try {
+                        player = getPlayer(args[3]);
+                    }
+                    catch (PlayerNotFoundException ex) {
+                        sender.sendMessage(ChatColor.RED + ex.getMessage());
+                        return true;
+                    }
+                    
                     String playerName = player.getName();
                     
                     if(sender instanceof Player && !(sender.hasPermission("tranxcraft.system"))) {
-                    sender.sendMessage(noPerms);
+                    sender.sendMessage(TCP_Util.noPerms);
                     return true;
                     }
                     
                     if(args[1].equalsIgnoreCase("add")) {
                         if(args[2].equalsIgnoreCase("Moderator")) {
-                            Moderators.add(playerName);
-                            plugin.getConfig().set("Moderators",Moderators);
+                            TCP_ModeratorList.Moderators.add(playerName);
+                            plugin.getConfig().set("Moderators",TCP_ModeratorList.Moderators);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Moderator, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " moderator Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("Admin")) {
-                            Admins.add(playerName);
-                            plugin.getConfig().set("Admins",Admins);
+                            TCP_ModeratorList.Admins.add(playerName);
+                            plugin.getConfig().set("Admins",TCP_ModeratorList.Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " admin Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("LeadAdmin")) {
-                            leadAdmins.add(playerName);
-                            plugin.getConfig().set("Lead_Admins",Admins);
+                            TCP_ModeratorList.leadAdmins.add(playerName);
+                            plugin.getConfig().set("Lead_Admins",TCP_ModeratorList.leadAdmins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " leadadmin Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("Executive")) {
-                            Executives.add(playerName);
-                            plugin.getConfig().set("Executives",Executives);
+                            TCP_ModeratorList.Executives.add(playerName);
+                            plugin.getConfig().set("Executives",TCP_ModeratorList.Executives);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to an Executive, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " executive Spawn");
@@ -158,32 +158,32 @@ class Command_tranxcraft extends TranxCraft implements CommandExecutor {
                     
                      if(args[1].equalsIgnoreCase("remove")) {
                         if(args[2].equalsIgnoreCase("Moderator")) {
-                            Moderators.remove(playerName);
-                            plugin.getConfig().set("Moderators",Moderators);
+                            TCP_ModeratorList.Moderators.remove(playerName);
+                            plugin.getConfig().set("Moderators",TCP_ModeratorList.Moderators);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Moderator!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("Admin")) {
-                            Admins.remove(playerName);
-                            plugin.getConfig().set("Admins",Admins);
+                            TCP_ModeratorList.Admins.remove(playerName);
+                            plugin.getConfig().set("Admins",TCP_ModeratorList.Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Admin!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("LeadAdmin")) {
-                            leadAdmins.remove(playerName);
-                            plugin.getConfig().set("Lead_Admins",Admins);
+                            TCP_ModeratorList.leadAdmins.remove(playerName);
+                            plugin.getConfig().set("Lead_Admins",TCP_ModeratorList.Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being a lead Admin!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
                         }
                         
                         if(args[2].equalsIgnoreCase("Executive")) {
-                            Executives.remove(playerName);
-                            plugin.getConfig().set("Executives",Executives);
+                            TCP_ModeratorList.Executives.remove(playerName);
+                            plugin.getConfig().set("Executives",TCP_ModeratorList.Executives);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being an Executive!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");

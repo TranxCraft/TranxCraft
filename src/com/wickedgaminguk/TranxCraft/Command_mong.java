@@ -9,24 +9,30 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class Command_mong extends TranxCraft implements CommandExecutor {
-  
+public class Command_mong extends TCP_Command implements CommandExecutor {
     
     Command_mong(TranxCraft plugin) {
-    this.plugin = plugin;
+        this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
             
             Player sender_p = (Player) sender;
-            Player player = getPlayer(args[0]);
+            Player player;
+            try {
+                player = getPlayer(args[0]);
+            }
+            catch (PlayerNotFoundException ex) {
+                sender.sendMessage(ChatColor.RED + ex.getMessage());
+                return true;
+            }
             if(sender instanceof Player && !(sender.hasPermission("tranxcraft.mong") || sender.isOp())){
-                sender.sendMessage(noPerms);
+                sender.sendMessage(TCP_Util.noPerms);
                 return true;
             }
             if(args.length == 0) {
-                sender.sendMessage(Invalid_Usage);
+                sender.sendMessage(TCP_Util.Invalid_Usage);
                 return false; 
             }
             
@@ -55,7 +61,7 @@ public class Command_mong extends TranxCraft implements CommandExecutor {
                 player.setBanned(true);
                 return true;
             }
-        return false;
+        return true;
     }
 }
 

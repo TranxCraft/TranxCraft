@@ -6,7 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-class Command_admininfo extends TranxCraft implements CommandExecutor {
+class Command_admininfo extends TCP_Command implements CommandExecutor {
 
     public Command_admininfo(TranxCraft plugin) {
         this.plugin = plugin;
@@ -16,7 +16,7 @@ class Command_admininfo extends TranxCraft implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         
         if(args.length != 0) {
-            sender.sendMessage(Invalid_Usage);
+            sender.sendMessage(TCP_Util.Invalid_Usage);
         }
         else {
             sender.sendMessage(ChatColor.BLUE + "----TranxCraft Moderator Application Information----");

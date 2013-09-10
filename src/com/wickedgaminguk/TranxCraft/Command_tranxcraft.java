@@ -29,7 +29,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                     sender.sendMessage(ChatColor.GREEN + "-- Basic TranxCraft Information --");
                     sender.sendMessage(ChatColor.AQUA + "Owner: HeXeRei452/WickedGamingUK");
                     sender.sendMessage(ChatColor.AQUA + "Lead Developer: HeXeRei452/WickedGamingUK");
-                    sender.sendMessage(ChatColor.AQUA + "Lead Builder: kromeblade");
+                    //sender.sendMessage(ChatColor.AQUA + "Lead Builder: kromeblade");
                     sender.sendMessage(ChatColor.AQUA + "Website: http://www.tranxcraft.com/");
                     sender.sendMessage(ChatColor.AQUA + "Forums: http://www.tranxcraft.com/forums");
                     sender.sendMessage(ChatColor.GREEN + "------------------------");
@@ -107,13 +107,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                 
                 if(args[0].equalsIgnoreCase("system")) {
                     Player player;
-                    try {
-                        player = getPlayer(args[3]);
-                    }
-                    catch (PlayerNotFoundException ex) {
-                        sender.sendMessage(ChatColor.RED + ex.getMessage());
-                        return true;
-                    }
+                    player = getPlayer(args[3]);
                     
                     String playerName = player.getName();
                     
@@ -124,7 +118,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                     
                     if(args[1].equalsIgnoreCase("add")) {
                         if(args[2].equalsIgnoreCase("Moderator")) {
-                            TCP_ModeratorList.Moderators.add(playerName);
+                            TCP_ModeratorList.getModerators().add(playerName);
                             plugin.getConfig().set("Moderators",TCP_ModeratorList.Moderators);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Moderator, congratulations!");
@@ -132,7 +126,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         }
                         
                         if(args[2].equalsIgnoreCase("Admin")) {
-                            TCP_ModeratorList.Admins.add(playerName);
+                            TCP_ModeratorList.getAdmins().add(playerName);
                             plugin.getConfig().set("Admins",TCP_ModeratorList.Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
@@ -140,7 +134,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         }
                         
                         if(args[2].equalsIgnoreCase("LeadAdmin")) {
-                            TCP_ModeratorList.leadAdmins.add(playerName);
+                            TCP_ModeratorList.getleadAdmins().add(playerName);
                             plugin.getConfig().set("Lead_Admins",TCP_ModeratorList.leadAdmins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
@@ -148,7 +142,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         }
                         
                         if(args[2].equalsIgnoreCase("Executive")) {
-                            TCP_ModeratorList.Executives.add(playerName);
+                            TCP_ModeratorList.getExecutives().remove(playerName);
                             plugin.getConfig().set("Executives",TCP_ModeratorList.Executives);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to an Executive, congratulations!");
@@ -158,7 +152,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                     
                      if(args[1].equalsIgnoreCase("remove")) {
                         if(args[2].equalsIgnoreCase("Moderator")) {
-                            TCP_ModeratorList.Moderators.remove(playerName);
+                            TCP_ModeratorList.getModerators().remove(playerName);
                             plugin.getConfig().set("Moderators",TCP_ModeratorList.Moderators);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Moderator!");
@@ -166,7 +160,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         }
                         
                         if(args[2].equalsIgnoreCase("Admin")) {
-                            TCP_ModeratorList.Admins.remove(playerName);
+                            TCP_ModeratorList.getAdmins().remove(playerName);
                             plugin.getConfig().set("Admins",TCP_ModeratorList.Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Admin!");
@@ -174,7 +168,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         }
                         
                         if(args[2].equalsIgnoreCase("LeadAdmin")) {
-                            TCP_ModeratorList.leadAdmins.remove(playerName);
+                            TCP_ModeratorList.getleadAdmins().remove(playerName);
                             plugin.getConfig().set("Lead_Admins",TCP_ModeratorList.Admins);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being a lead Admin!");
@@ -182,7 +176,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         }
                         
                         if(args[2].equalsIgnoreCase("Executive")) {
-                            TCP_ModeratorList.Executives.remove(playerName);
+                            TCP_ModeratorList.getExecutives().remove(playerName);
                             plugin.getConfig().set("Executives",TCP_ModeratorList.Executives);
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being an Executive!");

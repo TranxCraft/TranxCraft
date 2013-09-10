@@ -9,31 +9,34 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class Command_mong extends TCP_Command implements CommandExecutor {
+class Command_mong extends TCP_Command implements CommandExecutor {
     
     Command_mong(TranxCraft plugin) {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+            @Override
+            public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
             
-            Player sender_p = (Player) sender;
-            Player player;
-            try {
-                player = getPlayer(args[0]);
-            }
-            catch (PlayerNotFoundException ex) {
-                sender.sendMessage(ChatColor.RED + ex.getMessage());
-                return true;
-            }
-            if(sender instanceof Player && !(sender.hasPermission("tranxcraft.mong") || sender.isOp())){
+            if(sender instanceof Player && !(sender.hasPermission("tranxcraft.mong") || sender.isOp())) {
                 sender.sendMessage(TCP_Util.noPerms);
                 return true;
             }
+            
             if(args.length == 0) {
                 sender.sendMessage(TCP_Util.Invalid_Usage);
                 return false; 
+            }
+            
+            Player player;
+            player = getPlayer(args[0]);
+                
+            Player sender_p = player;
+            try {
+                sender_p = (Player) sender;
+            }
+            catch(Exception ex) {
+                sender.sendMessage(ChatColor.RED + "Player could not be found.");
             }
             
             if(player == null) {

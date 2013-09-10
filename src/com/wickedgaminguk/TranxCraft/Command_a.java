@@ -32,13 +32,13 @@ class Command_a extends TCP_Command implements CommandExecutor {
         
         if(args.length == 1) {
             Player player;
-            try {
+            //try {
                 player = getPlayer(args[0]);
-            }
-            catch (PlayerNotFoundException ex) {
+            //}
+            /*catch (PlayerNotFoundException ex) {
                 sender.sendMessage(ChatColor.RED + ex.getMessage());
                 return true;
-            }
+            }*/
             if(player == sender_p) {
                 sender.sendMessage(ChatColor.AQUA + "Please just use the command without parameters, it's just easier.");
                 sender_p.setGameMode(GameMode.ADVENTURE);
@@ -58,6 +58,6 @@ class Command_a extends TCP_Command implements CommandExecutor {
             return false;
         }
         
-        return false;
+        return true;
     }
 }

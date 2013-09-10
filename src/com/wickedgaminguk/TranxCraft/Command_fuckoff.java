@@ -27,13 +27,13 @@ class Command_fuckoff extends TCP_Command implements CommandExecutor {
         }
         
         Player player;
-        try {
+        //try {
             player = getPlayer(args[0]);
-        }
-        catch (PlayerNotFoundException ex) {
+        //}
+        /*catch (PlayerNotFoundException ex) {
             sender.sendMessage(ChatColor.RED + ex.getMessage());
             return true;
-        }
+        }*/
         
         Bukkit.broadcastMessage(ChatColor.RED + sender.getName() + " Casting oblivion over " + player.getName());
         Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " will be completely obliviated!");

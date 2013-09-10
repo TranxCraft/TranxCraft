@@ -53,33 +53,41 @@ public class TranxCraft extends JavaPlugin {
         listener = new TranxListener(plugin);
         pm.registerEvents(listener, plugin);
         
-        //Register Command Executors.
-        plugin.getCommand("mong").setExecutor(new Command_mong(plugin));
-        plugin.getCommand("tranxcraft").setExecutor(new Command_tranxcraft(plugin));
-        plugin.getCommand("donator").setExecutor(new Command_donator(plugin));
-        plugin.getCommand("admininfo").setExecutor(new Command_admininfo(plugin));
-        plugin.getCommand("c").setExecutor(new Command_c(plugin));
-        plugin.getCommand("a").setExecutor(new Command_a(plugin));
-        plugin.getCommand("s").setExecutor(new Command_s(plugin));
-        plugin.getCommand("gtfo").setExecutor(new Command_gtfo(plugin));
-        plugin.getCommand("fuckoff").setExecutor(new Command_fuckoff(plugin));  
-        
         init();
   }
   
   @Override
   public void onDisable() {
-    TCP_Util.logger.log(Level.INFO, "{0} version {1} configuration file saved.", new Object[]{pluginName, pluginVersion});
-    TCP_Util.logger.log(Level.INFO, "{0} version {1} by {2} is disabled", new Object[]{pluginName, pluginVersion, pluginAuthor});
+      TCP_Util.logger.log(Level.INFO, "{0} version {1} configuration file saved.", new Object[]{pluginName, pluginVersion});
+      TCP_Util.logger.log(Level.INFO, "{0} version {1} by {2} is disabled", new Object[]{pluginName, pluginVersion, pluginAuthor});
   }
   
   public void onReload() {
-    plugin.saveConfig();
+      plugin.saveConfig();
   }
    
    public void init() {
        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
        TCP_Util.logger.log(Level.INFO, "[TranxCraft] Hopefully the Nether and End have unloaded!");
+       
+       //Register Command Executors.
+       try {
+           plugin.getCommand("mong").setExecutor(new Command_mong(plugin));
+           plugin.getCommand("tranxcraft").setExecutor(new Command_tranxcraft(plugin));
+           plugin.getCommand("donator").setExecutor(new Command_donator(plugin));
+           plugin.getCommand("admininfo").setExecutor(new Command_admininfo(plugin));
+           plugin.getCommand("c").setExecutor(new Command_c(plugin));
+           plugin.getCommand("a").setExecutor(new Command_a(plugin));
+           plugin.getCommand("s").setExecutor(new Command_s(plugin));
+           plugin.getCommand("gtfo").setExecutor(new Command_gtfo(plugin));
+           plugin.getCommand("fuckoff").setExecutor(new Command_fuckoff(plugin)); 
+           plugin.getCommand("cake").setExecutor(new Command_cake(plugin));
+           TCP_Util.logger.log(Level.INFO, "[{0}] Commands Loaded.", pluginName);
+       }
+       catch(Exception ex) {
+           TCP_Util.logger.log(Level.WARNING, "[{0}] Commands Failed To Load!", pluginName);
+           TCP_Util.logger.log(Level.INFO, "Error: {0}", ex);
+       }
    }   
 }

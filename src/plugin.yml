@@ -11,7 +11,7 @@ commands:
       aliases: [tc]
     mong:
       usage: /<command> <player>
-      description: Kick a player telling him to read the rules.
+      description: Kicks a player telling the player to read the rules.
       aliases: [noob, GRTFR]
     donator:
       usage: /<command> <add|remove|activate>
@@ -35,8 +35,11 @@ commands:
       aliases: [survival]
     gtfo:
       usage: /<command> <player> <reason>
-      description: Ban's a player.
+      description: Bans a player.
     fuckoff:
       usage: /<command> <player>
       description: Completely fucks over a player.
       aliases: [doom]
+    cake:
+      usage: /<command>
+      description: Cake!

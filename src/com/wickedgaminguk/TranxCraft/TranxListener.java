@@ -44,11 +44,11 @@ public class TranxListener extends TranxCraft implements Listener {
         if(event.getPlayer().getName().equals("HeXeRei452")) {
             Bukkit.broadcastMessage(ChatColor.AQUA + "HeXeRei452 is the Owner of TranxCraft.");
         }
-        
+        /*
         if(event.getPlayer().getName().equals("miwojedk")) {
             Bukkit.broadcastMessage(ChatColor.AQUA + "Miwojedk is the lead builder of TranxCraft.");
         }
-        
+        */
         if(leadAdmins.contains(event.getPlayer().getName())) {
             Bukkit.broadcastMessage(ChatColor.AQUA + event.getPlayer().getName() + " is a lead Admin.");
         }

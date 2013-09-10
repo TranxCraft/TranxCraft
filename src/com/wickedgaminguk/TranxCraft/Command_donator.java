@@ -16,23 +16,22 @@ class Command_donator extends TCP_Command implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        
-            Player player;
-            try {
-                player = getPlayer(args[0]);
-            }
-            catch (PlayerNotFoundException ex) {
-                sender.sendMessage(ChatColor.RED + ex.getMessage());
-                return true;
-            }
-            String Player = player.getName();
-            String Sender = sender.getName();
-            
             
             if(args.length == 0) {
-                Bukkit.broadcastMessage("HI!");
-                return true;
+                sender.sendMessage(TCP_Util.Invalid_Usage);
+                return false;
             }
+        
+            Player player;
+            //try {
+                player = getPlayer(args[0]);
+           // }
+           /* catch (PlayerNotFoundException ex) {
+                sender.sendMessage(ChatColor.RED + ex.getMessage());
+                return true;
+            }*/
+            String Player = player.getName();
+            String Sender = sender.getName();
             
             if(args[0].equalsIgnoreCase("activate")) {
                 if(sender instanceof Player && sender.hasPermission("tranxcraft.donator")) {

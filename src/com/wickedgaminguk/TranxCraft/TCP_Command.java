@@ -1,7 +1,6 @@
 
 package com.wickedgaminguk.TranxCraft;
 
-import java.util.List;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -15,6 +14,15 @@ public abstract class TCP_Command {
     }
     
     //Credits to Steven Lawson/Madgeek & Jerom Van Der Sar/DarthSalamon for various methods.
+    public Player getPlayer(String name) {
+        for(Player player : plugin.getServer().getOnlinePlayers()) {
+          if(name.equalsIgnoreCase(player.getName())) {
+              return player;
+          }
+        }
+        return null;
+    }
+    /*
     public Player getPlayer(final String partialname) throws PlayerNotFoundException {
         List<Player> matches = server.matchPlayer(partialname);
         if (matches.isEmpty()) {
@@ -28,5 +36,5 @@ public abstract class TCP_Command {
         else {
             return matches.get(0);
         }
-    }
+    }*/
 }

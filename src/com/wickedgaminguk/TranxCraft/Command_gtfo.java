@@ -25,24 +25,31 @@ class Command_gtfo extends TCP_Command implements CommandExecutor {
             sender.sendMessage(TCP_Util.noPerms);
             return true;
         }
-        
+        /*
         if(!(sender instanceof Player)) {
             sender.sendMessage("GTFO From Console currently doesn't work, sorry.");
-        }
+        }*/
         
         if(args.length == 0 || args.length == 1) {
             return false;
         }
         
         Player player;
-            try {
+            //try {
                 player = getPlayer(args[0]);
-            }
-            catch (PlayerNotFoundException ex) {
+            //}
+            /*catch (PlayerNotFoundException ex) {
                 sender.sendMessage(ChatColor.RED + ex.getMessage());
                 return true;
-            }
-        Player sender_p = (Player) sender;
+            }*/
+                
+        Player sender_p = player;
+        try {
+            sender_p = (Player) sender;
+        }
+        catch(Exception ex) {
+            sender.sendMessage(ChatColor.RED + "Player could not be found.");
+        }
         
         if(player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
@@ -56,6 +63,7 @@ class Command_gtfo extends TCP_Command implements CommandExecutor {
         if(!sender.hasPermission("tranxcraft.gtfo.override")) {
             if(TCP_ModeratorList.Moderators.contains(player.getName()) || TCP_ModeratorList.Admins.contains(player.getName()) || TCP_ModeratorList.leadAdmins.contains(player.getName()) || TCP_ModeratorList.Executives.contains(player.getName())) {
                 sender.sendMessage(ChatColor.RED + "You may not ban " + player.getName());
+                return true;
             }
         }
         
@@ -65,7 +73,7 @@ class Command_gtfo extends TCP_Command implements CommandExecutor {
             ban_reason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
         }
         
-        Bukkit.broadcastMessage(ChatColor.RED + "" + sender_p.getName() + " - banning " + player.getName() + " for " + ban_reason);
+        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + ban_reason);
         
         //rollback
         Bukkit.dispatchCommand(sender, "co rollback " + player.getName() + " t:500d r:#global");

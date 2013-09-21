@@ -16,7 +16,7 @@ class Command_cake extends TCP_Command implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!(sender.hasPermission("tranxcraft.enable"))){
+        if(!(sender.hasPermission("tranxcraft.cake"))) {
             sender.sendMessage(TCP_Util.noPerms);
             return true;
         }

@@ -2,9 +2,9 @@
 package com.wickedgaminguk.TranxCraft;
 
 import java.util.logging.Logger;
-import net.minecraft.server.v1_6_R2.BanEntry;
-import net.minecraft.server.v1_6_R2.BanList;
-import net.minecraft.server.v1_6_R2.MinecraftServer;
+import net.minecraft.server.v1_6_R3.BanEntry;
+import net.minecraft.server.v1_6_R3.BanList;
+import net.minecraft.server.v1_6_R3.MinecraftServer;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;

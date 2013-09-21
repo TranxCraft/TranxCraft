@@ -18,7 +18,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
     public Command_tranxcraft(TranxCraft plugin) {
     this.plugin = plugin;
     }
-
+    
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         
@@ -46,18 +46,18 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                     }
                     if(args.length == 1) {
                         Bukkit.broadcastMessage("[TranxCraft]" + ChatColor.RED + " Server Reloading.");
-                        reloadServer();
-                        plugin.getLogger().log(Level.INFO, "Server Reloaded.");
+                        TCP_PluginHandler.reloadServer();
+                        TCP_Log.info("Server Reloaded.");
                         Bukkit.broadcastMessage("[TranxCraft]" + ChatColor.GREEN + " Server Reloaded.");
                         return true;
                     }
                     if(args.length == 2) {
-                        if (!pm.isPluginEnabled(args[1])) {
+                        if (!Bukkit.getPluginManager().isPluginEnabled(args[1])) {
                             sender.sendMessage(ChatColor.RED + "[TranxCraft] Plugin Invalid.");
                             return true;
                         }
-                        Plugin tPlugin = pm.getPlugin(args[1]);
-                        reloadPlugin(tPlugin);
+                        Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
+                        TCP_PluginHandler.reloadPlugin(tPlugin);
                         sender.sendMessage(ChatColor.GREEN + "[TranxCraft] Plugin %a reloaded.".replaceAll("%a", tPlugin.getName()));
                         TCP_Util.logger.log(Level.INFO, "{0} reloaded {1} at {2}", new Object[]{sender.getName(), tPlugin, dateFormat.format(cal.getTime())});
                         return true;
@@ -73,13 +73,13 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         sender.sendMessage(TCP_Util.Invalid_Usage);
                         return false;
                     }
-                    if(pm.isPluginEnabled(args[1])) {
+                    if(Bukkit.getPluginManager().isPluginEnabled(args[1])) {
                         sender.sendMessage(ChatColor.RED + "[TranxCraft] Plugin Already Enabled.");
                         return true;
                     }
                     else {
-                        Plugin tPlugin = pm.getPlugin(args[1]);
-                        enablePlugin(tPlugin);
+                        Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
+                        TCP_PluginHandler.enablePlugin(tPlugin);
                         sender.sendMessage(ChatColor.GREEN + "[TranxCraft] Plugin " + tPlugin + " is enabled.");
                         return true;
                     }
@@ -93,13 +93,13 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         sender.sendMessage(TCP_Util.Invalid_Usage);
                         return false;
                     }
-                    if(!pm.isPluginEnabled(args[1])) {
+                    if(!Bukkit.getPluginManager().isPluginEnabled(args[1])) {
                         sender.sendMessage(ChatColor.RED + "[TranxCraft] Plugin Already Disabled.");
                         return true;
                     }
                     else {
-                        Plugin tPlugin = pm.getPlugin(args[1]);
-                        disablePlugin(tPlugin);
+                        Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
+                        TCP_PluginHandler.disablePlugin(tPlugin);
                         sender.sendMessage(ChatColor.RED + "[TranxCraft] Plugin " + tPlugin + " is disabled.");
                     }
                     return true;
@@ -119,7 +119,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                     if(args[1].equalsIgnoreCase("add")) {
                         if(args[2].equalsIgnoreCase("Moderator")) {
                             TCP_ModeratorList.getModerators().add(playerName);
-                            plugin.getConfig().set("Moderators",TCP_ModeratorList.Moderators);
+                            plugin.getConfig().set("Moderators",TCP_ModeratorList.getModerators());
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Moderator, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " moderator Spawn");
@@ -127,7 +127,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         
                         if(args[2].equalsIgnoreCase("Admin")) {
                             TCP_ModeratorList.getAdmins().add(playerName);
-                            plugin.getConfig().set("Admins",TCP_ModeratorList.Admins);
+                            plugin.getConfig().set("Admins",TCP_ModeratorList.getAdmins());
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " admin Spawn");
@@ -135,7 +135,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         
                         if(args[2].equalsIgnoreCase("LeadAdmin")) {
                             TCP_ModeratorList.getleadAdmins().add(playerName);
-                            plugin.getConfig().set("Lead_Admins",TCP_ModeratorList.leadAdmins);
+                            plugin.getConfig().set("Lead_Admins",TCP_ModeratorList.getleadAdmins());
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " leadadmin Spawn");
@@ -143,7 +143,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         
                         if(args[2].equalsIgnoreCase("Executive")) {
                             TCP_ModeratorList.getExecutives().remove(playerName);
-                            plugin.getConfig().set("Executives",TCP_ModeratorList.Executives);
+                            plugin.getConfig().set("Executives",TCP_ModeratorList.getExecutives());
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to an Executive, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " executive Spawn");
@@ -153,7 +153,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                      if(args[1].equalsIgnoreCase("remove")) {
                         if(args[2].equalsIgnoreCase("Moderator")) {
                             TCP_ModeratorList.getModerators().remove(playerName);
-                            plugin.getConfig().set("Moderators",TCP_ModeratorList.Moderators);
+                            plugin.getConfig().set("Moderators",TCP_ModeratorList.getModerators());
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Moderator!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
@@ -161,7 +161,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         
                         if(args[2].equalsIgnoreCase("Admin")) {
                             TCP_ModeratorList.getAdmins().remove(playerName);
-                            plugin.getConfig().set("Admins",TCP_ModeratorList.Admins);
+                            plugin.getConfig().set("Admins",TCP_ModeratorList.getAdmins());
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Admin!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
@@ -169,7 +169,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         
                         if(args[2].equalsIgnoreCase("LeadAdmin")) {
                             TCP_ModeratorList.getleadAdmins().remove(playerName);
-                            plugin.getConfig().set("Lead_Admins",TCP_ModeratorList.Admins);
+                            plugin.getConfig().set("Lead_Admins",TCP_ModeratorList.getAdmins());
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being a lead Admin!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
@@ -177,7 +177,7 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                         
                         if(args[2].equalsIgnoreCase("Executive")) {
                             TCP_ModeratorList.getExecutives().remove(playerName);
-                            plugin.getConfig().set("Executives",TCP_ModeratorList.Executives);
+                            plugin.getConfig().set("Executives",TCP_ModeratorList.getExecutives());
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being an Executive!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
@@ -189,23 +189,4 @@ class Command_tranxcraft extends TCP_Command implements CommandExecutor {
                 }
         return false;
     }
-    
-   
-   public void reloadPlugin(Plugin plugin) {
-       pm.disablePlugin(plugin);
-       pm.enablePlugin(plugin);
-   }
-   public void enablePlugin(Plugin plugin) {
-       pm.enablePlugin(plugin);
-   }
-   public void disablePlugin(Plugin plugin) {
-       pm.disablePlugin(plugin);
-   }
-   public void reloadServer() {
-       Plugin[] plugins = pm.getPlugins();
-
-           for (int x = 0; x < plugins.length; x++) {
-               reloadPlugin(plugins[x]);
-           }
-   }
 }

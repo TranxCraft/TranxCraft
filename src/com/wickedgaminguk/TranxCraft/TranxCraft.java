@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class TranxCraft extends JavaPlugin {
     
-    public TranxCraft plugin;
+    public static TranxCraft plugin = null;
     public TranxListener listener;
     public String pluginName;
     public String pluginVersion;
@@ -40,7 +40,7 @@ public class TranxCraft extends JavaPlugin {
         
         YamlConfiguration.loadConfiguration(configFile);
         
-        TCP_Util.logger.log(Level.INFO, "{0} version {1} by {2} is enabled", new Object[]{pluginName, pluginVersion, pluginAuthor});
+        TCP_Log.info(pluginName + " version " + pluginVersion + " by " + pluginAuthor + " is enabled");
         
         try {
             Metrics metrics = new Metrics(this);
@@ -48,6 +48,7 @@ public class TranxCraft extends JavaPlugin {
         }
         catch (IOException e) {
             TCP_Util.logger.log(Level.SEVERE, "{0} Plugin Metrics have failed to submit the statistics to McStats! >:(", pluginName);
+            
         }
         
         listener = new TranxListener(plugin);
@@ -69,7 +70,7 @@ public class TranxCraft extends JavaPlugin {
    public void init() {
        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
-       TCP_Util.logger.log(Level.INFO, "[TranxCraft] Hopefully the Nether and End have unloaded!");
+       TCP_Log.info("[TranxCraft] Hopefully the Nether and End have unloaded!");       
        
        //Register Command Executors.
        try {
@@ -80,11 +81,11 @@ public class TranxCraft extends JavaPlugin {
            plugin.getCommand("gtfo").setExecutor(new Command_gtfo(plugin));
            plugin.getCommand("fuckoff").setExecutor(new Command_fuckoff(plugin)); 
            plugin.getCommand("cake").setExecutor(new Command_cake(plugin));
-           TCP_Util.logger.log(Level.INFO, "[{0}] Commands Loaded.", pluginName);
+           TCP_Log.info("[" + pluginName + "] Commands Loaded.");
        }
        catch(Exception ex) {
-           TCP_Util.logger.log(Level.WARNING, "[{0}] Commands Failed To Load!", pluginName);
-           TCP_Util.logger.log(Level.INFO, "Error: {0}", ex);
+           TCP_Log.warning("[" + pluginName + "] Commands Failed To Load!");
+           TCP_Log.info("Error: " + ex);
        }
-   }   
+   }
 }

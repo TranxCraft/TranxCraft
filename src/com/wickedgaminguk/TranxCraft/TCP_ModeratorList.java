@@ -2,20 +2,15 @@
 package com.wickedgaminguk.TranxCraft;
 
 import java.util.List;
-import java.util.logging.Logger;
-import org.bukkit.ChatColor;
 
 public class TCP_ModeratorList {
     
-    public static TranxCraft plugin;
-    public static final String Invalid_Usage = ChatColor.RED + "Invalid Usage.";
-    public static final String noPerms = ChatColor.RED + "You don't have permission for this command.";
-    public static final Logger logger = Logger.getLogger("Minecraft-Server");
-    public static List<String> Executives = plugin.getConfig().getStringList("Executives");
-    public static List<String> leadAdmins = plugin.getConfig().getStringList("Lead_Admins");
-    public static List<String> Admins = plugin.getConfig().getStringList("Admins");
-    public static List<String> Moderators = plugin.getConfig().getStringList("Moderators");
-    public static List<String> Donators = plugin.getConfig().getStringList("Donators");
+    //public static List<String> Executives = plugin.getConfig().getStringList("Executives");
+    private static List<String> Executives = TranxCraft.plugin.getConfig().getStringList("Executives");
+    private static List<String> leadAdmins = TranxCraft.plugin.getConfig().getStringList("Lead_Admins");
+    private static List<String> Admins = TranxCraft.plugin.getConfig().getStringList("Admins");
+    private static List<String> Moderators = TranxCraft.plugin.getConfig().getStringList("Moderators");
+    private static List<String> Donators = TranxCraft.plugin.getConfig().getStringList("Donators");
     
     public static List<String> getModerators() {
         return Moderators;

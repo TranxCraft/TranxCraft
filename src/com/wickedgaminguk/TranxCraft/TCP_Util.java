@@ -50,5 +50,19 @@ public class TCP_Util {
         
         BanList ipBans = MinecraftServer.getServer().getPlayerList().getIPBans();
         ipBans.add(entry);
-    }    
+    }
+    
+    public static boolean isNameBanned(String name) {
+        name = name.toLowerCase().trim();
+        BanList nameBans = MinecraftServer.getServer().getPlayerList().getNameBans();
+        nameBans.removeExpired();
+        return nameBans.getEntries().containsKey(name);
+    }
+
+    public static boolean isIPBanned(String ip) {
+        ip = ip.toLowerCase().trim();
+        BanList ipBans = MinecraftServer.getServer().getPlayerList().getIPBans();
+        ipBans.removeExpired();
+        return ipBans.getEntries().containsKey(ip);
+    }
 }

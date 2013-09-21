@@ -61,7 +61,7 @@ class Command_gtfo extends TCP_Command implements CommandExecutor {
         }
         
         if(!sender.hasPermission("tranxcraft.gtfo.override")) {
-            if(TCP_ModeratorList.Moderators.contains(player.getName()) || TCP_ModeratorList.Admins.contains(player.getName()) || TCP_ModeratorList.leadAdmins.contains(player.getName()) || TCP_ModeratorList.Executives.contains(player.getName())) {
+            if(TCP_ModeratorList.getModerators().contains(player.getName()) || TCP_ModeratorList.getAdmins().contains(player.getName()) || TCP_ModeratorList.getleadAdmins().contains(player.getName()) || TCP_ModeratorList.getExecutives().contains(player.getName())) {
                 sender.sendMessage(ChatColor.RED + "You may not ban " + player.getName());
                 return true;
             }

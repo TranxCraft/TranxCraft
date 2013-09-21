@@ -41,15 +41,15 @@ class Command_fuckoff extends TCP_Command implements CommandExecutor {
         final String IP = player.getAddress().getAddress().getHostAddress().trim();
         
         // remove from TranxCraft Moderator (and any above ranks)
-        TCP_ModeratorList.Executives.remove(player.getName());
-        TCP_ModeratorList.leadAdmins.remove(player.getName());
-        TCP_ModeratorList.Admins.remove(player.getName());
-        TCP_ModeratorList.Moderators.remove(player.getName());
+        TCP_ModeratorList.getExecutives().remove(player.getName());
+        TCP_ModeratorList.getleadAdmins().remove(player.getName());
+        TCP_ModeratorList.getAdmins().remove(player.getName());
+        TCP_ModeratorList.getModerators().remove(player.getName());
         //Save these changes.
-        plugin.getConfig().set("Executives",TCP_ModeratorList.Executives);
-        plugin.getConfig().set("leadAdmins",TCP_ModeratorList.leadAdmins);
-        plugin.getConfig().set("Admins",TCP_ModeratorList.Admins);
-        plugin.getConfig().set("Moderators",TCP_ModeratorList.Moderators);
+        plugin.getConfig().set("Executives",TCP_ModeratorList.getExecutives());
+        plugin.getConfig().set("leadAdmins",TCP_ModeratorList.getleadAdmins());
+        plugin.getConfig().set("Admins",TCP_ModeratorList.getAdmins());
+        plugin.getConfig().set("Moderators",TCP_ModeratorList.getModerators());
         plugin.saveConfig();
         
         // remove from whitelist

@@ -40,8 +40,8 @@ class Command_donator extends TCP_Command implements CommandExecutor {
                         return false;
                     }
                     else {
-                        TCP_ModeratorList.Donators.add(Sender);
-                        plugin.getConfig().set("Donators",TCP_ModeratorList.Donators);
+                        TCP_ModeratorList.getDonators().add(Sender);
+                        plugin.getConfig().set("Donators",TCP_ModeratorList.getDonators());
                         plugin.saveConfig();
                         Bukkit.broadcastMessage(ChatColor.GREEN + Sender + " has bought a donator rank and activated it, congratulations!");
                     }
@@ -60,8 +60,8 @@ class Command_donator extends TCP_Command implements CommandExecutor {
                 }
                 
                 
-                TCP_ModeratorList.Donators.add(Player);
-                plugin.getConfig().set("Donators",TCP_ModeratorList.Donators);
+                TCP_ModeratorList.getDonators().add(Player);
+                plugin.getConfig().set("Donators",TCP_ModeratorList.getDonators());
                 plugin.saveConfig();
                 Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a donator rank, congratulations!");
                 return true;
@@ -74,8 +74,8 @@ class Command_donator extends TCP_Command implements CommandExecutor {
                     return true;
                 }
                 
-                TCP_ModeratorList.Donators.remove(Player);
-                plugin.getConfig().set("Donators",TCP_ModeratorList.Donators);
+                TCP_ModeratorList.getDonators().remove(Player);
+                plugin.getConfig().set("Donators",TCP_ModeratorList.getDonators());
                 plugin.saveConfig();
                 Bukkit.broadcastMessage(ChatColor.RED + player.getName() + "'s donator rank has expired, or (s)he's been abusing, how unfortunate!");
                 return true;

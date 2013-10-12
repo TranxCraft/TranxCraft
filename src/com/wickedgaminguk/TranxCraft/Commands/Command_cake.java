@@ -1,6 +1,7 @@
 
-package com.wickedgaminguk.TranxCraft;
+package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -8,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-class Command_cake extends TCP_Command implements CommandExecutor {
+public class Command_cake extends TCP_Command implements CommandExecutor {
     //Pointless Shit!
     public Command_cake(TranxCraft plugin) {
         this.plugin = plugin;

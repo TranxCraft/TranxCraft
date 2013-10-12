@@ -124,7 +124,7 @@ public class TranxListener extends TranxCraft implements Listener {
     }
     
     private void kickPlayer(Player player, PlayerLoginEvent event) {
-    Player[] players = this.plugin.getServer().getOnlinePlayers();
+    Player[] players = TranxCraft.plugin.getServer().getOnlinePlayers();
         for (Player p : players) {
             if (!p.hasPermission("tranxcraft.kickprevent")) {
                 p.kickPlayer(this.kickMessage);

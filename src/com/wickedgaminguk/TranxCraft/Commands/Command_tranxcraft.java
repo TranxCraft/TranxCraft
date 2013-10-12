@@ -1,6 +1,7 @@
 
-package com.wickedgaminguk.TranxCraft;
+package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,10 +14,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-class Command_tranxcraft extends TCP_Command implements CommandExecutor {
+public class Command_tranxcraft extends TCP_Command implements CommandExecutor {
 
     public Command_tranxcraft(TranxCraft plugin) {
-    this.plugin = plugin;
+        this.plugin = plugin;
     }
     
     @Override

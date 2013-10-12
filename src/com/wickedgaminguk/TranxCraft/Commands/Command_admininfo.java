@@ -1,12 +1,13 @@
 
-package com.wickedgaminguk.TranxCraft;
+package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-class Command_admininfo extends TCP_Command implements CommandExecutor {
+public class Command_admininfo extends TCP_Command implements CommandExecutor {
 
     public Command_admininfo(TranxCraft plugin) {
         this.plugin = plugin;

@@ -74,13 +74,13 @@ public class TranxCraft extends JavaPlugin {
        
        //Register Command Executors.
        try {
-           plugin.getCommand("mong").setExecutor(new Command_mong(plugin));
-           plugin.getCommand("tranxcraft").setExecutor(new Command_tranxcraft(plugin));
-           plugin.getCommand("donator").setExecutor(new Command_donator(plugin));
-           plugin.getCommand("admininfo").setExecutor(new Command_admininfo(plugin));
-           plugin.getCommand("gtfo").setExecutor(new Command_gtfo(plugin));
-           plugin.getCommand("fuckoff").setExecutor(new Command_fuckoff(plugin)); 
-           plugin.getCommand("cake").setExecutor(new Command_cake(plugin));
+           plugin.getCommand("mong").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_mong(plugin));
+           plugin.getCommand("tranxcraft").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_tranxcraft(plugin));
+           plugin.getCommand("donator").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_donator(plugin));
+           plugin.getCommand("admininfo").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_admininfo(plugin));
+           plugin.getCommand("gtfo").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_gtfo(plugin));
+           plugin.getCommand("fuckoff").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_fuckoff(plugin)); 
+           plugin.getCommand("cake").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_cake(plugin));
            TCP_Log.info("[" + pluginName + "] Commands Loaded.");
        }
        catch(Exception ex) {

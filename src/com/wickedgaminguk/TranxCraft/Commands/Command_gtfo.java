@@ -1,6 +1,7 @@
 
-package com.wickedgaminguk.TranxCraft;
+package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -12,7 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-class Command_gtfo extends TCP_Command implements CommandExecutor {
+public class Command_gtfo extends TCP_Command implements CommandExecutor {
 
     public Command_gtfo(TranxCraft plugin) {
     this.plugin = plugin;

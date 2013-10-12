@@ -1,6 +1,7 @@
 
-package com.wickedgaminguk.TranxCraft;
+package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.*;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-class Command_donator extends TCP_Command implements CommandExecutor {
+public class Command_donator extends TCP_Command implements CommandExecutor {
 
     public Command_donator(TranxCraft plugin) {
     }

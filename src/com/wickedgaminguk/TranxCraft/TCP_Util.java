@@ -1,10 +1,12 @@
 
 package com.wickedgaminguk.TranxCraft;
 
+import com.wickedgaminguk.TranxCraft.Commands.*;
 import java.util.logging.Logger;
 import net.minecraft.server.v1_6_R3.BanEntry;
 import net.minecraft.server.v1_6_R3.BanList;
 import net.minecraft.server.v1_6_R3.MinecraftServer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -12,6 +14,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 public class TCP_Util {
     
     public static TranxCraft plugin;
+    public String pluginName;
     protected Server server;
     PluginDescriptionFile pdf = plugin.getDescription();
     public static final String Invalid_Usage = ChatColor.RED + "Invalid Usage.";
@@ -65,4 +68,29 @@ public class TCP_Util {
         ipBans.removeExpired();
         return ipBans.getEntries().containsKey(ip);
     }
+    
+    
+   
+   public static void init() {
+       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
+       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
+       TCP_Log.info("[TranxCraft] Hopefully the Nether and End have unloaded!");
+       
+       //Register Command Executors.
+       try { 
+           plugin.getCommand("mong").setExecutor(new Command_mong(plugin));
+           plugin.getCommand("tranxcraft").setExecutor(new Command_tranxcraft(plugin));
+           plugin.getCommand("donator").setExecutor(new Command_donator(plugin));
+           plugin.getCommand("admininfo").setExecutor(new Command_admininfo(plugin));
+           plugin.getCommand("gtfo").setExecutor(new Command_gtfo(plugin));
+           plugin.getCommand("fuckoff").setExecutor(new Command_fuckoff(plugin)); 
+           plugin.getCommand("cake").setExecutor(new Command_cake(plugin));
+           plugin.getCommand("grandslam").setExecutor(new Command_grandslam(plugin));
+           TCP_Log.info("[" + TranxCraft.getPluginName() + "]" + "Commands Loaded.");
+       }
+       catch(Exception ex) {
+           TCP_Log.warning("[" + TranxCraft.getPluginName() + "]" + " Commands Failed To Load!");
+           TCP_Log.info("Error: " + ex);
+       }
+   }
 }

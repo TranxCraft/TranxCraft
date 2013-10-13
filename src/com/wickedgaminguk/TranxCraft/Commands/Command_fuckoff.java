@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class Command_fuckoff extends TCP_Command implements CommandExecutor {
 
@@ -28,14 +29,8 @@ public class Command_fuckoff extends TCP_Command implements CommandExecutor {
         }
         
         Player player;
-        //try {
-            player = getPlayer(args[0]);
-        //}
-        /*catch (PlayerNotFoundException ex) {
-            sender.sendMessage(ChatColor.RED + ex.getMessage());
-            return true;
-        }*/
-        
+        player = getPlayer(args[0]);
+            
         Bukkit.broadcastMessage(ChatColor.RED + sender.getName() + " Casting oblivion over " + player.getName());
         Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " will be completely obliviated!");
 
@@ -74,7 +69,10 @@ public class Command_fuckoff extends TCP_Command implements CommandExecutor {
 
         // ignite player
         player.setFireTicks(10000);
-
+        
+        // Throw the player into the air
+        player.setVelocity(new Vector(0,10,0));
+        
         // generate explosion
         player.getWorld().createExplosion(player.getLocation(), 4F);
                 

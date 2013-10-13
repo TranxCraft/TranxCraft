@@ -24,13 +24,8 @@ public class Command_donator extends TCP_Command implements CommandExecutor {
             }
         
             Player player;
-            //try {
-                player = getPlayer(args[0]);
-           // }
-           /* catch (PlayerNotFoundException ex) {
-                sender.sendMessage(ChatColor.RED + ex.getMessage());
-                return true;
-            }*/
+            player = getPlayer(args[0]);
+                
             String Player = player.getName();
             String Sender = sender.getName();
             

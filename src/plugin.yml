@@ -31,3 +31,7 @@ commands:
     cake:
       usage: /<command>
       description: Cake!
+    grandslam:
+      usage: /<command> <player> <reason>
+      description: Slams a player to the ground.
+      aliases: [gt, gs]

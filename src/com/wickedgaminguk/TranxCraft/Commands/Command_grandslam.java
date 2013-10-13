@@ -8,39 +8,33 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
-public class Command_gtfo extends TCP_Command implements CommandExecutor {
+public class Command_grandslam extends TCP_Command implements CommandExecutor {
 
-    public Command_gtfo(TranxCraft plugin) {
-    this.plugin = plugin;
+    public Command_grandslam(TranxCraft plugin) {
+        this.plugin = plugin;
     }
     
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         
-        if(sender instanceof Player && !(sender.hasPermission("tranxcraft.gtfo") || sender.isOp())){
+        if(sender instanceof Player && !(sender.hasPermission("tranxcraft.gs") || sender.isOp())){
             sender.sendMessage(TCP_Util.noPerms);
             return true;
         }
         
-        if(args.length == 0 || args.length == 1) {
+	if(args.length == 0 || args.length == 1) {
             return false;
         }
         
-        Player player;
-        player = getPlayer(args[0]);
-                
-        Player sender_p = player;
-        try {
-            sender_p = (Player) sender;
-        }
-        catch(Exception ex) {
-            sender.sendMessage(ChatColor.RED + "Player could not be found.");
-        }
+        Player player = getPlayer(args[0]);
+        Player sender_p = (Player) sender;
         
         if(player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
@@ -65,28 +59,32 @@ public class Command_gtfo extends TCP_Command implements CommandExecutor {
             ban_reason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
         }
         
-        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + ban_reason);
+        World world = player.getWorld();
+        
+        player.setVelocity(new Vector(0,10,0));
+        player.setHealth(0);
+        player.setOp(false);
+	player.getPlayer().setGameMode(GameMode.SURVIVAL);
+            
+        final Location target = player.getLocation();
+
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                final Location strike_pos = new Location(world, target.getBlockX() + x, target.getBlockY(), target.getBlockZ() + z);
+                world.strikeLightning(strike_pos);
+            }
+        }
+        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - grandslamming " + player.getName() + " for " + ban_reason);
         
         //rollback
         Bukkit.dispatchCommand(sender, "co rollback " + player.getName() + " t:500d r:#global");
-        
-        //set gamemode to survival
-        player.setGameMode(GameMode.SURVIVAL);
-        
-        // strike with lightning effect, credits again to Steven Lawson/Madgeek & Jerom Van Der Sar/DarthSalamon for this bit of code
-        final Location targetPos = player.getLocation();
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                final Location strike_pos = new Location(targetPos.getWorld(), targetPos.getBlockX() + x, targetPos.getBlockY(), targetPos.getBlockZ() + z);
-                targetPos.getWorld().strikeLightning(strike_pos);
-            }
-        }
         
         //Ban Username
         TCP_Util.banUsername(player.getName(), ban_reason, null);
         
         // kick Player:
         player.kickPlayer(ChatColor.RED + "GTFO" + (ban_reason != null ? ("\nReason: " + ChatColor.YELLOW + ban_reason) : ""));
+        
         
         return true;
     }

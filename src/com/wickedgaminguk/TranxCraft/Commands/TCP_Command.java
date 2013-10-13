@@ -23,19 +23,4 @@ public abstract class TCP_Command {
         }
         return null;
     }
-    /*
-    public Player getPlayer(final String partialname) throws PlayerNotFoundException {
-        List<Player> matches = server.matchPlayer(partialname);
-        if (matches.isEmpty()) {
-            for (Player player : server.getOnlinePlayers()) {
-                if (player.getDisplayName().toLowerCase().contains(partialname.toLowerCase())) {
-                    return player;
-                }
-            }
-            throw new PlayerNotFoundException(partialname);
-        }
-        else {
-            return matches.get(0);
-        }
-    }*/
 }

@@ -4,7 +4,6 @@ import com.wickedgaminguk.mcstats.Metrics;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -15,7 +14,7 @@ public class TranxCraft extends JavaPlugin {
     
     public static TranxCraft plugin = null;
     public TranxListener listener;
-    public String pluginName;
+    public static String pluginName;
     public String pluginVersion;
     public String pluginAuthor;
     File configFile;
@@ -54,7 +53,7 @@ public class TranxCraft extends JavaPlugin {
         listener = new TranxListener(plugin);
         pm.registerEvents(listener, plugin);
         
-        init();
+        TCP_Util.init();
   }
   
   @Override
@@ -66,26 +65,8 @@ public class TranxCraft extends JavaPlugin {
   public void onReload() {
       plugin.saveConfig();
   }
-   
-   public void init() {
-       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
-       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
-       TCP_Log.info("[TranxCraft] Hopefully the Nether and End have unloaded!");       
-       
-       //Register Command Executors.
-       try {
-           plugin.getCommand("mong").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_mong(plugin));
-           plugin.getCommand("tranxcraft").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_tranxcraft(plugin));
-           plugin.getCommand("donator").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_donator(plugin));
-           plugin.getCommand("admininfo").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_admininfo(plugin));
-           plugin.getCommand("gtfo").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_gtfo(plugin));
-           plugin.getCommand("fuckoff").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_fuckoff(plugin)); 
-           plugin.getCommand("cake").setExecutor(new com.wickedgaminguk.TranxCraft.Commands.Command_cake(plugin));
-           TCP_Log.info("[" + pluginName + "] Commands Loaded.");
-       }
-       catch(Exception ex) {
-           TCP_Log.warning("[" + pluginName + "] Commands Failed To Load!");
-           TCP_Log.info("Error: " + ex);
-       }
-   }
+  
+  public static String getPluginName() {
+     return pluginName; 
+  }
 }

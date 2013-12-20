@@ -5,11 +5,11 @@ import java.util.List;
 
 public class TCP_ModeratorList {
     
-    private static List<String> Executives = TranxCraft.plugin.getConfig().getStringList("Executives");
-    private static List<String> leadAdmins = TranxCraft.plugin.getConfig().getStringList("Lead_Admins");
-    private static List<String> Admins = TranxCraft.plugin.getConfig().getStringList("Admins");
-    private static List<String> Moderators = TranxCraft.plugin.getConfig().getStringList("Moderators");
-    private static List<String> Donators = TranxCraft.plugin.getConfig().getStringList("Donators");
+    private static List<String> Executives = TCP_Util.getConfigFile().getStringList("Executives");
+    private static List<String> leadAdmins = TCP_Util.getConfigFile().getStringList("Lead_Admins");
+    private static List<String> Admins = TCP_Util.getConfigFile().getStringList("Admins");
+    private static List<String> Moderators = TCP_Util.getConfigFile().getStringList("Moderators");
+    private static List<String> Donators = TCP_Util.getConfigFile().getStringList("Donators");
     
     public static List<String> getModerators() {
         return Moderators;

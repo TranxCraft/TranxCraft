@@ -12,4 +12,12 @@ Moderators:
   - ''
 Donators:
   - ''
+
+#Auto Broadcast  
+prefix: '&4[TranxCraft-Bot]'
+
+broadcast: '&b Make sure to have registered on our forums for continual updates, discussions, and more! - http://www.tranxcraft.com/forums'
+
+# in seconds
+interval: 1800
   

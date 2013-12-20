@@ -2,22 +2,22 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.*;
+import net.pravian.bukkitlib.command.BukkitCommand;
+import net.pravian.bukkitlib.command.CommandPermissions;
+import net.pravian.bukkitlib.command.SourceType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Command_fuckoff extends TCP_Command implements CommandExecutor {
+@CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command> <player>")
+public class Command_fuckoff extends BukkitCommand {
 
-    public Command_fuckoff(TranxCraft plugin) {
-    }
-    
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         
         if (args.length != 1) {
             return false;

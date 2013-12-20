@@ -2,19 +2,18 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.*;
+import net.pravian.bukkitlib.command.BukkitCommand;
+import net.pravian.bukkitlib.command.CommandPermissions;
+import net.pravian.bukkitlib.command.SourceType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class Command_admininfo extends TCP_Command implements CommandExecutor {
+@CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command> <name>")
+public class Command_admininfo extends BukkitCommand {
 
-    public Command_admininfo(TranxCraft plugin) {
-        this.plugin = plugin;
-    }
-    
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         
         if(args.length != 0) {
             sender.sendMessage(TCP_Util.Invalid_Usage);

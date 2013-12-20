@@ -2,6 +2,9 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.*;
+import net.pravian.bukkitlib.command.BukkitCommand;
+import net.pravian.bukkitlib.command.CommandPermissions;
+import net.pravian.bukkitlib.command.SourceType;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -10,19 +13,15 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class Command_grandslam extends TCP_Command implements CommandExecutor {
+@CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command> <player> <reason>")
+public class Command_grandslam extends BukkitCommand {
 
-    public Command_grandslam(TranxCraft plugin) {
-        this.plugin = plugin;
-    }
-    
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         
         if(sender instanceof Player && !(sender.hasPermission("tranxcraft.gs") || sender.isOp())){
             sender.sendMessage(TCP_Util.noPerms);
@@ -74,6 +73,7 @@ public class Command_grandslam extends TCP_Command implements CommandExecutor {
                 world.strikeLightning(strike_pos);
             }
         }
+        
         Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - grandslamming " + player.getName() + " for " + ban_reason);
         
         //rollback

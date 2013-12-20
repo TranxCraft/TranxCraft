@@ -1,11 +1,15 @@
+
 package com.wickedgaminguk.TranxCraft;
 
+import com.wickedgaminguk.TranxCraft.Commands.*;
 import com.wickedgaminguk.mcstats.Metrics;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import net.pravian.bukkitlib.command.BukkitCommandHandler;
+import net.pravian.bukkitlib.config.YamlConfig;
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,33 +17,35 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class TranxCraft extends JavaPlugin {
     
     public static TranxCraft plugin = null;
+    public YamlConfig config;
+    public BukkitCommandHandler handler;
     public TranxListener listener;
     public static String pluginName;
     public String pluginVersion;
     public String pluginAuthor;
-    File configFile;
-    FileConfiguration config;
     PluginManager pm;
+    
+  @Override
+  public void onLoad() {
+      plugin = this;
+      config = new YamlConfig(plugin, "config.yml", true);
+      handler = new BukkitCommandHandler(plugin);
+  }
 
   @Override
-  public void onEnable() { 
-        plugin = this;
-        configFile = new File(plugin.getDataFolder(), "config.yml");
+  public void onEnable() {
         this.pm = getServer().getPluginManager();
          
         PluginDescriptionFile pdf = plugin.getDescription();
         pluginName = pdf.getName();
         pluginVersion = pdf.getVersion();
         pluginAuthor = pdf.getAuthors().get(0);
-        
-        if(!new File(plugin.getDataFolder(), "config.yml").isFile()) {
-            this.saveDefaultConfig();
-            TCP_Util.logger.log(Level.INFO, "{0} version {1} configuration file saved.", new Object[]{pluginName, pluginVersion});
-        }
-        
-        YamlConfiguration.loadConfiguration(configFile);
+        config.load();        
+        handler.setCommandLocation(Command_tranxcraft.class.getPackage());
         
         TCP_Log.info(pluginName + " version " + pluginVersion + " by " + pluginAuthor + " is enabled");
+        
+        new TCP_Scheduler(plugin).runTaskTimer(plugin, config.getInt("interval") * 20L, config.getInt("interval") * 20L);
         
         try {
             Metrics metrics = new Metrics(this);
@@ -53,7 +59,7 @@ public class TranxCraft extends JavaPlugin {
         listener = new TranxListener(plugin);
         pm.registerEvents(listener, plugin);
         
-        TCP_Util.init();
+        init();
   }
   
   @Override
@@ -66,7 +72,22 @@ public class TranxCraft extends JavaPlugin {
       plugin.saveConfig();
   }
   
+  @Override
+   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+       return handler.handleCommand(sender, command, label, args);
+   }
+  
   public static String getPluginName() {
      return pluginName; 
   }
+  
+   private static void init() {
+       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
+       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
+       TCP_Log.info("[TranxCraft] Hopefully the Nether and End have unloaded!");
+   }
+   
+   public void getConfigFile() {
+       config.getConfig();
+   }
 }

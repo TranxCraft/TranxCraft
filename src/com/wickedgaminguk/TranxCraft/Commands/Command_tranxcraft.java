@@ -6,22 +6,21 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
+import net.pravian.bukkitlib.command.BukkitCommand;
+import net.pravian.bukkitlib.command.CommandPermissions;
+import net.pravian.bukkitlib.command.SourceType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class Command_tranxcraft extends TCP_Command implements CommandExecutor {
+@CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command>")
+public class Command_tranxcraft extends BukkitCommand {
 
-    public Command_tranxcraft(TranxCraft plugin) {
-        this.plugin = plugin;
-    }
-    
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss");
         Calendar cal = Calendar.getInstance(); 

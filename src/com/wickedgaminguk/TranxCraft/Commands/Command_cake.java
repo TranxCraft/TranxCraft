@@ -2,21 +2,20 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.*;
+import net.pravian.bukkitlib.command.BukkitCommand;
+import net.pravian.bukkitlib.command.CommandPermissions;
+import net.pravian.bukkitlib.command.SourceType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Command_cake extends TCP_Command implements CommandExecutor {
-    //Pointless Shit!
-    public Command_cake(TranxCraft plugin) {
-        this.plugin = plugin;
-    }
-    
+@CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command>")
+public class Command_cake extends BukkitCommand {
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         if(!(sender.hasPermission("tranxcraft.cake"))) {
             sender.sendMessage(TCP_Util.noPerms);
             return true;

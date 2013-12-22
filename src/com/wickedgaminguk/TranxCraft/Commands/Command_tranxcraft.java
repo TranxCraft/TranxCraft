@@ -187,6 +187,6 @@ public class Command_tranxcraft extends BukkitCommand {
                     
                     
                 }
-        return false;
+        return true;
     }
 }

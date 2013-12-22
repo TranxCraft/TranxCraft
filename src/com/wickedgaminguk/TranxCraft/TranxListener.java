@@ -23,7 +23,7 @@ public class TranxListener extends TranxCraft implements Listener {
     TranxListener(TranxCraft plugin) {
         TranxCraft.plugin = plugin;
     }
-        
+     
     @EventHandler(priority=EventPriority.HIGH)
     public void onPlayerEvent(PlayerJoinEvent event) {
         int TotalPlayers = plugin.getConfig().getInt("TotalPlayers");

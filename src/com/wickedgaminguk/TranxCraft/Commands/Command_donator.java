@@ -75,7 +75,7 @@ public class Command_donator extends BukkitCommand {
                 Bukkit.broadcastMessage(ChatColor.RED + player.getName() + "'s donator rank has expired, or (s)he's been abusing, how unfortunate!");
                 return true;
             }
-        return false;
+        return true;
         
     }
     

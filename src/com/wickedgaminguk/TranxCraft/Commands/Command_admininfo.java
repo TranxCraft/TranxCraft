@@ -28,7 +28,7 @@ public class Command_admininfo extends BukkitCommand {
             return true;
         }
         
-        return false;
+        return true;
     }
     
 }

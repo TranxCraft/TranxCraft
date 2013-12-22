@@ -1,7 +1,7 @@
 
 package com.wickedgaminguk.TranxCraft;
 
-import com.wickedgaminguk.TranxCraft.Commands.*;
+import com.wickedgaminguk.TranxCraft.Commands.Command_tranxcraft;
 import com.wickedgaminguk.mcstats.Metrics;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -57,9 +57,11 @@ public class TranxCraft extends JavaPlugin {
         }
         
         listener = new TranxListener(plugin);
-        pm.registerEvents(listener, plugin);
+        pm.registerEvents(listener, plugin);        
         
-        init();
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
+        TCP_Log.info("[TranxCraft] Hopefully the Nether and End have unloaded!");
   }
   
   @Override
@@ -80,12 +82,6 @@ public class TranxCraft extends JavaPlugin {
   public static String getPluginName() {
      return pluginName; 
   }
-  
-   private static void init() {
-       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
-       Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
-       TCP_Log.info("[TranxCraft] Hopefully the Nether and End have unloaded!");
-   }
    
    public void getConfigFile() {
        config.getConfig();

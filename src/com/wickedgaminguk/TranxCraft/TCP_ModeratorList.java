@@ -9,7 +9,7 @@ public class TCP_ModeratorList {
     private static List<String> leadAdmins = TCP_Util.getConfigFile().getStringList("Lead_Admins");
     private static List<String> Admins = TCP_Util.getConfigFile().getStringList("Admins");
     private static List<String> Moderators = TCP_Util.getConfigFile().getStringList("Moderators");
-    private static List<String> Donators = TCP_Util.getConfigFile().getStringList("Donators");
+    private static List<String> Donatorsx = TCP_Util.getConfigFile().getStringList("Donators");
     
     public static List<String> getModerators() {
         return Moderators;

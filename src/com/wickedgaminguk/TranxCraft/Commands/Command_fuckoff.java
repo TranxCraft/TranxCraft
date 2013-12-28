@@ -89,7 +89,7 @@ public class Command_fuckoff extends BukkitCommand {
         player.getWorld().createExplosion(player.getLocation(), 4F);
 
         // kick player
-        player.kickPlayer(ChatColor.RED + "FUCKOFF, and get your shit together!");
+        player.kickPlayer(ChatColor.RED + "FUCKOFF, and get your shit together, you little cunt!");
         return true;
       }
 }

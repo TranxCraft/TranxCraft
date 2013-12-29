@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.pravian.bukkitlib.command.BukkitCommandHandler;
 import net.pravian.bukkitlib.config.YamlConfig;
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import twitter4j.TwitterException;
 
 public class TranxCraft extends JavaPlugin {
     
@@ -37,8 +39,7 @@ public class TranxCraft extends JavaPlugin {
   @Override
   public void onEnable() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
-	String date = sdf.format(new Date()); 
-        TCP_Mail.send("TranxCraft Reports - Server Started", "Hey there, TranxCraft has been successfully started on " + date);
+	String date = sdf.format(new Date());
         
         this.pm = getServer().getPluginManager();
          
@@ -68,6 +69,14 @@ public class TranxCraft extends JavaPlugin {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
         TCP_Log.info("[TranxCraft] Hopefully the Nether and End have unloaded!");
+        
+        TCP_Mail.send("TranxCraft Reports - Server Started", "Hey there, TranxCraft has been successfully started on " + date);
+        try {
+            TCP_Twitter.tweet("TranxCraft has been successfully started on " + date);
+        }
+        catch (TwitterException | IOException ex) {
+            
+        }
   }
   
   @Override

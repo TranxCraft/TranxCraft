@@ -13,8 +13,6 @@ Moderators:
 Donators:
   - ''
 
-e-mails: wicked@wickedgaminguk.com, hexerei452@gmail.com
-
 #Auto Broadcast  
 prefix: '&4[TranxCraft-Bot]'
 
@@ -22,4 +20,26 @@ broadcast: '&b Make sure to have registered on our forums for continual updates,
 
 # in seconds
 interval: 1800
+
+#E-mail
+SMTP_HOST:
+ 
+SMTP_PORT:
+  
+LOGIN_USERNAME:
+  
+LOGIN_PASSWORD:
+
+EMAIL_FROM:
+  
+EMAIL_TO: 
+
+#Twitter
+CONSUMER_KEY:
+  
+CONSUMER_KEY_SECRET:
+  
+ACCESS_TOKEN:
+  
+ACCESS_TOKEN_SECRET:
   

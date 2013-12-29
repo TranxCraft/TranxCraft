@@ -4,6 +4,8 @@ package com.wickedgaminguk.TranxCraft;
 import com.wickedgaminguk.TranxCraft.Commands.Command_tranxcraft;
 import com.wickedgaminguk.mcstats.Metrics;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import net.pravian.bukkitlib.command.BukkitCommandHandler;
 import net.pravian.bukkitlib.config.YamlConfig;
@@ -34,6 +36,10 @@ public class TranxCraft extends JavaPlugin {
 
   @Override
   public void onEnable() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+	String date = sdf.format(new Date()); 
+        TCP_Mail.send("TranxCraft Reports - Server Started", "Hey there, TranxCraft has been successfully started on " + date);
+        
         this.pm = getServer().getPluginManager();
          
         PluginDescriptionFile pdf = plugin.getDescription();

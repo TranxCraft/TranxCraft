@@ -1,19 +1,13 @@
 
 package com.wickedgaminguk.TranxCraft;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Logger;
 import net.minecraft.server.v1_7_R1.BanEntry;
 import net.minecraft.server.v1_7_R1.BanList;
 import net.minecraft.server.v1_7_R1.MinecraftServer;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.*;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 public class TCP_Util {

@@ -21,5 +21,7 @@ public class TCP_Twitter {
         twitter.setOAuthAccessToken(oathAccessToken);
 
         twitter.updateStatus(tweet);
+        
+        TCP_Log.info("Tweet Successfully Sent");
     }
 }

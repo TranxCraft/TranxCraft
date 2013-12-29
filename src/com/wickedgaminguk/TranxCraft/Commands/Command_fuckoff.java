@@ -2,6 +2,9 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
 import net.pravian.bukkitlib.command.SourceType;
@@ -12,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import twitter4j.TwitterException;
 
 @CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command> <player>")
 public class Command_fuckoff extends BukkitCommand {
@@ -90,6 +94,13 @@ public class Command_fuckoff extends BukkitCommand {
 
         // kick player
         player.kickPlayer(ChatColor.RED + "FUCKOFF, and get your shit together, you little cunt!");
+        
+        TCP_Mail.send("TranxCraft Reports - " + player.getName() + " has been fucked off.", "Just to let you know, " + player.getName() + "has been 'fucked off' by " + sender.getName());
+        try {
+            TCP_Twitter.tweet(player.getName() + "has been fucked off the server!");
+        } catch (TwitterException | IOException ex) {
+            Logger.getLogger(Command_fuckoff.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return true;
       }
 }

@@ -36,7 +36,8 @@ public class TCP_Mail {
 	    message.setSubject(Subject);
 	    message.setText(Msg);
                     
-            Transport.send(message); 
+            Transport.send(message);
+            TCP_Log.info("E-mail Successfully Sent");
 	}
         catch (MessagingException e) {
             throw new RuntimeException(e);

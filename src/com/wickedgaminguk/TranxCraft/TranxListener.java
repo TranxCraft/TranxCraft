@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -66,25 +67,30 @@ public class TranxListener extends TranxCraft implements Listener {
     @EventHandler(priority=EventPriority.HIGH)
     public void onPlayerLogin(PlayerLoginEvent event) {
         
-        Player player = event.getPlayer();
+        Player player = event.getPlayer();/*
+        String hostname = "play.tranxcraft.com";
+        int port = 25565;
+        String IPmessage = "Please connect on play.tranxcraft.com to play on TranxCraft.";
         
-            if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
-                if(player.hasPermission("tranxcraft.reserved") || TCP_ModeratorList.getDonators().contains(event.getPlayer().getName()) || TCP_ModeratorList.getModerators().contains(event.getPlayer().getName()) || TCP_ModeratorList.getAdmins().contains(event.getPlayer().getName())|| TCP_ModeratorList.getExecutives().contains(event.getPlayer().getName())|| TCP_ModeratorList.getleadAdmins().contains(event.getPlayer().getName())) {
-                    kickPlayer(player, event);
-                    event.allow();
-                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + ChatColor.GREEN + " is a reserved member!");
-                }
+        if ((!event.getHostname().equalsIgnoreCase(hostname + ":" + port))) {
+            event.disallow(Result.KICK_OTHER, IPmessage);
+        }*/
+        
+        if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
+            if(player.hasPermission("tranxcraft.reserved") || TCP_ModeratorList.getDonators().contains(event.getPlayer().getName()) || TCP_ModeratorList.getModerators().contains(event.getPlayer().getName()) || TCP_ModeratorList.getAdmins().contains(event.getPlayer().getName())|| TCP_ModeratorList.getExecutives().contains(event.getPlayer().getName())|| TCP_ModeratorList.getleadAdmins().contains(event.getPlayer().getName())) {
+                kickPlayer(player, event);
+                event.allow();
+                Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + ChatColor.GREEN + " is a reserved member!");
             }
+        }
     }
-     
-    private Action RIGHT_CLICK_BLOCK = Action.RIGHT_CLICK_BLOCK;
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();            
             
             if (
-                (event.getAction().equals(this.RIGHT_CLICK_BLOCK)) &&
+                (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) &&
                 (player.getItemInHand().getType() == Material.FIREWORK) ||
                 (player.getItemInHand().getType() == Material.TNT) ||
                 (player.getItemInHand().getType() == Material.LAVA || player.getItemInHand().getType() == Material.STATIONARY_LAVA || player.getItemInHand().getType() == Material.LAVA_BUCKET) ||

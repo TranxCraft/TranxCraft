@@ -1,12 +1,15 @@
 
 package com.wickedgaminguk.TranxCraft;
 
+import husky.mysql.MySQL;
 import com.wickedgaminguk.TranxCraft.Commands.Command_tranxcraft;
 import com.wickedgaminguk.mcstats.Metrics;
 import java.io.IOException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.pravian.bukkitlib.command.BukkitCommandHandler;
 import net.pravian.bukkitlib.config.YamlConfig;
 import org.bukkit.Bukkit;
@@ -27,6 +30,7 @@ public class TranxCraft extends JavaPlugin {
     public String pluginVersion;
     public String pluginAuthor;
     PluginManager pm;
+    MySQL mySQL;
     
   @Override
   public void onLoad() {
@@ -46,21 +50,13 @@ public class TranxCraft extends JavaPlugin {
         pluginName = pdf.getName();
         pluginVersion = pdf.getVersion();
         pluginAuthor = pdf.getAuthors().get(0);
-        config.load();        
+        config.load();    
+        mySQL = new MySQL(plugin, config.getString("HOSTNAME"), config.getString("PORT"), config.getString("DATABASE"), config.getString("USER"), config.getString("PASSWORD"));    
         handler.setCommandLocation(Command_tranxcraft.class.getPackage());
         
         TCP_Log.info(pluginName + " version " + pluginVersion + " by " + pluginAuthor + " is enabled");
         
         new TCP_Scheduler(plugin).runTaskTimer(plugin, config.getInt("interval") * 20L, config.getInt("interval") * 20L);
-        
-        try {
-            Metrics metrics = new Metrics(this);
-            metrics.start();
-        }
-        catch (IOException e) {
-            TCP_Util.logger.log(Level.SEVERE, "{0} Plugin Metrics have failed to submit the statistics to McStats! >:(", pluginName);
-            
-        }
         
         listener = new TranxListener(plugin);
         pm.registerEvents(listener, plugin);        
@@ -76,16 +72,21 @@ public class TranxCraft extends JavaPlugin {
         catch (TwitterException | IOException ex) {
             
         }
+        
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        }
+        catch (IOException e) {
+            TCP_Util.logger.log(Level.SEVERE, "{0} Plugin Metrics have failed to submit the statistics to McStats! >:(", pluginName);
+            
+        }    
   }
   
   @Override
   public void onDisable() {
       TCP_Util.logger.log(Level.INFO, "{0} version {1} configuration file saved.", new Object[]{pluginName, pluginVersion});
       TCP_Util.logger.log(Level.INFO, "{0} version {1} by {2} is disabled", new Object[]{pluginName, pluginVersion, pluginAuthor});
-  }
-  
-  public void onReload() {
-      plugin.saveConfig();
   }
   
   @Override
@@ -96,8 +97,18 @@ public class TranxCraft extends JavaPlugin {
   public static String getPluginName() {
      return pluginName; 
   }
-   
-   public void getConfigFile() {
-       config.getConfig();
-   }
+  
+  public void updateDatabase(String SQLquery) throws SQLException {
+      Connection c = mySQL.openConnection();
+      Statement statement = c.createStatement();      
+      statement.executeUpdate(SQLquery);
+  }
+  
+  public void getValueFromDB(String SQLquery) throws SQLException {      
+      Connection c = mySQL.openConnection();
+      Statement statement = c.createStatement();
+      ResultSet res = statement.executeQuery(SQLquery);
+      res.next();
+  }
+  
 }

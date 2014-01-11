@@ -3,6 +3,7 @@ package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.TCP_Log;
 import com.wickedgaminguk.TranxCraft.TCP_Mail;
+import com.wickedgaminguk.TranxCraft.TCP_Mail.RecipientType;
 import com.wickedgaminguk.TranxCraft.TranxCraft;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -22,9 +23,16 @@ import org.bukkit.potion.PotionEffectType;
 
 @CommandPermissions(source = SourceType.PLAYER, usage = "Usage: /<command> <player> <reason>")
 public class Command_report extends BukkitCommand<TranxCraft> {
-        
+    
+    TCP_Mail mail = new TCP_Mail();
+    
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
+        
+        if(args.length <2) {
+            sender.sendMessage(ChatColor.RED + "Incorrect Usage");
+            return false;
+        }
         
         Player player = getPlayer(args[0]);
         Player sender_p = player;
@@ -51,11 +59,12 @@ public class Command_report extends BukkitCommand<TranxCraft> {
         String Reporter = sender.getName();        
         String Report = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
         
-        Bukkit.broadcast(ChatColor.RED + "[REPORTS]" + ChatColor.GOLD + sender.getName() + " has reported " + player.getName() + " for " + Report, "tranxcraft.moderator");
-        TCP_Mail.send("TranxCraft Reports - User " + Reported + " has been reported", "Hey, just to let you know, " + Reported + " has been reported by " + Reporter + " for " + Report);
-        
+        sender.sendMessage(ChatColor.GREEN + "Thank you, your report has been successfully logged.");
+        Bukkit.broadcast(ChatColor.RED + "[REPORTS] " + ChatColor.GOLD + sender.getName() + " has reported " + player.getName() + " for " + Report, "tranxcraft.moderator");
+        mail.send(RecipientType.ALL, "TranxCraft Reports - User " + Reported + " has been reported", "Hey, just to let you know, " + Reported + " has been reported by " + Reporter + " for " + Report);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-M hh:mm");
 	String Time = sdf.format(new Date());
+        
         try {
             plugin.updateDatabase("INSERT INTO reports (Reported, Reporter, Report, Time, Status) VALUES ('" + Reported + "', '" + Reporter + "', '" + Report + "', '" + Time + "', 'open');");
             TCP_Log.info("New Report Added by: " + Reporter);
@@ -64,6 +73,7 @@ public class Command_report extends BukkitCommand<TranxCraft> {
             sender.sendMessage("Error submitting report to Database.");
             TCP_Log.severe(ex);
         }
+        
         return true;
    }
 }

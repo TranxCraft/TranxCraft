@@ -33,16 +33,22 @@ public class Command_grandslam extends BukkitCommand {
         }
         
         Player player = getPlayer(args[0]);
-        Player sender_p = (Player) sender;
+        Player sender_p = null;
+        
+        if(sender instanceof Player) {
+            sender_p = (Player) sender;
+        }
         
         if(player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
             return true;
         }
         
-        if(player == sender_p) {
-            sender.sendMessage(ChatColor.RED + "Don't try to ban yourself, idiot.");
-            return true;
+        if(sender instanceof Player) {
+            if(player == sender_p) {
+                sender.sendMessage(ChatColor.RED + "Don't try to ban yourself, idiot.");
+                return true;
+            }
         }
         
         if(!sender.hasPermission("tranxcraft.override")) {

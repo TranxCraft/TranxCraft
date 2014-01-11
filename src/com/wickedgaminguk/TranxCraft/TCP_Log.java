@@ -5,8 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 //Credits to Madgeek1450 and DarthSalamon
-public class TCP_Log
-{
+public class TCP_Log {
     private static final Logger FALLBACK_LOGGER = Logger.getLogger("Minecraft-Server");
     private static Logger serverLogger = null;
     private static Logger pluginLogger = null;

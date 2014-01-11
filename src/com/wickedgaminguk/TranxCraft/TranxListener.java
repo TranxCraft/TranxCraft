@@ -1,6 +1,5 @@
 package com.wickedgaminguk.TranxCraft;
 
-import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,14 +11,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.ItemStack;
 
 
 public class TranxListener extends TranxCraft implements Listener {
     
-    String kickMessage = "I'm sorry, but you've been kicked to make room for a reserved player, to stop this happening, buy a donator rank!";    
+    String kickMessage = "I'm sorry, but you've been kicked to make room for a reserved player, to stop this happening, buy a donator rank!";  
     
     TranxListener(TranxCraft plugin) {
         TranxCraft.plugin = plugin;
@@ -34,14 +32,12 @@ public class TranxListener extends TranxCraft implements Listener {
         plugin.saveConfig();
         Bukkit.broadcastMessage(ChatColor.BLUE + "[Player Counter] " + TotalPlayers + " players have joined in total.");
         
-        if(event.getPlayer().getName().equals("HeXeRei452")) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + "HeXeRei452 is the Owner of TranxCraft.");
-        }
         /*
         if(event.getPlayer().getName().equals("kromeblade")) {
             Bukkit.broadcastMessage(ChatColor.AQUA + "Kromeblade is the lead builder of TranxCraft.");
         }
         */
+        
         if(TCP_ModeratorList.getleadAdmins().contains(event.getPlayer().getName())) {
             Bukkit.broadcastMessage(ChatColor.AQUA + event.getPlayer().getName() + " is a lead Admin.");
         }
@@ -87,8 +83,8 @@ public class TranxListener extends TranxCraft implements Listener {
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
-        Player player = event.getPlayer();            
-            
+        Player player = event.getPlayer(); 
+        
             if (
                 (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) &&
                 (player.getItemInHand().getType() == Material.FIREWORK) ||
@@ -125,7 +121,7 @@ public class TranxListener extends TranxCraft implements Listener {
             if (!p.hasPermission("tranxcraft.kickprevent")) {
                 p.kickPlayer(this.kickMessage);
                 event.allow();
-                TCP_Util.logger.log(Level.INFO, "Allowed player {0} to join full server by kicking player {1}!", new Object[]{player.getName(), p.getName()});
+                TCP_Log.info("Allowed player " + player.getName() + " to join full server by kicking player " + p.getName() + "!");
             }
         }
 

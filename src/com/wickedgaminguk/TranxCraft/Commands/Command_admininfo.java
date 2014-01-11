@@ -20,7 +20,7 @@ public class Command_admininfo extends BukkitCommand {
         }
         else {
             sender.sendMessage(ChatColor.BLUE + "----TranxCraft Moderator Application Information----");
-            sender.sendMessage(ChatColor.AQUA + "If you wish to become a moderator on TranxCraft, you need to apply on the forums: http://www.tranxcraft.com/forums/");
+            sender.sendMessage(ChatColor.AQUA + "If you wish to become a moderator on TranxCraft, you need to apply on the forums: https://www.tranxcraft.com/forums/");
             sender.sendMessage(ChatColor.AQUA + "Only apply if you feel like you have what it takes to be a Moderator, you'll probably need recommendations.");
             sender.sendMessage(ChatColor.RED + "But, don't beg for recommendations, this will get your application denied.");
             sender.sendMessage(ChatColor.AQUA + "Good luck to all Members that apply.");

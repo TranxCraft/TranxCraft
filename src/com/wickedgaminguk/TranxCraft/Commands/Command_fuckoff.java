@@ -2,6 +2,7 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.*;
+import com.wickedgaminguk.TranxCraft.TCP_Mail.RecipientType;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,9 @@ import twitter4j.TwitterException;
 
 @CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command> <player>")
 public class Command_fuckoff extends BukkitCommand {
-
+    
+    TCP_Mail TCP_mail;
+    
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         
@@ -95,7 +98,7 @@ public class Command_fuckoff extends BukkitCommand {
         // kick player
         player.kickPlayer(ChatColor.RED + "FUCKOFF, and get your shit together, you little cunt!");
         
-        TCP_Mail.send("TranxCraft Reports - " + player.getName() + " has been fucked off.", "Just to let you know, " + player.getName() + "has been 'fucked off' by " + sender.getName());
+        TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + player.getName() + " has been fucked off.", "Just to let you know, " + player.getName() + "has been 'fucked off' by " + sender.getName());
         try {
             TCP_Twitter.tweet(player.getName() + "has been fucked off the server!");
         } catch (TwitterException | IOException ex) {

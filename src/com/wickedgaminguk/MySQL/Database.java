@@ -1,7 +1,6 @@
-package husky;
+package com.wickedgaminguk.MySQL;
 
 import java.sql.Connection;
-
 import org.bukkit.plugin.Plugin;
 
 /**

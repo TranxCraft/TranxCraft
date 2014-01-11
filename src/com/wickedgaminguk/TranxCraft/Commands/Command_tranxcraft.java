@@ -2,6 +2,7 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.*;
+import com.wickedgaminguk.TranxCraft.TCP_Mail.RecipientType;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,10 +22,13 @@ import twitter4j.TwitterException;
 
 @CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command>")
 public class Command_tranxcraft extends BukkitCommand {
-
+    
+    TCP_Mail TCP_mail;
+    
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         
+        TCP_mail = new TCP_Mail();
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss");
         Calendar cal = Calendar.getInstance(); 
         
@@ -62,7 +66,7 @@ public class Command_tranxcraft extends BukkitCommand {
                         Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
                         TCP_PluginHandler.reloadPlugin(tPlugin);
                         sender.sendMessage(ChatColor.GREEN + "[TranxCraft] Plugin %a reloaded.".replaceAll("%a", tPlugin.getName()));
-                        TCP_Util.logger.log(Level.INFO, "{0} reloaded {1} at {2}", new Object[]{sender.getName(), tPlugin, dateFormat.format(cal.getTime())});
+                        TCP_Log.info(sender.getName() + " reloaded " + tPlugin.getName() + " at " + dateFormat.format(cal.getTime()));
                         return true;
                    }
                 }
@@ -126,7 +130,7 @@ public class Command_tranxcraft extends BukkitCommand {
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Moderator, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " moderator Spawn");
-                            TCP_Mail.send("TranxCraft Reports - " + playerName + " has been promoted to Moderator!", "Hey there, just to let you know, " + playerName + " has been promoted to Moderator by " + sender.getName());
+                            TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been promoted to Moderator!", "Hey there, just to let you know, " + playerName + " has been promoted to Moderator by " + sender.getName());
                             try {
                                 TCP_Twitter.tweet("Say congratulations to " + playerName + ", they have been promoted to Moderator status by " + sender.getName() + "!");
                             }
@@ -141,7 +145,7 @@ public class Command_tranxcraft extends BukkitCommand {
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " admin Spawn");
-                            TCP_Mail.send("TranxCraft Reports - " + playerName + " has been promoted to Admin!", "Hey there, just to let you know, " + playerName + " has been promoted to Admin by " + sender.getName());
+                            TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been promoted to Admin!", "Hey there, just to let you know, " + playerName + " has been promoted to Admin by " + sender.getName());
                             try {
                                 TCP_Twitter.tweet("Say congratulations to " + playerName + ", they have been promoted to Admin status by " + sender.getName() + "!");
                             }
@@ -156,7 +160,7 @@ public class Command_tranxcraft extends BukkitCommand {
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " leadadmin Spawn");
-                            TCP_Mail.send("TranxCraft Reports - " + playerName + " has been promoted to Lead Admin!", "Hey there, just to let you know, " + playerName + " has been promoted to Lead Admin by " + sender.getName());
+                            TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been promoted to Lead Admin!", "Hey there, just to let you know, " + playerName + " has been promoted to Lead Admin by " + sender.getName());
                             try {
                                 TCP_Twitter.tweet("Say congratulations to " + playerName + ", they have been promoted to Lead Admin status by " + sender.getName() + "!");
                             }
@@ -171,7 +175,7 @@ public class Command_tranxcraft extends BukkitCommand {
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to an Executive, congratulations!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " executive Spawn");
-                            TCP_Mail.send("TranxCraft Reports - " + playerName + " has been promoted to Executive!", "Hey there, just to let you know, " + playerName + " has been promoted to Executive by " + sender.getName());
+                            TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been promoted to Executive!", "Hey there, just to let you know, " + playerName + " has been promoted to Executive by " + sender.getName());
                             try {
                                 TCP_Twitter.tweet("Say congratulations to " + playerName + ", they have been promoted to Executive status by " + sender.getName() + "!");
                             }
@@ -188,7 +192,7 @@ public class Command_tranxcraft extends BukkitCommand {
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Moderator!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
-                            TCP_Mail.send("TranxCraft Reports - " + playerName + " has been removed from Moderator", "Hey there, just to let you know, " + playerName + " has been removed from Moderator by " + sender.getName());
+                            TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been removed from Moderator", "Hey there, just to let you know, " + playerName + " has been removed from Moderator by " + sender.getName());
                             try {
                                 TCP_Twitter.tweet(playerName + " has been removed from Moderator by " + sender.getName() + "!");
                             }
@@ -203,7 +207,7 @@ public class Command_tranxcraft extends BukkitCommand {
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Admin!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
-                            TCP_Mail.send("TranxCraft Reports - " + playerName + " has been removed from Admin", "Hey there, just to let you know, " + playerName + " has been removed from Admin by " + sender.getName());
+                            TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been removed from Admin", "Hey there, just to let you know, " + playerName + " has been removed from Admin by " + sender.getName());
                             try {
                                 TCP_Twitter.tweet(playerName + " has been removed from Admin by " + sender.getName() + "!");
                             }
@@ -218,7 +222,7 @@ public class Command_tranxcraft extends BukkitCommand {
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being a lead Admin!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
-                            TCP_Mail.send("TranxCraft Reports - " + playerName + " has been removed from Lead Admin", "Hey there, just to let you know, " + playerName + " has been removed from Lead Admin by " + sender.getName());
+                            TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been removed from Lead Admin", "Hey there, just to let you know, " + playerName + " has been removed from Lead Admin by " + sender.getName());
                             try {
                                 TCP_Twitter.tweet(playerName + " has been removed from Lead Admin by " + sender.getName() + "!");
                             }
@@ -233,7 +237,7 @@ public class Command_tranxcraft extends BukkitCommand {
                             plugin.saveConfig();
                             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being an Executive!");
                             Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
-                            TCP_Mail.send("TranxCraft Reports - " + playerName + " has been removed from Executive", "Hey there, just to let you know, " + playerName + " has been removed from Executive by " + sender.getName());
+                            TCP_mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been removed from Executive", "Hey there, just to let you know, " + playerName + " has been removed from Executive by " + sender.getName());
                             try {
                                 TCP_Twitter.tweet(playerName + " has been removed from Executive by " + sender.getName() + "!");
                             }

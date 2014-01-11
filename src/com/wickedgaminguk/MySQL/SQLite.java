@@ -1,4 +1,4 @@
-package husky.sqlite;
+package com.wickedgaminguk.MySQL;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,10 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
-
 import org.bukkit.plugin.Plugin;
-
-import husky.Database;
 
 /**
  * Connects to and uses a SQLite database

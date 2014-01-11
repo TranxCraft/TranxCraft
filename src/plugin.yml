@@ -1,6 +1,6 @@
 name: TranxCraft
 main: com.wickedgaminguk.TranxCraft.TranxCraft
-version: 4.0
+version: 4.3
 authors: [HeXeRei452]
 description: The custom developed plugin for TranxCraft.
 website: http://www.tranxcraft.com/
@@ -31,6 +31,9 @@ commands:
     cake:
       usage: /<command>
       description: Cake!
+    melon:
+      usage: /<command>
+      description: Melons!
     grandslam:
       usage: /<command> <player> <reason>
       description: Slams a player to the ground.
@@ -41,3 +44,10 @@ commands:
     report:
       usage: /<command> <player> <reason>
       description: Reports a Player.
+    ucpsync:
+      usage: /<command>
+      description: Syncs User Data.
+    o:
+      usage: /<command> <message>
+      description: TranxCraft's Admin Chat
+      aliases: [ac, adminchat]

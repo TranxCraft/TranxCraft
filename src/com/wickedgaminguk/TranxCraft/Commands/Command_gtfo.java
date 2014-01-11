@@ -17,9 +17,9 @@ import org.bukkit.entity.Player;
 
 @CommandPermissions(source = SourceType.ANY, usage = "Usage: /<command> <player> <reason>")
 public class Command_gtfo extends BukkitCommand {
-
+    
     @Override
-    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
+    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) { 
         
         if(sender instanceof Player && !(sender.hasPermission("tranxcraft.gtfo") || sender.isOp())){
             sender.sendMessage(TCP_Util.noPerms);
@@ -30,15 +30,11 @@ public class Command_gtfo extends BukkitCommand {
             return false;
         }
         
-        Player player;
-        player = getPlayer(args[0]);
-                
-        Player sender_p = player;
-        try {
+        Player player = getPlayer(args[0]);
+        Player sender_p = null;
+        
+        if(sender instanceof Player) {
             sender_p = (Player) sender;
-        }
-        catch(Exception ex) {
-            sender.sendMessage(ChatColor.RED + "Player could not be found.");
         }
         
         if(player == null) {
@@ -46,9 +42,11 @@ public class Command_gtfo extends BukkitCommand {
             return true;
         }
         
-        if(player == sender_p) {
-            sender.sendMessage(ChatColor.RED + "Don't try to ban yourself, idiot.");
-            return true;
+        if(sender instanceof Player) {
+            if(player == sender_p) {
+                sender.sendMessage(ChatColor.RED + "Don't try to ban yourself, idiot.");
+                return true;
+            }
         }
         
         if(!sender.hasPermission("tranxcraft.override")) {
@@ -67,7 +65,10 @@ public class Command_gtfo extends BukkitCommand {
         Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + ban_reason);
         
         //rollback
-        Bukkit.dispatchCommand(sender, "co rollback " + player.getName() + " t:500d r:#global");
+        //Bukkit.dispatchCommand(sender, "co rollback " + player.getName() + " t:500d r:#global");
+        
+        
+        //TCP_Util.rollbackPlayer(player, TCP_Util.year * 5);
         
         //set gamemode to survival
         player.setGameMode(GameMode.SURVIVAL);

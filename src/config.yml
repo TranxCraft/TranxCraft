@@ -16,7 +16,7 @@ Donators:
 #Auto Broadcast  
 prefix: '&4[TranxCraft-Bot]'
 
-broadcast: '&b Make sure to have registered on our forums for continual updates, discussions, and more! - http://www.tranxcraft.com/forums'
+broadcast: '&b Make sure to have registered on our forums for continual updates, discussions, and more! - https://www.tranxcraft.com/forums'
 
 # in seconds
 interval: 1800
@@ -32,7 +32,15 @@ LOGIN_PASSWORD:
 
 EMAIL_FROM:
   
-EMAIL_TO: 
+SYS_MAIL:
+  
+EXECUTIVE_MAIL:
+  
+LEADADMIN_MAIL:
+  
+ADMIN_MAIL:
+  
+MODERATOR_MAIL:
 
 #Twitter
 CONSUMER_KEY:

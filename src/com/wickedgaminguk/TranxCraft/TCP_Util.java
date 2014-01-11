@@ -1,24 +1,28 @@
 
 package com.wickedgaminguk.TranxCraft;
 
-import java.util.logging.Logger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import net.minecraft.server.v1_7_R1.BanEntry;
 import net.minecraft.server.v1_7_R1.BanList;
 import net.minecraft.server.v1_7_R1.MinecraftServer;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.entity.Player;
 
-public class TCP_Util {
+public class TCP_Util extends TranxCraft {
     
-    public static TranxCraft plugin;
-    public String pluginName;
     protected Server server;
-    PluginDescriptionFile pdf = plugin.getDescription();
     public static final String Invalid_Usage = ChatColor.RED + "Invalid Usage.";
     public static final String noPerms = ChatColor.RED + "You don't have permission for this command.";
-    public static final Logger logger = Logger.getLogger("Minecraft-Server");
+    public static final int second = 1;
+    public static final int minute = second * 60;
+    public static final int hour = minute * 60;
+    public static final int day = hour * 24;
+    public static final int week = day * 7;
+    public static final int month = week * 4;
+    public static final int year = month * 12;
    
    //Credits to Steven Lawson/Madgeek & Jerom Van Der Sar/DarthSalamon for various methods.
     public static void banUsername(String name, String reason, String source) {
@@ -72,4 +76,24 @@ public class TCP_Util {
         return TranxCraft.plugin.getConfig();
     }
     
+    public static String getDate() {    
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        String date = sdf.format(new Date());
+        return date;
+    }
+    /*
+    public static void rollbackPlayer(Player player, int time) {
+        
+        String p = player.getName();
+        CoreProtectAPI CoreProtect = getCoreProtect();
+        
+        if (CoreProtect!=null) { //Ensure we have access to the API
+            CoreProtect.performRollback(p, time, 0, null, null, null);
+        }
+    }*/
+    
+    public static String getPrimaryGroup(Player player) {
+        String permission = plugin.permission.getPrimaryGroup(player);  
+        return permission;
+    }
 }

@@ -1,0 +1,65 @@
+#TranxCraft Plugin Configuration File By HeXeRei452
+##
+TotalPlayers: 0
+##
+Executives:
+  - ''
+Lead_Admins:
+  - ''
+Admins:
+  - ''
+Moderators:
+  - ''
+Donators:
+  - ''
+##
+#Auto Broadcast  
+prefix: '&4[TranxCraft-Bot]'
+##
+broadcast: '&b Make sure to have registered on our forums for continual updates, discussions, and more! - https://www.tranxcraft.com/forums'
+##
+# in seconds
+interval: 1800
+##
+adminmode: false
+#E-mail
+SMTP_HOST:
+##
+SMTP_PORT:
+##
+LOGIN_USERNAME:
+##
+LOGIN_PASSWORD:
+##
+EMAIL_FROM:
+## 
+SYS_MAIL:
+##
+EXECUTIVE_MAIL:
+## 
+LEADADMIN_MAIL:
+## 
+ADMIN_MAIL:
+##
+MODERATOR_MAIL:
+##
+#Twitter
+CONSUMER_KEY:
+##
+CONSUMER_KEY_SECRET:
+##
+ACCESS_TOKEN:
+##
+ACCESS_TOKEN_SECRET:
+##
+#MySQL
+HOSTNAME:
+##
+PORT:
+##
+DATABASE:
+##
+USER:
+##
+PASSWORD:
+  

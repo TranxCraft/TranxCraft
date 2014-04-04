@@ -1,0 +1,80 @@
+name: TranxCraft
+main: com.wickedgaminguk.TranxCraft.TranxCraft
+version: 2.0
+authors: [WickedGamingUK]
+description: The custom developed plugin for TranxCraft.
+website: https://www.tranxcraft.com/
+depend: [Vault]
+commands:
+    tranxcraft:
+      usage: /<command>
+      description: Displays useful information about TranxCraft.
+      aliases: [tc]
+    mong:
+      usage: /<command> <player>
+      description: Kicks a player telling the player to read the rules.
+      aliases: [noob, GRTFR]
+    donator:
+      usage: /<command> <add|remove|activate>
+      description: Donator Handling.
+      aliases: [dn]
+    admininfo:
+      usage: /<command>
+      description: How to apply for moderator on TranxCraft.
+      aliases: [ai, modinfo, moderatorinfo, mi, admin, moderator]
+    gtfo:
+      usage: /<command> <player> <reason>
+      description: Bans a player.
+    fuckoff:
+      usage: /<command> <player>
+      description: Completely fucks over a player.
+      aliases: [doom]
+    grandslam:
+      usage: /<command> <player> <reason>
+      description: Slams a player to the ground.
+      aliases: [gt, gs]
+    catapult:
+      usage: /<command> <player>
+      description: Catapults a player.
+    report:
+      usage: /<command> <player> <reason>
+      description: Reports a Player.
+    ucpsync:
+      usage: /<command>
+      description: Syncs User Data.
+    o:
+      usage: /<command> <message>
+      description: TranxCraft's Admin Chat
+      aliases: [ac, adminchat]
+    acceptrules:
+      usage: /<command>
+      description: Accept TranxCraft's Rules
+      aliases: [ar]
+    warn:
+      usage: /<command> <player> <reason>
+      description: Warns a player.
+    plm:
+      usage: /<command> <reload|enable|disable> <plugin>
+      description: Plugin management.
+      aliases: [plc, pluginmanagement]
+    system:
+      usage: /<command> <add|remove> <rank> <player>
+      description: Rank management.
+      aliases: [sys, playerrank]
+    adminmode:
+      usage: /<command> <on|off>
+      description: Turns Adminmode on or off.
+      aliases: [am, moderatormode]
+    food:
+      usage: /<command> <food>
+      description: Gives everyone who's currently on the server some free food :)
+    ban:
+      usage: /<command> <player> <reason>
+      description: Bans a player.
+    banip:
+      usage: /<command> <player> <reason>
+      description: Bans a player's IP.
+    banoffline:
+      usage: /<command> <offlineplayer> <reason>
+      description: Bans an offline player.
+      aliases: [oban, bano, offlineban]

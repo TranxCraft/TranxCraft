@@ -1,6 +1,7 @@
 package com.wickedgaminguk.TranxCraft.UCP;
 
-import com.wickedgaminguk.TranxCraft.*;
+import com.wickedgaminguk.TranxCraft.TranxCraft;
+import com.wickedgaminguk.TranxCraft.TCP_Time;
 import java.sql.SQLException;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import net.pravian.bukkitlib.util.TimeUtils;

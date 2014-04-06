@@ -18,6 +18,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 import org.mcstats.Metrics;
 
 public class TranxCraft extends BukkitPlugin {
@@ -36,6 +40,11 @@ public class TranxCraft extends BukkitPlugin {
     public MySQL mySQL;
     public TCP_Mail mail;
     public TCP_Twitter twitter;
+    public Scoreboard board;
+    public Objective o;
+    public HashMap<String, Score> kills = new HashMap<>();
+    public HashMap<String, Score> deaths = new HashMap<>();
+    public HashMap<String, Score> kd = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -58,6 +67,7 @@ public class TranxCraft extends BukkitPlugin {
         playerConfig.load();
 
         mySQL = new MySQL(plugin, config.getString("HOSTNAME"), config.getString("PORT"), config.getString("DATABASE"), config.getString("USER"), config.getString("PASSWORD"));
+
         twitter.init();
 
         LoggerUtils.info(pluginName + " version " + pluginVersion + " by " + pluginAuthor + " is enabled");
@@ -82,6 +92,12 @@ public class TranxCraft extends BukkitPlugin {
 
         handler.setCommandLocation(Command_tranxcraft.class.getPackage());
         handler.setPermissionMessage(ChatColor.RED + "You don't have permission for this command.");
+
+        board = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
+
+        o = board.registerNewObjective("test", "dummy");
+        o.setDisplayName("Stats");
+        o.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         try {
             Metrics metrics = new Metrics(this);

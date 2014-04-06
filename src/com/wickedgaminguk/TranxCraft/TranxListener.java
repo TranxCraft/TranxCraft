@@ -18,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -91,6 +92,24 @@ public class TranxListener implements Listener {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.LIGHT_PURPLE + "Donator! <3");
         }
 
+        player.setScoreboard(plugin.board);
+
+        if (plugin.kills.get(player.getName()) == null) {
+            plugin.kills.put(player.getName(), plugin.o.getScore(Bukkit.getServer().getOfflinePlayer(ChatColor.GREEN + "Kills:")));
+        }
+
+        if (plugin.deaths.get(player.getName()) == null) {
+            plugin.deaths.put(player.getName(), plugin.o.getScore(Bukkit.getServer().getOfflinePlayer(ChatColor.GREEN + "Deaths:")));
+        }
+
+        if (plugin.kd.get(player.getName()) == null) {
+            plugin.kd.put(player.getName(), plugin.o.getScore(Bukkit.getServer().getOfflinePlayer(ChatColor.GREEN + "K/D:")));
+        }
+
+        plugin.kills.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills"));
+        plugin.deaths.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".deaths"));
+        plugin.kd.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills") / plugin.playerConfig.getInt(player.getName() + ".deaths"));
+
         if (!(player.hasPermission("tranxcraft.member"))) {
             new BukkitRunnable() {
                 @Override
@@ -125,7 +144,9 @@ public class TranxListener implements Listener {
         plugin.playerLogins.put(player.getName(), TimeUtils.getUnix());
 
         if (!plugin.playerConfig.contains(player.getName())) {
-            plugin.playerConfig.set(player.getName(), 0);
+            plugin.playerConfig.set(player.getName() + ".time", 0);
+            plugin.playerConfig.set(player.getName() + ".kills", 0);
+            plugin.playerConfig.set(player.getName() + ".deaths", 0);
             plugin.playerConfig.save();
         }
 
@@ -156,7 +177,7 @@ public class TranxListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        plugin.playerConfig.set(player.getName(), plugin.playerConfig.getLong(player.getName()) + (TimeUtils.getUnix() - plugin.playerLogins.get(player.getName())));
+        plugin.playerConfig.set(player.getName() + ".time", plugin.playerConfig.getLong(player.getName() + ".time") + (TimeUtils.getUnix() - plugin.playerLogins.get(player.getName())));
         plugin.playerConfig.save();
 
         plugin.playerLogins.put(player.getName(), null);
@@ -289,6 +310,38 @@ public class TranxListener implements Listener {
         catch (FileNotFoundException ex) {
         }
         catch (IOException | ClassNotFoundException ex) {
+        }
+    }
+
+    /* ONLY USE FOR DEBUGGING/TESTING
+     @EventHandler
+     public void onPlayerMove(PlayerMoveEvent event) {
+     Player player = event.getPlayer();
+     plugin.kills.get(event.getPlayer().getName()).setScore(plugin.kills.get(event.getPlayer().getName()).getScore() + 5);
+     plugin.deaths.get(event.getPlayer().getName()).setScore(plugin.deaths.get(event.getPlayer().getName()).getScore() + 1);
+     plugin.playerConfig.set(player.getName() + ".deaths", plugin.deaths.get(event.getPlayer().getName()).getScore() + 1);
+     plugin.playerConfig.set(player.getName() + ".kills", plugin.kills.get(event.getPlayer().getName()).getScore() + 5);
+     plugin.playerConfig.save();
+     plugin.kd.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills") / plugin.playerConfig.getInt(player.getName() + ".deaths"));
+     }
+     */
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        if (event.getEntity() instanceof Player) {
+            Player victim = event.getEntity();
+            Player killer = event.getEntity().getKiller();
+
+            if (killer instanceof Player) {
+                int deaths = Integer.valueOf(plugin.playerConfig.get(victim + ".deaths").toString());
+                int kills = Integer.valueOf(plugin.playerConfig.get(killer + ".kills").toString());
+                plugin.playerConfig.set(victim.getName() + ".deaths", deaths + 1);
+                plugin.playerConfig.set(killer.getName() + ".kills", kills + 1);
+                plugin.playerConfig.save();
+                plugin.kills.get(killer.getName()).setScore(plugin.kills.get(killer.getName()).getScore() + 1);
+                plugin.deaths.get(victim.getName()).setScore(plugin.deaths.get(victim.getName()).getScore() + 1);
+                plugin.kd.get(killer.getName()).setScore(plugin.playerConfig.getInt(killer.getName() + ".kills") / plugin.playerConfig.getInt(killer.getName() + ".deaths"));
+                plugin.kd.get(victim.getName()).setScore(plugin.playerConfig.getInt(victim.getName() + ".kills") / plugin.playerConfig.getInt(victim.getName() + ".deaths"));
+            }
         }
     }
 

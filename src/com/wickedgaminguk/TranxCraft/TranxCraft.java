@@ -28,11 +28,9 @@ public class TranxCraft extends BukkitPlugin {
 
     public Map<String, Long> playerLogins;
     public TranxCraft plugin;
-    public String pluginName;
-    public String pluginVersion;
-    public String pluginAuthor;
     public YamlConfig config;
     public YamlConfig playerConfig;
+    public YamlConfig adminConfig;
     public BukkitCommandHandler handler;
     public TranxListener listener;
     public Permission permission;
@@ -51,6 +49,7 @@ public class TranxCraft extends BukkitPlugin {
         plugin = this;
         config = new YamlConfig(plugin, "config.yml");
         playerConfig = new YamlConfig(plugin, "players.yml");
+        adminConfig = new YamlConfig(plugin, "admins.yml");
         playerLogins = new HashMap<>();
         handler = new BukkitCommandHandler(plugin);
         mail = new TCP_Mail(plugin);
@@ -65,21 +64,19 @@ public class TranxCraft extends BukkitPlugin {
 
         config.load();
         playerConfig.load();
+        adminConfig.load();
 
         mySQL = new MySQL(plugin, config.getString("HOSTNAME"), config.getString("PORT"), config.getString("DATABASE"), config.getString("USER"), config.getString("PASSWORD"));
 
         twitter.init();
 
-        LoggerUtils.info(pluginName + " version " + pluginVersion + " by " + pluginAuthor + " is enabled");
+        LoggerUtils.info(plugin.getName() + " v." + plugin.getVersion() + " by " + plugin.getAuthor() + " is enabled");
 
         new TCP_Scheduler(plugin).runTaskTimer(plugin, config.getInt("interval") * 20L, config.getInt("interval") * 20L);
         new TCP_UCP(plugin).runTaskTimer(plugin, 6000L, 6000L);
 
         listener = new TranxListener(plugin);
         register(listener);
-
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_nether");
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv unload Spawn_the_end");
 
         //mail.send(RecipientType.SYS, "TranxCraft Reports - Server Started", "Hey there, TranxCraft has been successfully started on " + TCP_Time.getDate());
         /*try {
@@ -111,8 +108,8 @@ public class TranxCraft extends BukkitPlugin {
 
     @Override
     public void onDisable() {
-        LoggerUtils.info(pluginName + " v" + pluginVersion + " configuration file saved.");
-        LoggerUtils.info(pluginName + " v" + pluginVersion + " by" + pluginAuthor + " is disabled.");
+        LoggerUtils.info(plugin.getName() + " v." + plugin.getVersion() + " configuration file saved.");
+        LoggerUtils.info(plugin.getName() + " v" + plugin.getVersion() + " by" + plugin.getAuthor() + " is disabled.");
     }
 
     @Override
@@ -126,11 +123,12 @@ public class TranxCraft extends BukkitPlugin {
         statement.executeUpdate(SQLquery);
     }
 
-    public void getValueFromDB(String SQLquery) throws SQLException {
+    public ResultSet getValueFromDB(String SQLquery) throws SQLException {
         Connection c = mySQL.openConnection();
         Statement statement = c.createStatement();
         ResultSet res = statement.executeQuery(SQLquery);
         res.next();
+        return res;
     }
 
     private boolean setupPermissions() {

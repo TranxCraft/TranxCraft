@@ -1,6 +1,8 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
-import com.wickedgaminguk.TranxCraft.*;
+import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
+import com.wickedgaminguk.TranxCraft.TCP_Util;
+import com.wickedgaminguk.TranxCraft.TranxCraft;
 import java.sql.SQLException;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
@@ -60,7 +62,7 @@ public class Command_banoffline extends BukkitCommand<TranxCraft> {
         }
 
         if (!sender.hasPermission("tranxcraft.override")) {
-            if (TCP_ModeratorList.getModerators().contains(player.getName()) || TCP_ModeratorList.getAdmins().contains(player.getName()) || TCP_ModeratorList.getleadAdmins().contains(player.getName()) || TCP_ModeratorList.getExecutives().contains(player.getName())) {
+            if (TCP_ModeratorList.isPlayerMod((Player) player)) {
                 sender.sendMessage(ChatColor.RED + "You may not ban " + player.getName());
                 return true;
             }

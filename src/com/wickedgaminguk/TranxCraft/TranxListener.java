@@ -1,10 +1,12 @@
 package com.wickedgaminguk.TranxCraft;
 
+import com.wickedgaminguk.TranxCraft.TCP_ModeratorList.AdminType;
 import com.wickedgaminguk.TranxCraft.UCP.TCP_UCP;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.server.v1_7_R1.MinecraftServer;
+import net.pravian.bukkitlib.util.ChatUtils;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import net.pravian.bukkitlib.util.TimeUtils;
 import org.apache.commons.lang.WordUtils;
@@ -61,34 +63,28 @@ public class TranxListener implements Listener {
         Bukkit.broadcastMessage(ChatColor.BLUE + "[Player Counter] " + totalPlayers + " players have joined in total.");
 
         final Player player = event.getPlayer();
-
-        switch (player.getName()) {
-            case "WickedGamingUK":
-            case "HeXeRei452":
-                Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is the " + ChatColor.DARK_RED + "Owner!");
-                break;
-            case "thecjgcjg":
-                Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is the " + ChatColor.RED + "Executive Technical Admin!");
-                break;
+        
+        if (!(TCP_ModeratorList.getLoginMessage(player).equals(""))) {
+            Bukkit.broadcastMessage(ChatUtils.colorize(TCP_ModeratorList.getLoginMessage(player)));
         }
 
-        if (TCP_ModeratorList.getleadAdmins().contains(player.getName())) {
+        else if (TCP_ModeratorList.getRank(player) == AdminType.LEADADMIN) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a lead Admin.");
         }
 
-        if (TCP_ModeratorList.getExecutives().contains(player.getName())) {
+        else if (TCP_ModeratorList.getRank(player) == AdminType.EXECUTIVE) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an executive Admin.");
         }
 
-        if (TCP_ModeratorList.getAdmins().contains(player.getName())) {
+        else if (TCP_ModeratorList.getRank(player) == AdminType.ADMIN) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an " + ChatColor.GOLD + "Admin.");
         }
 
-        if (TCP_ModeratorList.getModerators().contains(player.getName())) {
+        else if (TCP_ModeratorList.getRank(player) == AdminType.MODERATOR) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.DARK_PURPLE + "Moderator.");
         }
 
-        if (TCP_ModeratorList.getDonators().contains(player.getName())) {
+        else if (TCP_ModeratorList.getRank(player) == AdminType.DONATOR) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.LIGHT_PURPLE + "Donator! <3");
         }
 
@@ -99,7 +95,7 @@ public class TranxListener implements Listener {
         }
 
         if (plugin.deaths.get(player.getName()) == null) {
-            plugin.deaths.put(player.getName(), plugin.o.getScore(Bukkit.getServer().getOfflinePlayer(ChatColor.GREEN + "Deaths:")));
+            plugin.deaths.put(player.getName(), plugin.o.getScore(Bukkit.getServer().getOfflinePlayer(ChatColor.RED + "Deaths:")));
         }
 
         if (plugin.kd.get(player.getName()) == null) {
@@ -108,7 +104,19 @@ public class TranxListener implements Listener {
 
         plugin.kills.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills"));
         plugin.deaths.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".deaths"));
-        plugin.kd.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills") / plugin.playerConfig.getInt(player.getName() + ".deaths"));
+
+        if (plugin.kills.get(player.getName()) == null && plugin.deaths.get(player.getName()) == null) {
+            plugin.kd.get(player.getName()).setScore(0);
+        }
+        else if (plugin.kills.get(player.getName()) != null && plugin.deaths.get(player.getName()) == null) {
+            plugin.kd.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills"));
+        }
+        else if (plugin.kills.get(player.getName()) == null && plugin.deaths.get(player.getName()) != null) {
+            plugin.kd.get(player.getName()).setScore(0);
+        }
+        else if (plugin.kills.get(player.getName()) != null && plugin.deaths.get(player.getName()) != null) {
+            plugin.kd.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills") / plugin.playerConfig.getInt(player.getName() + ".deaths"));
+        }
 
         if (!(player.hasPermission("tranxcraft.member"))) {
             new BukkitRunnable() {
@@ -134,7 +142,7 @@ public class TranxListener implements Listener {
         }
 
         if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
-            if (TCP_ModeratorList.getAllAdmins().contains(event.getPlayer().getName()) || TCP_ModeratorList.getDonators().contains(event.getPlayer().getName())) {
+            if (TCP_ModeratorList.isPlayerMod(player) || TCP_ModeratorList.getRank(player) == AdminType.DONATOR) {
                 kickPlayer(player, event);
                 event.allow();
                 Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + ChatColor.GREEN + " is a reserved member!");
@@ -202,7 +210,7 @@ public class TranxListener implements Listener {
 
         switch (event.getBlockPlaced().getType()) {
             case FIREWORK: {
-                if (!((TCP_ModeratorList.getAllAdmins().contains(event.getPlayer().getName())))) {
+                if (!((TCP_ModeratorList.isPlayerMod(player)))) {
                     if (!(event.getPlayer().getName().equalsIgnoreCase("WickedGamingUK"))) {
                         player.sendMessage(ChatColor.RED + "The Use of Fireworks is not permitted on TranxCraft.");
                         player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
@@ -213,7 +221,7 @@ public class TranxListener implements Listener {
             }
 
             case TNT: {
-                if (!((TCP_ModeratorList.getAllAdmins().contains(event.getPlayer().getName())))) {
+                if (!((TCP_ModeratorList.isPlayerMod(player)))) {
                     if (!(event.getPlayer().getName().equalsIgnoreCase("WickedGamingUK"))) {
                         player.sendMessage(ChatColor.RED + "The Use of TNT is not permitted on TranxCraft.");
                         player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
@@ -226,7 +234,7 @@ public class TranxListener implements Listener {
             case LAVA:
             case STATIONARY_LAVA:
             case LAVA_BUCKET: {
-                if (!((TCP_ModeratorList.getAllAdmins().contains(event.getPlayer().getName())))) {
+                if (!((TCP_ModeratorList.isPlayerMod(player)))) {
                     if (!(event.getPlayer().getName().equalsIgnoreCase("WickedGamingUK"))) {
                         player.sendMessage(ChatColor.RED + "The Use of Lava is not permitted on TranxCraft.");
                         player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
@@ -239,7 +247,7 @@ public class TranxListener implements Listener {
             case WATER:
             case STATIONARY_WATER:
             case WATER_BUCKET: {
-                if (!((TCP_ModeratorList.getAllAdmins().contains(event.getPlayer().getName())))) {
+                if (!((TCP_ModeratorList.isPlayerMod(player)))) {
                     if (!(event.getPlayer().getName().equalsIgnoreCase("WickedGamingUK"))) {
                         player.sendMessage(ChatColor.RED + "The Use of Water is not permitted on TranxCraft.");
                         player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
@@ -250,7 +258,7 @@ public class TranxListener implements Listener {
             }
 
             case FIRE: {
-                if (!((TCP_ModeratorList.getAllAdmins().contains(event.getPlayer().getName())))) {
+                if (!((TCP_ModeratorList.isPlayerMod(player)))) {
                     if (!(event.getPlayer().getName().equalsIgnoreCase("WickedGamingUK"))) {
                         player.sendMessage(ChatColor.RED + "The Use of Fire is not permitted on TranxCraft.");
                         player.getInventory().setItem(player.getInventory().getHeldItemSlot(), new ItemStack(Material.COOKIE, 1));
@@ -274,7 +282,7 @@ public class TranxListener implements Listener {
                 if (TCP_Util.isNameBanned((String) getPlayerData().get(playerIP)) || TCP_Util.isIPBanned(event.getAddress().getHostAddress())) {
                     event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", you are" + ChatColor.BOLD + "banned.");
                 }
-                else if (TCP_ModeratorList.isPlayerMod((String) getPlayerData().get(playerIP))) {
+                else if (TCP_ModeratorList.isPlayerMod((Player) plugin.getServer().getOfflinePlayer((String) getPlayerData().get(playerIP)))) {
                     if (TCP_Util.isAdminMode() == true) {
                         event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, adminmode is on, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                     }
@@ -349,7 +357,7 @@ public class TranxListener implements Listener {
         Player[] players = plugin.getServer().getOnlinePlayers();
 
         for (Player p : players) {
-            if (TCP_ModeratorList.getAllAdmins().contains(p.getName()) || TCP_ModeratorList.getDonators().contains(p.getName())) {
+            if (!((TCP_ModeratorList.isPlayerMod(player))) || TCP_ModeratorList.getRank(player) == AdminType.DONATOR) {
                 p.kickPlayer(this.kickMessage);
                 event.allow();
                 LoggerUtils.info(plugin, "Allowed player " + player.getName() + " to join full server by kicking player " + p.getName() + "!");

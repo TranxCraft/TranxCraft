@@ -2,7 +2,7 @@ package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.TCP_Mail.RecipientType;
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
-import com.wickedgaminguk.TranxCraft.TCP_Util;
+import com.wickedgaminguk.TranxCraft.TCP_ModeratorList.AdminType;
 import com.wickedgaminguk.TranxCraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
@@ -35,16 +35,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
 
         if (args[0].equalsIgnoreCase("add")) {
             if (args[1].equalsIgnoreCase("Moderator")) {
-                TCP_ModeratorList.getExecutives().remove(player.getName());
-                TCP_ModeratorList.getleadAdmins().remove(player.getName());
-                TCP_ModeratorList.getAdmins().remove(player.getName());
-                TCP_ModeratorList.getModerators().add(playerName);
-
-                plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-                plugin.config.set("leadAdmins", TCP_ModeratorList.getleadAdmins());
-                plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-                plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-                plugin.saveConfig();
+                TCP_ModeratorList.add(AdminType.MODERATOR, player);
 
                 Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Moderator, congratulations!");
                 Bukkit.dispatchCommand(sender, "manuadd " + playerName + " moderator Spawn");
@@ -54,16 +45,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             }
 
             if (args[1].equalsIgnoreCase("Admin")) {
-                TCP_ModeratorList.getExecutives().remove(player.getName());
-                TCP_ModeratorList.getleadAdmins().remove(player.getName());
-                TCP_ModeratorList.getModerators().remove(player.getName());
-                TCP_ModeratorList.getAdmins().add(playerName);
-
-                plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-                plugin.config.set("leadAdmins", TCP_ModeratorList.getleadAdmins());
-                plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-                plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-                plugin.saveConfig();
+                TCP_ModeratorList.add(AdminType.ADMIN, player);
 
                 Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
                 Bukkit.dispatchCommand(sender, "manuadd " + playerName + " admin Spawn");
@@ -73,16 +55,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             }
 
             if (args[1].equalsIgnoreCase("LeadAdmin")) {
-                TCP_ModeratorList.getExecutives().remove(player.getName());
-                TCP_ModeratorList.getAdmins().remove(player.getName());
-                TCP_ModeratorList.getModerators().remove(player.getName());
-                TCP_ModeratorList.getleadAdmins().add(playerName);
-
-                plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-                plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-                plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-                plugin.config.set("Lead_Admins", TCP_ModeratorList.getleadAdmins());
-                plugin.saveConfig();
+                TCP_ModeratorList.add(AdminType.LEADADMIN, player);
 
                 Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
                 Bukkit.dispatchCommand(sender, "manuadd " + playerName + " leadadmin Spawn");
@@ -92,16 +65,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             }
 
             if (args[1].equalsIgnoreCase("Executive")) {
-                TCP_ModeratorList.getleadAdmins().remove(player.getName());
-                TCP_ModeratorList.getAdmins().remove(player.getName());
-                TCP_ModeratorList.getModerators().remove(player.getName());
-                TCP_ModeratorList.getExecutives().add(playerName);
-
-                plugin.config.set("leadAdmins", TCP_ModeratorList.getleadAdmins());
-                plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-                plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-                plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-                plugin.saveConfig();
+                TCP_ModeratorList.add(AdminType.EXECUTIVE, player);
 
                 Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to an Executive rank, congratulations!");
                 Bukkit.dispatchCommand(sender, "manuadd " + playerName + " executive Spawn");
@@ -113,16 +77,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
 
         if (args[0].equalsIgnoreCase("remove")) {
             if (args[1].equalsIgnoreCase("Moderator")) {
-                TCP_ModeratorList.getExecutives().remove(player.getName());
-                TCP_ModeratorList.getleadAdmins().remove(player.getName());
-                TCP_ModeratorList.getAdmins().remove(player.getName());
-                TCP_ModeratorList.getModerators().remove(player.getName());
-
-                plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-                plugin.config.set("leadAdmins", TCP_ModeratorList.getleadAdmins());
-                plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-                plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-                plugin.saveConfig();
+                TCP_ModeratorList.remove(player);
 
                 Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Moderator!");
                 Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
@@ -132,16 +87,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             }
 
             if (args[1].equalsIgnoreCase("Admin")) {
-                TCP_ModeratorList.getExecutives().remove(player.getName());
-                TCP_ModeratorList.getleadAdmins().remove(player.getName());
-                TCP_ModeratorList.getAdmins().remove(player.getName());
-                TCP_ModeratorList.getModerators().remove(player.getName());
-
-                plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-                plugin.config.set("leadAdmins", TCP_ModeratorList.getleadAdmins());
-                plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-                plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-                plugin.saveConfig();
+                TCP_ModeratorList.remove(player);
 
                 Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Admin!");
                 Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
@@ -151,16 +97,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             }
 
             if (args[1].equalsIgnoreCase("LeadAdmin")) {
-                TCP_ModeratorList.getExecutives().remove(player.getName());
-                TCP_ModeratorList.getleadAdmins().remove(player.getName());
-                TCP_ModeratorList.getAdmins().remove(player.getName());
-                TCP_ModeratorList.getModerators().remove(player.getName());
-
-                plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-                plugin.config.set("leadAdmins", TCP_ModeratorList.getleadAdmins());
-                plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-                plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-                plugin.saveConfig();
+                TCP_ModeratorList.remove(player);
 
                 Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being a lead Admin!");
                 Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");
@@ -170,16 +107,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             }
 
             if (args[1].equalsIgnoreCase("Executive")) {
-                TCP_ModeratorList.getExecutives().remove(player.getName());
-                TCP_ModeratorList.getleadAdmins().remove(player.getName());
-                TCP_ModeratorList.getAdmins().remove(player.getName());
-                TCP_ModeratorList.getModerators().remove(player.getName());
-
-                plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-                plugin.config.set("leadAdmins", TCP_ModeratorList.getleadAdmins());
-                plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-                plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-                plugin.saveConfig();
+                TCP_ModeratorList.remove(player);
 
                 Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from being an Executive!");
                 Bukkit.dispatchCommand(sender, "manuadd " + playerName + " member Spawn");

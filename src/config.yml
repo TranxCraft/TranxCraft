@@ -2,17 +2,6 @@
 ##
 TotalPlayers: 0
 ##
-Executives:
-  - ''
-Lead_Admins:
-  - ''
-Admins:
-  - ''
-Moderators:
-  - ''
-Donators:
-  - ''
-##
 #Auto Broadcast  
 prefix: '&4[TranxCraft-Bot]'
 ##

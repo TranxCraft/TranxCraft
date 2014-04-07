@@ -1,6 +1,7 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
+import com.wickedgaminguk.TranxCraft.TCP_ModeratorList.AdminType;
 import com.wickedgaminguk.TranxCraft.TCP_Util;
 import com.wickedgaminguk.TranxCraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
@@ -27,16 +28,12 @@ public class Command_donator extends BukkitCommand<TranxCraft> {
         Player player;
         player = getPlayer(args[0]);
 
-        String Player = player.getName();
-
         if (args[0].equalsIgnoreCase("add")) {
             if (!(sender instanceof Player) || !(sender.getName().equalsIgnoreCase("WickedGamingUK"))) {
                 return noPerms();
             }
 
-            TCP_ModeratorList.getDonators().add(Player);
-            plugin.config.set("Donators", TCP_ModeratorList.getDonators());
-            plugin.saveConfig();
+            TCP_ModeratorList.add(AdminType.DONATOR, player);
 
             Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a donator rank, congratulations!");
             return true;
@@ -47,10 +44,7 @@ public class Command_donator extends BukkitCommand<TranxCraft> {
                 return noPerms();
             }
 
-            TCP_ModeratorList.getDonators().remove(Player);
-
-            plugin.config.set("Donators", TCP_ModeratorList.getDonators());
-            plugin.saveConfig();
+            TCP_ModeratorList.remove(player);
 
             Bukkit.broadcastMessage(ChatColor.RED + player.getName() + "'s donator rank has expired, or (s)he's been abusing, how unfortunate!");
             return true;

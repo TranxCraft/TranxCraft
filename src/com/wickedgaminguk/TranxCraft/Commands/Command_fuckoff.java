@@ -35,17 +35,8 @@ public class Command_fuckoff extends BukkitCommand<TranxCraft> {
 
         final String IP = player.getAddress().getAddress().getHostAddress().trim();
 
-        // remove from TranxCraft Moderator (and any above ranks)
-        TCP_ModeratorList.getExecutives().remove(player.getName());
-        TCP_ModeratorList.getleadAdmins().remove(player.getName());
-        TCP_ModeratorList.getAdmins().remove(player.getName());
-        TCP_ModeratorList.getModerators().remove(player.getName());
-        //Save these changes.
-        plugin.config.set("Executives", TCP_ModeratorList.getExecutives());
-        plugin.config.set("leadAdmins", TCP_ModeratorList.getleadAdmins());
-        plugin.config.set("Admins", TCP_ModeratorList.getAdmins());
-        plugin.config.set("Moderators", TCP_ModeratorList.getModerators());
-        plugin.saveConfig();
+        // remove from TranxCraft Moderator Ranks
+        TCP_ModeratorList.remove(player);
 
         // remove from whitelist
         player.setWhitelisted(false);

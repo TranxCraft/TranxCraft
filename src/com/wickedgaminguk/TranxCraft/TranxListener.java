@@ -53,7 +53,7 @@ public class TranxListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerEvent(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         int totalPlayers = plugin.config.getInt("TotalPlayers");
         totalPlayers++;
 
@@ -63,7 +63,7 @@ public class TranxListener implements Listener {
         Bukkit.broadcastMessage(ChatColor.BLUE + "[Player Counter] " + totalPlayers + " players have joined in total.");
 
         final Player player = event.getPlayer();
-        
+
         if (!(TCP_ModeratorList.getLoginMessage(player).equals(""))) {
             Bukkit.broadcastMessage(ChatUtils.colorize(TCP_ModeratorList.getLoginMessage(player)));
         }
@@ -105,16 +105,7 @@ public class TranxListener implements Listener {
         plugin.kills.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills"));
         plugin.deaths.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".deaths"));
 
-        if (plugin.kills.get(player.getName()) == null && plugin.deaths.get(player.getName()) == null) {
-            plugin.kd.get(player.getName()).setScore(0);
-        }
-        else if (plugin.kills.get(player.getName()) != null && plugin.deaths.get(player.getName()) == null) {
-            plugin.kd.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills"));
-        }
-        else if (plugin.kills.get(player.getName()) == null && plugin.deaths.get(player.getName()) != null) {
-            plugin.kd.get(player.getName()).setScore(0);
-        }
-        else if (plugin.kills.get(player.getName()) != null && plugin.deaths.get(player.getName()) != null) {
+        if (!(plugin.playerConfig.getInt(player.getName() + ".deaths") == 0)) {
             plugin.kd.get(player.getName()).setScore(plugin.playerConfig.getInt(player.getName() + ".kills") / plugin.playerConfig.getInt(player.getName() + ".deaths"));
         }
 
@@ -149,12 +140,14 @@ public class TranxListener implements Listener {
             }
         }
 
-        plugin.playerLogins.put(player.getName(), TimeUtils.getUnix());
+        plugin.playerLogins.put(player.getUniqueId().toString(), TimeUtils.getUnix());
 
-        if (!plugin.playerConfig.contains(player.getName())) {
-            plugin.playerConfig.set(player.getName() + ".time", 0);
-            plugin.playerConfig.set(player.getName() + ".kills", 0);
-            plugin.playerConfig.set(player.getName() + ".deaths", 0);
+        if (!plugin.playerConfig.contains(player.getUniqueId().toString())) {
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".IGN", player.getName());
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".IP", player.getAddress().getHostString());
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".time", 0);
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".kills", 0);
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".deaths", 0);
             plugin.playerConfig.save();
         }
 
@@ -185,10 +178,12 @@ public class TranxListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        plugin.playerConfig.set(player.getName() + ".time", plugin.playerConfig.getLong(player.getName() + ".time") + (TimeUtils.getUnix() - plugin.playerLogins.get(player.getName())));
+        plugin.playerConfig.set(player.getUniqueId().toString() + ".time", plugin.playerConfig.getLong(player.getUniqueId().toString() + ".time") + (TimeUtils.getUnix() - plugin.playerLogins.get(player.getUniqueId().toString())));
+        plugin.playerConfig.set(player.getUniqueId().toString() + ".IGN", player.getName());
+        plugin.playerConfig.set(player.getUniqueId().toString() + ".IP", player.getAddress().getHostString());
         plugin.playerConfig.save();
 
-        plugin.playerLogins.put(player.getName(), null);
+        plugin.playerLogins.put(player.getUniqueId().toString(), null);
 
         new TCP_UCP(plugin).runTaskAsynchronously(plugin);
     }
@@ -282,19 +277,19 @@ public class TranxListener implements Listener {
                 if (TCP_Util.isNameBanned((String) getPlayerData().get(playerIP)) || TCP_Util.isIPBanned(event.getAddress().getHostAddress())) {
                     event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", you are" + ChatColor.BOLD + "banned.");
                 }
-                else if (TCP_ModeratorList.isPlayerMod((Player) plugin.getServer().getOfflinePlayer((String) getPlayerData().get(playerIP)))) {
-                    if (TCP_Util.isAdminMode() == true) {
+                else if (TCP_Util.isAdminMode() == true) {
+                    if (!(plugin.adminConfig.getStringList("Admin_IPs").contains(event.getAddress().getHostName()))) {
                         event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, adminmode is on, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                     }
-                }
-                else if (Bukkit.hasWhitelist()) {
-                    event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, the whitelist is on, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
-                }
-                else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers()) {
-                    event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, the server is full, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
-                }
-                else {
-                    event.setMotd(ChatColor.GREEN + "Welcome " + ChatColor.GOLD + (String) getPlayerData().get(playerIP) + ChatColor.WHITE + " to " + ChatColor.GREEN + "TranxCraft " + ChatColor.WHITE + "- " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion());
+                    else if (Bukkit.hasWhitelist()) {
+                        event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, the whitelist is on, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
+                    }
+                    else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers()) {
+                        event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, the server is full, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
+                    }
+                    else {
+                        event.setMotd(ChatColor.GREEN + "Welcome " + ChatColor.GOLD + (String) getPlayerData().get(playerIP) + ChatColor.WHITE + " to " + ChatColor.GREEN + "TranxCraft " + ChatColor.WHITE + "- " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion());
+                    }
                 }
             }
             else {

@@ -1,5 +1,6 @@
 package com.wickedgaminguk.TranxCraft;
 
+import java.util.List;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Player;
 
@@ -70,9 +71,12 @@ public class TCP_ModeratorList {
     }
 
     public void add(AdminType at, Player player) {
+        List<String> adminIPs = plugin.adminConfig.getStringList("Admin_IPs");
+        adminIPs.add(player.getAddress().getHostString());
         plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".IGN", player.getName());
         plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".Rank", WordUtils.capitalizeFully(at.toString().toLowerCase()));
         plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".Login_Message", "");
+        plugin.adminConfig.set("Admin_IPs", adminIPs);
         plugin.adminConfig.save();
     }
 
@@ -87,6 +91,7 @@ public class TCP_ModeratorList {
 
     public void remove(Player player) {
         plugin.adminConfig.set("Admins." + player.getUniqueId().toString(), null);
+        plugin.adminConfig.set("Admin_IPs", plugin.adminConfig.getStringList("Admin_IPs").remove(player.getAddress().getHostString()));
         plugin.adminConfig.save();
     }
 }

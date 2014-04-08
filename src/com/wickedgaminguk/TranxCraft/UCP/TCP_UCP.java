@@ -65,7 +65,7 @@ public class TCP_UCP extends BukkitRunnable {
                 String playerName = player.getName();
 
                 long Unix = TimeUtils.getUnix();
-                long PlayerTime = plugin.playerLogins.get(playerName);
+                long PlayerTime = plugin.playerLogins.get(player.getUniqueId().toString());
                 final long currentOnlineTime = (Unix - PlayerTime);
 
                 try {

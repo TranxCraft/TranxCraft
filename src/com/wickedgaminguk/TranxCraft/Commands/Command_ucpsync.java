@@ -1,6 +1,6 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
-import com.wickedgaminguk.TranxCraft.*;
+import com.wickedgaminguk.TranxCraft.TranxCraft;
 import com.wickedgaminguk.TranxCraft.UCP.TCP_UCP;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;

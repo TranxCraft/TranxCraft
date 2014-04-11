@@ -19,7 +19,7 @@ public class Command_plm extends BukkitCommand {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_PluginHandler phl = new TCP_PluginHandler();
+        TCP_PluginHandler TCP_PluginHandler = new TCP_PluginHandler();
 
         if (sender instanceof Player && !(sender.hasPermission("tranxcraft.exec") || sender.isOp())) {
             return noPerms();
@@ -32,7 +32,7 @@ public class Command_plm extends BukkitCommand {
         if (args[0].equalsIgnoreCase("reload")) {
             if (args.length == 1) {
                 Bukkit.broadcastMessage("[TranxCraft]" + ChatColor.RED + " Server Reloading.");
-                phl.reloadServer();
+                TCP_PluginHandler.reloadServer();
                 LoggerUtils.info(plugin, "Server Reloaded.");
                 Bukkit.broadcastMessage("[TranxCraft]" + ChatColor.GREEN + " Server Reloaded.");
                 return true;
@@ -49,7 +49,7 @@ public class Command_plm extends BukkitCommand {
                 }
 
                 Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
-                phl.reloadPlugin(tPlugin);
+                TCP_PluginHandler.reloadPlugin(tPlugin);
                 sender.sendMessage(ChatColor.GREEN + "[TranxCraft] Plugin %a reloaded.".replaceAll("%a", tPlugin.getName()));
                 LoggerUtils.info(plugin, sender.getName() + " reloaded " + tPlugin.getName() + " at " + TCP_Time.getLongDate());
                 return true;
@@ -68,7 +68,7 @@ public class Command_plm extends BukkitCommand {
             }
             else {
                 Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
-                phl.enablePlugin(tPlugin);
+                TCP_PluginHandler.enablePlugin(tPlugin);
                 sender.sendMessage(ChatColor.GREEN + "[TranxCraft] Plugin " + tPlugin + " is enabled.");
                 return true;
             }
@@ -86,7 +86,7 @@ public class Command_plm extends BukkitCommand {
             }
             else {
                 Plugin tPlugin = Bukkit.getPluginManager().getPlugin(args[1]);
-                phl.disablePlugin(tPlugin);
+                TCP_PluginHandler.disablePlugin(tPlugin);
                 sender.sendMessage(ChatColor.RED + "[TranxCraft] Plugin " + tPlugin + " is disabled.");
                 return true;
             }

@@ -1,8 +1,7 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
-import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
-import com.wickedgaminguk.TranxCraft.TCP_ModeratorList.AdminType;
-import com.wickedgaminguk.TranxCraft.TCP_Util;
+import com.wickedgaminguk.TranxCraft.TCP_DonatorList;
+import com.wickedgaminguk.TranxCraft.TCP_DonatorList.DonatorType;
 import com.wickedgaminguk.TranxCraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
@@ -18,36 +17,50 @@ public class Command_donator extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
+        TCP_DonatorList TCP_DonatorList = new TCP_DonatorList(plugin);
 
-        if (args.length > 4) {
-            sender.sendMessage(TCP_Util.Invalid_Usage);
+        if (args.length != 3) {
             return false;
         }
 
         Player player;
-        player = getPlayer(args[0]);
+
+        if (sender instanceof Player && !(sender.hasPermission("tranxcraft.owner"))) {
+            return noPerms();
+        }
 
         if (args[0].equalsIgnoreCase("add")) {
-            if (!(sender instanceof Player) || !(sender.getName().equalsIgnoreCase("WickedGamingUK"))) {
-                return noPerms();
+            player = getPlayer(args[2]);
+            String playerName = player.getName();
+
+            if (args[1].equalsIgnoreCase("One")) {
+                TCP_DonatorList.add(DonatorType.ONE, player);
+                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level one donator rank, congratulations!");
+
+                plugin.twitter.tweet("Say congratulations to " + playerName + ", they have just bought a Level One Donator Rank!");
             }
 
-            TCP_ModeratorList.add(AdminType.DONATOR, player);
+            if (args[1].equalsIgnoreCase("Two")) {
+                TCP_DonatorList.add(DonatorType.TWO, player);
+                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level two donator rank, congratulations!");
 
-            Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a donator rank, congratulations!");
-            return true;
+                plugin.twitter.tweet("Say congratulations to " + playerName + ", they have just bought a Level two Donator Rank!");
+            }
+
+            if (args[1].equalsIgnoreCase("Three")) {
+                TCP_DonatorList.add(DonatorType.THREE, player);
+                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level three donator rank, congratulations!");
+
+                plugin.twitter.tweet("Say congratulations to " + playerName + ", they have just bought a Level three Donator Rank!");
+            }
         }
 
         if (args[0].equalsIgnoreCase("remove")) {
-            if (!(sender instanceof Player) || !(sender.getName().equalsIgnoreCase("WickedGamingUK"))) {
-                return noPerms();
-            }
+            player = getPlayer(args[1]);
+            String playerName = player.getName();
+            TCP_DonatorList.remove(player);
 
-            TCP_ModeratorList.remove(player);
-
-            Bukkit.broadcastMessage(ChatColor.RED + player.getName() + "'s donator rank has expired, or (s)he's been abusing, how unfortunate!");
-            return true;
+            Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been striped of their donator privileges!");
         }
 
         return true;

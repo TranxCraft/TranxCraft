@@ -3,8 +3,11 @@ package com.wickedgaminguk.TranxCraft;
 import com.wickedgaminguk.MySQL.MySQL;
 import com.wickedgaminguk.TranxCraft.Commands.Command_tranxcraft;
 import com.wickedgaminguk.TranxCraft.UCP.TCP_UCP;
-import java.io.*;
-import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import net.milkbowl.vault.permission.Permission;
@@ -12,17 +15,19 @@ import net.pravian.bukkitlib.BukkitLib;
 import net.pravian.bukkitlib.command.BukkitCommandHandler;
 import net.pravian.bukkitlib.config.YamlConfig;
 import net.pravian.bukkitlib.implementation.BukkitPlugin;
+import net.pravian.bukkitlib.metrics.Metrics;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.*;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-import org.mcstats.Metrics;
 
 public class TranxCraft extends BukkitPlugin {
 
@@ -31,6 +36,7 @@ public class TranxCraft extends BukkitPlugin {
     public YamlConfig config;
     public YamlConfig playerConfig;
     public YamlConfig adminConfig;
+    public YamlConfig donatorConfig;
     public BukkitCommandHandler handler;
     public TranxListener listener;
     public Permission permission;
@@ -50,6 +56,7 @@ public class TranxCraft extends BukkitPlugin {
         config = new YamlConfig(plugin, "config.yml");
         playerConfig = new YamlConfig(plugin, "players.yml");
         adminConfig = new YamlConfig(plugin, "admins.yml");
+        donatorConfig = new YamlConfig(plugin, "donators.yml");
         playerLogins = new HashMap<>();
         handler = new BukkitCommandHandler(plugin);
         mail = new TCP_Mail(plugin);
@@ -65,6 +72,7 @@ public class TranxCraft extends BukkitPlugin {
         config.load();
         playerConfig.load();
         adminConfig.load();
+        donatorConfig.load();
 
         mySQL = new MySQL(plugin, config.getString("HOSTNAME"), config.getString("PORT"), config.getString("DATABASE"), config.getString("USER"), config.getString("PASSWORD"));
 

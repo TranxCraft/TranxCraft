@@ -10,7 +10,7 @@ public class TCP_ModeratorList {
 
     public enum AdminType {
 
-        SYS, EXECUTIVE, LEADADMIN, ADMIN, MODERATOR, DONATOR, REGULAR;
+        SYS, EXECUTIVE, LEADADMIN, ADMIN, MODERATOR;
     }
 
     public TCP_ModeratorList(TranxCraft plugin) {
@@ -35,12 +35,9 @@ public class TCP_ModeratorList {
                 case "Sys": {
                     return AdminType.SYS;
                 }
-                case "Donator": {
-                    return AdminType.DONATOR;
-                }
             }
         }
-        return AdminType.REGULAR;
+        return null;
     }
 
     public boolean isPlayerMod(Player player) {
@@ -60,9 +57,6 @@ public class TCP_ModeratorList {
                 }
                 case "Sys": {
                     return true;
-                }
-                case "Donator": {
-                    return false;
                 }
             }
         }
@@ -86,6 +80,13 @@ public class TCP_ModeratorList {
         }
         else {
             return "";
+        }
+    }
+
+    public void setLoginMessage(Player player, String message) {
+        if (plugin.adminConfig.contains("Admins." + player.getUniqueId().toString())) {
+            plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".Login_Message", message);
+            plugin.adminConfig.save();
         }
     }
 

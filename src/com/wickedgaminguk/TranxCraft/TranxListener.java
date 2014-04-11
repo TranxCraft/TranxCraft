@@ -3,6 +3,7 @@ package com.wickedgaminguk.TranxCraft;
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList.AdminType;
 import com.wickedgaminguk.TranxCraft.UCP.TCP_UCP;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.server.v1_7_R1.MinecraftServer;
@@ -12,15 +13,20 @@ import net.pravian.bukkitlib.util.TimeUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -28,23 +34,27 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class TranxListener implements Listener {
 
     String kickMessage = "I'm sorry, but you've been kicked to make room for a reserved player, to stop this happening, buy a donator rank!";
     public Map<String, String> playerData = new HashMap();
 
+    private final ArrayList<Player> cooldown = new ArrayList<>(), nofall = new ArrayList<>();
     private final TranxCraft plugin;
     private final TCP_ModeratorList TCP_ModeratorList;
+    private final TCP_DonatorList TCP_DonatorList;
     private final TCP_Util TCP_Util;
 
     public TranxListener(TranxCraft plugin) {
         this.plugin = plugin;
         this.TCP_ModeratorList = new TCP_ModeratorList(plugin);
+        this.TCP_DonatorList = new TCP_DonatorList(plugin);
         this.TCP_Util = new TCP_Util(plugin);
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         if (!(event.getEntityType().equals(EntityType.PRIMED_TNT))) {
             LoggerUtils.info("A " + WordUtils.capitalizeFully(event.getEntityType().toString().toLowerCase()) + " exploded at: " + event.getLocation().getBlockX() + ", " + event.getLocation().getBlockY() + ", " + event.getLocation().getBlockZ());
@@ -52,7 +62,7 @@ public class TranxListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         int totalPlayers = plugin.config.getInt("TotalPlayers");
         totalPlayers++;
@@ -67,24 +77,19 @@ public class TranxListener implements Listener {
         if (!(TCP_ModeratorList.getLoginMessage(player).equals(""))) {
             Bukkit.broadcastMessage(ChatUtils.colorize(TCP_ModeratorList.getLoginMessage(player)));
         }
-
         else if (TCP_ModeratorList.getRank(player) == AdminType.LEADADMIN) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a lead Admin.");
         }
-
         else if (TCP_ModeratorList.getRank(player) == AdminType.EXECUTIVE) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an executive Admin.");
         }
-
         else if (TCP_ModeratorList.getRank(player) == AdminType.ADMIN) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an " + ChatColor.GOLD + "Admin.");
         }
-
         else if (TCP_ModeratorList.getRank(player) == AdminType.MODERATOR) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.DARK_PURPLE + "Moderator.");
         }
-
-        else if (TCP_ModeratorList.getRank(player) == AdminType.DONATOR) {
+        else if (TCP_DonatorList.isPlayerDonator(player)) {
             Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.LIGHT_PURPLE + "Donator! <3");
         }
 
@@ -121,7 +126,7 @@ public class TranxListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerLogin(PlayerLoginEvent event) throws FileNotFoundException, IOException {
         Player player = event.getPlayer();
 
@@ -133,7 +138,7 @@ public class TranxListener implements Listener {
         }
 
         if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
-            if (TCP_ModeratorList.isPlayerMod(player) || TCP_ModeratorList.getRank(player) == AdminType.DONATOR) {
+            if (TCP_ModeratorList.isPlayerMod(player) || TCP_DonatorList.isPlayerDonator(player)) {
                 kickPlayer(player, event);
                 event.allow();
                 Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + ChatColor.GREEN + " is a reserved member!");
@@ -148,6 +153,7 @@ public class TranxListener implements Listener {
             plugin.playerConfig.set(player.getUniqueId().toString() + ".time", 0);
             plugin.playerConfig.set(player.getUniqueId().toString() + ".kills", 0);
             plugin.playerConfig.set(player.getUniqueId().toString() + ".deaths", 0);
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".grapple", false);
             plugin.playerConfig.save();
         }
 
@@ -174,7 +180,7 @@ public class TranxListener implements Listener {
         new TCP_UCP(plugin).runTaskAsynchronously(plugin);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
@@ -188,7 +194,7 @@ public class TranxListener implements Listener {
         new TCP_UCP(plugin).runTaskAsynchronously(plugin);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (!event.getPlayer().hasPermission("tranxcraft.admin")) {
             if (TCP_Util.swear.contains(ChatColor.stripColor(event.getMessage().toLowerCase()))) {
@@ -199,7 +205,7 @@ public class TranxListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
 
@@ -348,11 +354,85 @@ public class TranxListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onGrappleThrow(ProjectileLaunchEvent event) {
+        if (!event.getEntityType().equals(EntityType.FISHING_HOOK)) {
+            return;
+        }
+        if (!(event.getEntity().getShooter() instanceof Player)) {
+            return;
+        }
+
+        final Player player = (Player) event.getEntity().getShooter();
+
+        if (!(player.hasPermission("tranxcraft.grapple"))) {
+        }
+        else {
+            if (TCP_Util.hasGrapple(player)) {
+                if (cooldown.contains(player)) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                Location target = null;
+
+                for (Block block : player.getLineOfSight(null, 100)) {
+                    if (!block.getType().equals(Material.AIR)) {
+                        target = block.getLocation();
+                        break;
+                    }
+                }
+
+                if (target == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                player.teleport(player.getLocation().add(0, 0.5, 0));
+
+                final Vector v = getVectorForPoints(player.getLocation(), target);
+
+                event.getEntity().setVelocity(v);
+
+                if (!nofall.contains(player)) {
+                    nofall.add(player);
+                }
+
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    player.setVelocity(v);
+                }, 5);
+
+                cooldown.add(player);
+
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    cooldown.remove(player);
+                }, 15);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+        if (!event.getCause().equals(DamageCause.FALL)) {
+            return;
+        }
+
+        Player p = (Player) event.getEntity();
+
+        if (nofall.contains(p)) {
+            event.setCancelled(true);
+            nofall.remove(p);
+        }
+    }
+
     private void kickPlayer(Player player, PlayerLoginEvent event) {
         Player[] players = plugin.getServer().getOnlinePlayers();
 
         for (Player p : players) {
-            if (!((TCP_ModeratorList.isPlayerMod(player))) || TCP_ModeratorList.getRank(player) == AdminType.DONATOR) {
+            if (!((TCP_ModeratorList.isPlayerMod(player))) || TCP_DonatorList.isPlayerDonator(player)) {
                 p.kickPlayer(this.kickMessage);
                 event.allow();
                 LoggerUtils.info(plugin, "Allowed player " + player.getName() + " to join full server by kicking player " + p.getName() + "!");
@@ -360,6 +440,16 @@ public class TranxListener implements Listener {
         }
 
         event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Unable to find any kickable players to open slots!");
+    }
+
+    private Vector getVectorForPoints(Location l1, Location l2) {
+        double g = -0.08;
+        double d = l2.distance(l1);
+        double t = d;
+        double vX = (1.0 + 0.07 * t) * (l2.getX() - l1.getX()) / t;
+        double vY = (1.0 + 0.03 * t) * (l2.getY() - l1.getY()) / t - 0.5 * g * t;
+        double vZ = (1.0 + 0.07 * t) * (l2.getZ() - l1.getZ()) / t;
+        return new Vector(vX, vY, vZ);
     }
 
     private Map<String, String> getPlayerData() throws FileNotFoundException, IOException, ClassNotFoundException {

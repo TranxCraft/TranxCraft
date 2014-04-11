@@ -1,23 +1,22 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.TCP_Util;
+import com.wickedgaminguk.TranxCraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
 import net.pravian.bukkitlib.command.SourceType;
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 @CommandPermissions(source = SourceType.ANY)
-public class Command_food extends BukkitCommand {
+public class Command_food extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
+        TCP_Util TCP_Util = new TCP_Util(plugin);
+
         if (!(sender.hasPermission("tranxcraft.moderator"))) {
             return noPerms();
         }
@@ -29,76 +28,76 @@ public class Command_food extends BukkitCommand {
 
         switch (args[0].toLowerCase()) {
             case "cake": {
-                broadcastItem(Material.CAKE, 1, false);
+                TCP_Util.broadcastItem(Material.CAKE, 1, ChatColor.GREEN + "Free Cake for everyone!");
                 break;
             }
 
             case "cookie": {
-                broadcastItem(Material.COOKIE, 64, true);
+                TCP_Util.broadcastItem(Material.COOKIE, 64, ChatColor.GREEN + "Free Cookies for everyone!");
                 break;
             }
 
             case "melon": {
-                broadcastItem(Material.MELON, 64, true);
+                TCP_Util.broadcastItem(Material.MELON, 64, ChatColor.GREEN + "Free Melons for everyone!");
                 break;
             }
 
             case "goldenapple": {
-                broadcastItem(Material.GOLDEN_APPLE, 1, false);
+                TCP_Util.broadcastItem(Material.GOLDEN_APPLE, 1, ChatColor.GREEN + "A free Golden Apple for everyone!");
                 break;
             }
 
             case "apple": {
-                broadcastItem(Material.APPLE, 64, true);
+                TCP_Util.broadcastItem(Material.APPLE, 64, ChatColor.GREEN + "A free Apple for everyone!");
                 break;
             }
 
             case "porkchop": {
-                broadcastItem(Material.PORK, 64, true);
+                TCP_Util.broadcastItem(Material.PORK, 64, ChatColor.GREEN + "Free Pork for everyone!");
                 break;
             }
 
             case "steak":
             case "beef": {
-                broadcastItem(Material.COOKED_BEEF, 64, false);
+                TCP_Util.broadcastItem(Material.COOKED_BEEF, 64, ChatColor.GREEN + "Free Beef for everyone!");
                 break;
             }
 
             case "chicken": {
-                broadcastItem(Material.COOKED_CHICKEN, 64, false);
+                TCP_Util.broadcastItem(Material.COOKED_CHICKEN, 64, ChatColor.GREEN + "Free Chicken for everyone!");
                 break;
             }
 
             case "fish": {
-                broadcastItem(Material.COOKED_FISH, 64, false);
+                TCP_Util.broadcastItem(Material.COOKED_FISH, 64, ChatColor.GREEN + "Free Fish for everyone!");
                 break;
             }
 
             case "stew":
             case "mushroomstew":
             case "mushroom": {
-                broadcastItem(Material.MUSHROOM_SOUP, 1, false);
+                TCP_Util.broadcastItem(Material.MUSHROOM_SOUP, 1, ChatColor.GREEN + "Free Mushroom Stew for everyone!");
                 break;
             }
 
             case "bread": {
-                broadcastItem(Material.BREAD, 64, false);
+                TCP_Util.broadcastItem(Material.BREAD, 64, ChatColor.GREEN + "Free bread for everyone!");
                 break;
             }
 
             case "potato": {
-                broadcastItem(Material.POTATO, 1, false);
+                TCP_Util.broadcastItem(Material.POTATO, 1, ChatColor.GREEN + "A free Potato for everyone!");
                 break;
             }
 
             case "carrot":
             case "goldencarrot": {
-                broadcastItem(Material.GOLDEN_CARROT, 64, true);
+                TCP_Util.broadcastItem(Material.GOLDEN_CARROT, 64, ChatColor.GREEN + "Free Golden Carrots for everyone!");
                 break;
             }
 
             case "pumpkinpie": {
-                broadcastItem(Material.PUMPKIN_PIE, 1, false);
+                TCP_Util.broadcastItem(Material.PUMPKIN_PIE, 1, ChatColor.GREEN + "Free pumpkin pie for everyone!");
                 break;
             }
 
@@ -109,20 +108,5 @@ public class Command_food extends BukkitCommand {
         }
 
         return true;
-    }
-
-    public void broadcastItem(Material material, int quantity, boolean plural) {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            ItemStack item = new ItemStack(material, quantity);
-            player.getInventory().setItem(player.getInventory().firstEmpty(), item);
-        }
-
-        if (plural == false) {
-            Bukkit.broadcastMessage(ChatColor.GREEN + "A Free " + WordUtils.capitalizeFully(material.toString().toLowerCase().replaceAll("_", " ").replaceAll("cooked", "")) + " for everyone!");
-        }
-
-        if (plural == true) {
-            Bukkit.broadcastMessage(ChatColor.GREEN + "Free " + WordUtils.capitalizeFully(material.toString().toLowerCase().replaceAll("_", " ").replaceAll("cooked", "")) + "s" + " for everyone!");
-        }
     }
 }

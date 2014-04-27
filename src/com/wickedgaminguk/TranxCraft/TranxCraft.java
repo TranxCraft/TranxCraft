@@ -37,6 +37,7 @@ public class TranxCraft extends BukkitPlugin {
     public YamlConfig playerConfig;
     public YamlConfig adminConfig;
     public YamlConfig donatorConfig;
+    public YamlConfig bans;
     public BukkitCommandHandler handler;
     public TranxListener listener;
     public Permission permission;
@@ -57,6 +58,7 @@ public class TranxCraft extends BukkitPlugin {
         playerConfig = new YamlConfig(plugin, "players.yml");
         adminConfig = new YamlConfig(plugin, "admins.yml");
         donatorConfig = new YamlConfig(plugin, "donators.yml");
+        bans = new YamlConfig(plugin, "bans.yml");
         playerLogins = new HashMap<>();
         handler = new BukkitCommandHandler(plugin);
         mail = new TCP_Mail(plugin);
@@ -73,6 +75,7 @@ public class TranxCraft extends BukkitPlugin {
         playerConfig.load();
         adminConfig.load();
         donatorConfig.load();
+        bans.load();
 
         mySQL = new MySQL(plugin, config.getString("HOSTNAME"), config.getString("PORT"), config.getString("DATABASE"), config.getString("USER"), config.getString("PASSWORD"));
 

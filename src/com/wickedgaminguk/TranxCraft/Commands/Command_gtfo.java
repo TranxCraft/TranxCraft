@@ -1,7 +1,7 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.TCP_Ban;
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
-import com.wickedgaminguk.TranxCraft.TCP_Util;
 import com.wickedgaminguk.TranxCraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
@@ -22,7 +22,7 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_Util TCP_Util = new TCP_Util(plugin);
+        TCP_Ban TCP_Ban = new TCP_Ban(plugin);
 
         if (sender instanceof Player && !(sender.hasPermission("tranxcraft.moderator") || sender.isOp())) {
             return noPerms();
@@ -80,7 +80,7 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
         }
 
         //Ban Username
-        TCP_Util.banUsername(player.getName(), ban_reason, null);
+        TCP_Ban.banUser(player, sender.getName(), ban_reason);
 
         // kick Player:
         player.kickPlayer(ChatColor.RED + "GTFO" + (ban_reason != null ? ("\nReason: " + ChatColor.YELLOW + ban_reason) : ""));

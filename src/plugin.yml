@@ -78,6 +78,9 @@ commands:
       usage: /<command> <offlineplayer> <reason>
       description: Bans an offline player.
       aliases: [oban, bano, offlineban]
+    unban:
+      usage: /<command> <player|IP>
+      description: Unbans a player or IP.
     grapple:
       usage: /<command> <enable|disable>
       description: Turn on or off grapple mode.

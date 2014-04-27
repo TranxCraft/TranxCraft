@@ -1,5 +1,6 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.TCP_Ban;
 import com.wickedgaminguk.TranxCraft.TCP_Mail.RecipientType;
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
 import com.wickedgaminguk.TranxCraft.TCP_Util;
@@ -20,6 +21,7 @@ public class Command_fuckoff extends BukkitCommand<TranxCraft> {
 
     TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
     TCP_Util TCP_Util = new TCP_Util(plugin);
+    TCP_Ban TCP_Ban = new TCP_Ban(plugin);
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
@@ -45,10 +47,10 @@ public class Command_fuckoff extends BukkitCommand<TranxCraft> {
         player.setOp(false);
 
         // ban IP
-        TCP_Util.banIP(IP, null, null);
+        TCP_Ban.banIP(IP, sender.getName(), "You've been fucked off, you must've done something " + ChatColor.UNDERLINE + "very" + ChatColor.RESET + " badly.");
 
         // ban name
-        TCP_Util.banUsername(player.getName(), null, null);
+        TCP_Ban.banUser(player, sender.getName(), "You've been fucked off, you must've done something " + ChatColor.UNDERLINE + "very" + ChatColor.RESET + " badly.");
 
         // set gamemode to survival
         player.setGameMode(GameMode.SURVIVAL);

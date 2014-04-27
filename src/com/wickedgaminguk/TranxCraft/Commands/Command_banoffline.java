@@ -1,9 +1,11 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.TCP_Ban;
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
 import com.wickedgaminguk.TranxCraft.TCP_Util;
 import com.wickedgaminguk.TranxCraft.TranxCraft;
 import java.sql.SQLException;
+import java.util.UUID;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
 import net.pravian.bukkitlib.command.SourceType;
@@ -24,6 +26,7 @@ public class Command_banoffline extends BukkitCommand<TranxCraft> {
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
         TCP_Util TCP_Util = new TCP_Util(plugin);
+        TCP_Ban TCP_Ban = new TCP_Ban(plugin);
 
         if (sender instanceof Player && !(sender.hasPermission("tranxcraft.moderator") || sender.isOp())) {
             return noPerms();
@@ -57,7 +60,9 @@ public class Command_banoffline extends BukkitCommand<TranxCraft> {
             return true;
         }
 
-        if (TCP_Util.isNameBanned(player.getName())) {
+        UUID playerID = TCP_Util.playerToUUID(player.getName());
+
+        if (TCP_Ban.isUUIDBanned(playerID)) {
             sender.sendMessage(ChatColor.RED + player.getName() + " is already banned.");
         }
 
@@ -77,7 +82,7 @@ public class Command_banoffline extends BukkitCommand<TranxCraft> {
         Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + ban_reason);
 
         //Ban Username
-        TCP_Util.banUsername(player.getName(), ban_reason, null);
+        TCP_Ban.banUser(playerID, sender.getName(), ban_reason);
 
         try {
             plugin.updateDatabase("INSERT INTO bans (username, admin, reason, ip) VALUES ('" + player.getName() + "', '" + sender.getName() + "', '" + ban_reason + "', '" + "127.0.0.2" + "');");

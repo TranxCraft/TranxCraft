@@ -2,11 +2,17 @@ package com.wickedgaminguk.TranxCraft;
 
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList.AdminType;
 import com.wickedgaminguk.TranxCraft.UCP.TCP_UCP;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.server.v1_7_R1.MinecraftServer;
+import net.minecraft.server.v1_7_R3.MinecraftServer;
 import net.pravian.bukkitlib.util.ChatUtils;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import net.pravian.bukkitlib.util.TimeUtils;
@@ -46,12 +52,14 @@ public class TranxListener implements Listener {
     private final TCP_ModeratorList TCP_ModeratorList;
     private final TCP_DonatorList TCP_DonatorList;
     private final TCP_Util TCP_Util;
+    private final TCP_Ban TCP_Ban;
 
     public TranxListener(TranxCraft plugin) {
         this.plugin = plugin;
         this.TCP_ModeratorList = new TCP_ModeratorList(plugin);
         this.TCP_DonatorList = new TCP_DonatorList(plugin);
         this.TCP_Util = new TCP_Util(plugin);
+        this.TCP_Ban = new TCP_Ban(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -129,6 +137,15 @@ public class TranxListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerLogin(PlayerLoginEvent event) throws FileNotFoundException, IOException {
         Player player = event.getPlayer();
+        String IP = event.getAddress().getHostAddress().trim();
+        LoggerUtils.info(IP);
+
+        if (TCP_Ban.isUUIDBanned(player)) {
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + "Your UUID is banned.\nReason: " + ChatColor.YELLOW + TCP_Ban.getBanReason(player) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
+        }
+        else if (TCP_Ban.isIPBanned(IP)) {
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + "Your IP is banned.\nReason: " + ChatColor.YELLOW + TCP_Ban.getIPBanReason(IP) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
+        }
 
         if (!(TCP_ModeratorList.isPlayerMod(player))) {
             if (plugin.config.getBoolean("adminmode") == true) {
@@ -280,11 +297,11 @@ public class TranxListener implements Listener {
 
         try {
             if (getPlayerData().containsKey(playerIP)) {
-                if (TCP_Util.isNameBanned((String) getPlayerData().get(playerIP)) || TCP_Util.isIPBanned(event.getAddress().getHostAddress())) {
-                    event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", you are" + ChatColor.BOLD + "banned.");
+                if (TCP_Ban.isUUIDBanned((String) getPlayerData().get(playerIP)) || TCP_Ban.isIPBanned(event.getAddress().getHostAddress())) {
+                    event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", you are" + ChatColor.BOLD + " banned.");
                 }
                 else if (TCP_Util.isAdminMode() == true) {
-                    if (!(plugin.adminConfig.getStringList("Admin_IPs").contains(event.getAddress().getHostName()))) {
+                    if (!(plugin.adminConfig.getStringList("Admin_IPs").contains(event.getAddress().getHostAddress()))) {
                         event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, adminmode is on, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                     }
                     else if (Bukkit.hasWhitelist()) {
@@ -299,7 +316,7 @@ public class TranxListener implements Listener {
                 }
             }
             else {
-                if (TCP_Util.isIPBanned(event.getAddress().getHostAddress())) {
+                if (TCP_Ban.isIPBanned(event.getAddress().getHostAddress())) {
                     event.setMotd(ChatColor.RED + "You are banned.");
                 }
                 else if (TCP_Util.isAdminMode() == true) {

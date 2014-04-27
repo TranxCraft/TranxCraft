@@ -1,5 +1,6 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
+import com.wickedgaminguk.TranxCraft.TCP_Ban;
 import com.wickedgaminguk.TranxCraft.TCP_Util;
 import com.wickedgaminguk.TranxCraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
@@ -17,6 +18,7 @@ public class Command_mong extends BukkitCommand<TranxCraft> {
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_Util TCP_Util = new TCP_Util(plugin);
+        TCP_Ban TCP_Ban = new TCP_Ban(plugin);
 
         if (sender instanceof Player && !(sender.hasPermission("tranxcraft.moderator") || sender.isOp())) {
             return noPerms();
@@ -62,7 +64,7 @@ public class Command_mong extends BukkitCommand<TranxCraft> {
             Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " is a mong, (s)he better read the rules now.");
             String Message = ChatColor.RED + "You have been deemed as a mong by " + sender.getName() + " so you'd better read the website (https://www.tranxcraft.com/) and learn the rules, then create a un-ban request on the forums (https://www.tranxcraft.com/forums)";
             player.kickPlayer(Message);
-            TCP_Util.banUsername(player.getName(), Message, null);
+            TCP_Ban.banUser(player, sender.getName(), Message);
             return true;
         }
 

@@ -33,21 +33,21 @@ public class Command_donator extends BukkitCommand<TranxCraft> {
             player = getPlayer(args[2]);
             String playerName = player.getName();
 
-            if (args[1].equalsIgnoreCase("One")) {
+            if (args[1].equalsIgnoreCase("one")) {
                 TCP_DonatorList.add(DonatorType.ONE, player);
                 Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level one donator rank, congratulations!");
 
                 plugin.twitter.tweet("Say congratulations to " + playerName + ", they have just bought a Level One Donator Rank!");
             }
 
-            if (args[1].equalsIgnoreCase("Two")) {
+            if (args[1].equalsIgnoreCase("two")) {
                 TCP_DonatorList.add(DonatorType.TWO, player);
                 Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level two donator rank, congratulations!");
 
                 plugin.twitter.tweet("Say congratulations to " + playerName + ", they have just bought a Level two Donator Rank!");
             }
 
-            if (args[1].equalsIgnoreCase("Three")) {
+            if (args[1].equalsIgnoreCase("three")) {
                 TCP_DonatorList.add(DonatorType.THREE, player);
                 Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level three donator rank, congratulations!");
 

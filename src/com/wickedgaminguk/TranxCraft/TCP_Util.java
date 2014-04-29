@@ -18,8 +18,9 @@ public class TCP_Util {
         this.plugin = plugin;
     }
 
-    public static final String Invalid_Usage = ChatColor.RED + "Invalid Usage.";
+    public static final String invalidUsage = ChatColor.RED + "Invalid Usage.";
     public static List<String> swear = Arrays.asList("fuck", "fuckwit", "dildo", "slut", "cunt", "arse", "arselicker", "ass", "asshole", "bastard", "bitch", "bullocks", "fucker", "asswipe", "shit");
+    public static List<String> permBan = Arrays.asList("3d4ad828721f44a4b6e1a18aeac31f88");
 
     public boolean isAdminMode() {
         return plugin.config.getBoolean("adminmode");
@@ -109,10 +110,4 @@ public class TCP_Util {
 
         return playerName;
     }
-    /*
-     public static String hashString(String s) {
-     String f = DigestUtils.sha512Hex(s);
-     return f;
-     }
-     */
 }

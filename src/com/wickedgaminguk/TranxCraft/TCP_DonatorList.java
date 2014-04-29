@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 public class TCP_DonatorList {
 
     private final TranxCraft plugin;
+    private final TCP_Util TCP_Util;
 
     public enum DonatorType {
 
@@ -15,6 +16,7 @@ public class TCP_DonatorList {
 
     public TCP_DonatorList(TranxCraft plugin) {
         this.plugin = plugin;
+        this.TCP_Util = new TCP_Util(plugin);
     }
 
     public DonatorType getRank(Player player) {
@@ -35,17 +37,11 @@ public class TCP_DonatorList {
     }
 
     public boolean isPlayerDonator(Player player) {
-        if (plugin.donatorConfig.contains("Donators." + player.getUniqueId().toString())) {
-            switch (plugin.donatorConfig.getString("Donators." + player.getUniqueId().toString() + ".Rank")) {
-                case "One":
-                case "Two":
-                case "Three": {
-                    return true;
-                }
-            }
-        }
+        return plugin.donatorConfig.contains("Donators." + player.getUniqueId().toString());
+    }
 
-        return false;
+    public boolean isPlayerDonator(String player) {
+        return plugin.donatorConfig.contains("Donators." + TCP_Util.playerToUUID(player).toString());
     }
 
     public void add(DonatorType at, Player player) {

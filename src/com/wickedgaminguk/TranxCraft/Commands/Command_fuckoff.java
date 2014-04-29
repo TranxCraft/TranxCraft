@@ -35,7 +35,7 @@ public class Command_fuckoff extends BukkitCommand<TranxCraft> {
         Bukkit.broadcastMessage(ChatColor.RED + sender.getName() + " Casting oblivion over " + player.getName());
         Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " will be completely obliviated!");
 
-        final String IP = player.getAddress().getAddress().getHostAddress().trim();
+        final String IP = player.getAddress().getHostString();
 
         // remove from TranxCraft Moderator Ranks
         TCP_ModeratorList.remove(player);

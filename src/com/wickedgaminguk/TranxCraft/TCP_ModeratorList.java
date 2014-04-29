@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 public class TCP_ModeratorList {
 
     private final TranxCraft plugin;
+    private final TCP_Util TCP_Util;
 
     public enum AdminType {
 
@@ -15,6 +16,7 @@ public class TCP_ModeratorList {
 
     public TCP_ModeratorList(TranxCraft plugin) {
         this.plugin = plugin;
+        this.TCP_Util = new TCP_Util(plugin);
     }
 
     public AdminType getRank(Player player) {
@@ -41,27 +43,11 @@ public class TCP_ModeratorList {
     }
 
     public boolean isPlayerMod(Player player) {
-        if (plugin.adminConfig.contains("Admins." + player.getUniqueId().toString())) {
-            switch (plugin.adminConfig.getString("Admins." + player.getUniqueId().toString() + ".Rank")) {
-                case "Moderator": {
-                    return true;
-                }
-                case "Admin": {
-                    return true;
-                }
-                case "Leadadmin": {
-                    return true;
-                }
-                case "Executive": {
-                    return true;
-                }
-                case "Sys": {
-                    return true;
-                }
-            }
-        }
+        return plugin.adminConfig.contains("Admins." + player.getUniqueId().toString());
+    }
 
-        return false;
+    public boolean isPlayerMod(String player) {
+        return plugin.adminConfig.contains("Admins." + TCP_Util.playerToUUID(player).toString());
     }
 
     public void add(AdminType at, Player player) {
@@ -70,6 +56,7 @@ public class TCP_ModeratorList {
         plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".IGN", player.getName());
         plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".Rank", WordUtils.capitalizeFully(at.toString().toLowerCase()));
         plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".Login_Message", "");
+        plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle", false);
         plugin.adminConfig.set("Admin_IPs", adminIPs);
         plugin.adminConfig.save();
     }
@@ -94,5 +81,18 @@ public class TCP_ModeratorList {
         plugin.adminConfig.set("Admins." + player.getUniqueId().toString(), null);
         plugin.adminConfig.set("Admin_IPs", plugin.adminConfig.getStringList("Admin_IPs").remove(player.getAddress().getHostString()));
         plugin.adminConfig.save();
+    }
+    
+    public void toggleAdminChat(Player player) {
+        if (plugin.adminConfig.getBoolean("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle") == false) {
+            plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle", true);
+        }
+        else if (plugin.adminConfig.getBoolean("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle") == true) {
+            plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle", false);
+        }
+    }
+    
+    public boolean hasAdminChatEnabled(Player player) {
+        return plugin.adminConfig.getBoolean("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle");
     }
 }

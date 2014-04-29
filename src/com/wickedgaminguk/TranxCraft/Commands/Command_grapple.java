@@ -26,7 +26,7 @@ public class Command_grapple extends BukkitCommand<TranxCraft> {
         }
 
         if (args.length > 1) {
-            sender.sendMessage(TCP_Util.Invalid_Usage);
+            sender.sendMessage(TCP_Util.invalidUsage);
             return true;
         }
 

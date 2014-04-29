@@ -2,18 +2,13 @@ package com.wickedgaminguk.TranxCraft.Commands;
 
 import com.wickedgaminguk.TranxCraft.TCP_Ban;
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
-import com.wickedgaminguk.TranxCraft.TCP_Util;
 import com.wickedgaminguk.TranxCraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
 import net.pravian.bukkitlib.command.SourceType;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,7 +20,6 @@ public class Command_grandslam extends BukkitCommand<TranxCraft> {
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_Util TCP_Util = new TCP_Util(plugin);
         TCP_Ban TCP_Ban = new TCP_Ban(plugin);
 
         if (sender instanceof Player && !(sender.hasPermission("tranxcraft.moderator") || sender.isOp())) {
@@ -37,11 +31,6 @@ public class Command_grandslam extends BukkitCommand<TranxCraft> {
         }
 
         Player player = getPlayer(args[0]);
-        Player sender_p = null;
-
-        if (sender instanceof Player) {
-            sender_p = (Player) sender;
-        }
 
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
@@ -49,7 +38,7 @@ public class Command_grandslam extends BukkitCommand<TranxCraft> {
         }
 
         if (sender instanceof Player) {
-            if (player == sender_p) {
+            if (player == playerSender) {
                 sender.sendMessage(ChatColor.RED + "Don't try to ban yourself, idiot.");
                 return true;
             }
@@ -62,10 +51,10 @@ public class Command_grandslam extends BukkitCommand<TranxCraft> {
             }
         }
 
-        String ban_reason = null;
+        String banReason = null;
 
         if (args.length >= 2) {
-            ban_reason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
+            banReason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
         }
 
         World world = player.getWorld();
@@ -84,16 +73,16 @@ public class Command_grandslam extends BukkitCommand<TranxCraft> {
             }
         }
 
-        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - grandslamming " + player.getName() + " for " + ban_reason);
+        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - grandslamming " + player.getName() + " for " + banReason);
 
         //rollback
         Bukkit.dispatchCommand(sender, "co rollback " + player.getName() + " t:500d r:#global");
 
         //Ban Username
-        TCP_Ban.banUser(player, sender.getName(), ban_reason);
+        TCP_Ban.banUser(player, sender.getName(), banReason);
 
         // kick Player:
-        player.kickPlayer(ChatColor.RED + "GTFO" + (ban_reason != null ? ("\nReason: " + ChatColor.YELLOW + ban_reason) : ""));
+        player.kickPlayer(ChatColor.RED + "GTFO" + (banReason != null ? ("\nReason: " + ChatColor.YELLOW + banReason) : ""));
 
         return true;
     }

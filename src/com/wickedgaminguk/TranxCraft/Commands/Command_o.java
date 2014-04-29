@@ -1,8 +1,8 @@
 package com.wickedgaminguk.TranxCraft.Commands;
 
-import net.pravian.bukkitlib.command.BukkitCommand;
-import net.pravian.bukkitlib.command.CommandPermissions;
-import net.pravian.bukkitlib.command.SourceType;
+import com.wickedgaminguk.TranxCraft.TCP_ModeratorList;
+import com.wickedgaminguk.TranxCraft.TranxCraft;
+import net.pravian.bukkitlib.command.*;
 import net.pravian.bukkitlib.util.ChatUtils;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -14,17 +14,32 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandPermissions(source = SourceType.ANY)
-public class Command_o extends BukkitCommand {
+public class Command_o extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
+        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
+
         if (sender instanceof Player && !(sender.hasPermission("tranxcraft.moderator") || sender.isOp())) {
             return noPerms();
         }
 
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "Incorrect Usage.");
-            return false;
+            if (playerSender instanceof Player) {
+                TCP_ModeratorList.toggleAdminChat(playerSender);
+                if (TCP_ModeratorList.hasAdminChatEnabled(playerSender)) {
+                    sender.sendMessage(ChatColor.GREEN + "Toggled AdminChat on.");
+                    return true;
+                }
+                else {
+                    sender.sendMessage(ChatColor.GREEN + "Toggled AdminChat off.");
+                    return true;
+                }
+            }
+            else {
+                sender.sendMessage(ChatColor.RED + "Incorrect Usage.");
+                return false;
+            }
         }
 
         String prefix = "&f[&bADMIN&f]&b ";

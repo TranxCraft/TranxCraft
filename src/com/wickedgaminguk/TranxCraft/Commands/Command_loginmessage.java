@@ -25,22 +25,22 @@ public class Command_loginmessage extends BukkitCommand<TranxCraft> {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(TCP_Util.Invalid_Usage);
+            sender.sendMessage(TCP_Util.invalidUsage);
             return false;
         }
 
-        String login_message;
+        String loginMessage;
 
         if (TCP_ModeratorList.isPlayerMod(playerSender)) {
-            login_message = StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ");
-            TCP_ModeratorList.setLoginMessage(playerSender, login_message);
+            loginMessage = StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ");
+            TCP_ModeratorList.setLoginMessage(playerSender, loginMessage);
             sender.sendMessage(ChatColor.GREEN + "Set login message to: " + ChatUtils.colorize(TCP_ModeratorList.getLoginMessage(playerSender)));
             return true;
         }
 
         if (TCP_DonatorList.isPlayerDonator(playerSender)) {
-            login_message = StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ");
-            TCP_DonatorList.setLoginMessage(playerSender, login_message);
+            loginMessage = StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ");
+            TCP_DonatorList.setLoginMessage(playerSender, loginMessage);
             sender.sendMessage(ChatColor.GREEN + "Set login message to: " + ChatUtils.colorize(TCP_DonatorList.getLoginMessage(playerSender)));
             return true;
         }

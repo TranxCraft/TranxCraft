@@ -22,7 +22,7 @@ public class Command_food extends BukkitCommand<TranxCraft> {
         }
 
         if (args.length != 1) {
-            sender.sendMessage(TCP_Util.Invalid_Usage);
+            sender.sendMessage(TCP_Util.invalidUsage);
             return false;
         }
 

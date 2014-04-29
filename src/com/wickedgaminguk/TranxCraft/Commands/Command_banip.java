@@ -34,11 +34,6 @@ public class Command_banip extends BukkitCommand<TranxCraft> {
         }
 
         Player player = getPlayer(args[0]);
-        Player sender_p = null;
-
-        if (sender instanceof Player) {
-            sender_p = (Player) sender;
-        }
 
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
@@ -46,7 +41,7 @@ public class Command_banip extends BukkitCommand<TranxCraft> {
         }
 
         if (sender instanceof Player) {
-            if (player == sender_p) {
+            if (player == playerSender) {
                 sender.sendMessage(ChatColor.RED + "Don't try to ban yourself, idiot.");
                 return true;
             }
@@ -59,25 +54,25 @@ public class Command_banip extends BukkitCommand<TranxCraft> {
             }
         }
 
-        String ban_reason = null;
+        String banReason = null;
 
         if (args.length >= 2) {
-            ban_reason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
+            banReason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
         }
 
-        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + ban_reason);
+        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getAddress().getHostString() + " for " + banReason);
 
         //set gamemode to survival
         player.setGameMode(GameMode.SURVIVAL);
 
         // kick Player:
-        player.kickPlayer(ChatColor.RED + "You have been IP banned by " + sender.getName() + "." + (ban_reason != null ? ("\nReason: " + ChatColor.YELLOW + ban_reason) : ""));
+        player.kickPlayer(ChatColor.RED + "You have been IP banned by " + sender.getName() + "." + (banReason != null ? ("\nReason: " + ChatColor.YELLOW + banReason) : ""));
 
         //Ban IP
-        TCP_Ban.banIP(player, sender.getName(), ban_reason);
+        TCP_Ban.banIP(player, sender.getName(), banReason);
 
         try {
-            plugin.updateDatabase("INSERT INTO bans (username, admin, reason, ip) VALUES ('" + player.getName() + "', '" + sender.getName() + "', '" + ban_reason + "', '" + player.getAddress().getHostString() + "');");
+            plugin.updateDatabase("INSERT INTO bans (username, admin, reason, ip) VALUES ('" + player.getName() + "', '" + sender.getName() + "', '" + banReason + "', '" + player.getAddress().getHostString() + "');");
         }
         catch (SQLException ex) {
             LoggerUtils.severe(plugin, ex);

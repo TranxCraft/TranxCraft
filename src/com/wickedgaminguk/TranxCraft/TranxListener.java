@@ -1,42 +1,20 @@
 package com.wickedgaminguk.TranxCraft;
 
 import com.wickedgaminguk.TranxCraft.TCP_ModeratorList.AdminType;
-import com.wickedgaminguk.TranxCraft.UCP.TCP_UCP;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 import net.minecraft.server.v1_7_R3.MinecraftServer;
-import net.pravian.bukkitlib.util.ChatUtils;
-import net.pravian.bukkitlib.util.LoggerUtils;
-import net.pravian.bukkitlib.util.TimeUtils;
+import net.pravian.bukkitlib.util.*;
 import org.apache.commons.lang.WordUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -140,16 +118,25 @@ public class TranxListener implements Listener {
         String IP = event.getAddress().getHostAddress().trim();
         LoggerUtils.info(IP);
 
+        if (TCP_Util.permBan.contains(player.getUniqueId().toString())) {
+            if (player.getUniqueId().toString().equals("3d4ad828721f44a4b6e1a18aeac31f88")) {
+                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "xXWilee999Xx, you are a pot stirring fuck, you're not allowed on TranxCraft, ever.");
+            }
+            else {
+                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + TCP_Util.UUIDToPlayer(player.getUniqueId()) + ", you are permbanned, you are " + ChatColor.UNDERLINE + "never" + ChatColor.RESET + ChatColor.RED + " allowed on TranxCraft again.");
+            }
+        }
+
         if (TCP_Ban.isUUIDBanned(player)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + "Your UUID is banned.\nReason: " + ChatColor.YELLOW + TCP_Ban.getBanReason(player) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + TCP_Util.UUIDToPlayer(player.getUniqueId()) + ", your UUID is banned.\nReason: " + ChatColor.YELLOW + TCP_Ban.getBanReason(player) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
         }
         else if (TCP_Ban.isIPBanned(IP)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + "Your IP is banned.\nReason: " + ChatColor.YELLOW + TCP_Ban.getIPBanReason(IP) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + TCP_Util.UUIDToPlayer(player.getUniqueId()) + ", your IP is banned.\nReason: " + ChatColor.YELLOW + TCP_Ban.getIPBanReason(IP) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
         }
 
         if (!(TCP_ModeratorList.isPlayerMod(player))) {
             if (plugin.config.getBoolean("adminmode") == true) {
-                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "TranxCraft is currently open to moderators and admins only.");
+                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "TranxCraft is currently open to moderators and admins only - sorry about that.");
                 return;
             }
         }
@@ -181,11 +168,11 @@ public class TranxListener implements Listener {
             if (!this.playerData.containsKey(playerIP)) {
                 this.playerData.put(playerIP, player.getName());
 
-                File players = new File("playerData.dat");
+                File players = new File(plugin.getDataFolder() + "playerData.dat");
                 if (!players.exists()) {
                     players.createNewFile();
                 }
-                try (FileOutputStream fos = new FileOutputStream("playerData.dat"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+                try (FileOutputStream fos = new FileOutputStream(plugin.getDataFolder() + "playerData.dat"); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                     oos.writeObject(playerData);
                 }
             }
@@ -213,6 +200,11 @@ public class TranxListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
+        if (TCP_ModeratorList.hasAdminChatEnabled(event.getPlayer())) {
+            event.getPlayer().performCommand("o " + event.getMessage());
+            event.setCancelled(true);
+        }
+
         if (!event.getPlayer().hasPermission("tranxcraft.admin")) {
             if (TCP_Util.swear.contains(ChatColor.stripColor(event.getMessage().toLowerCase()))) {
                 event.getPlayer().sendMessage(ChatColor.RED + "Profanic words aren't allowed on TranxCraft. If you try to bypass our filters you will get muted.");
@@ -297,45 +289,46 @@ public class TranxListener implements Listener {
 
         try {
             if (getPlayerData().containsKey(playerIP)) {
-                if (TCP_Ban.isUUIDBanned((String) getPlayerData().get(playerIP)) || TCP_Ban.isIPBanned(event.getAddress().getHostAddress())) {
-                    event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", you are" + ChatColor.BOLD + " banned.");
+                final String player = getPlayerData().get(playerIP);
+                final String ip = event.getAddress().getHostAddress();
+
+                if (TCP_Ban.isUUIDBanned(player) || TCP_Ban.isIPBanned(ip)) {
+                    event.setMotd(ChatColor.RED + "Hey " + player + ", you are" + ChatColor.BOLD + " banned.");
                 }
-                else if (TCP_Util.isAdminMode() == true) {
-                    if (!(plugin.adminConfig.getStringList("Admin_IPs").contains(event.getAddress().getHostAddress()))) {
-                        event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, adminmode is on, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
-                    }
-                    else if (Bukkit.hasWhitelist()) {
-                        event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, the whitelist is on, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
-                    }
-                    else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers()) {
-                        event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, the server is full, come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
-                    }
-                    else {
-                        event.setMotd(ChatColor.GREEN + "Welcome " + ChatColor.GOLD + (String) getPlayerData().get(playerIP) + ChatColor.WHITE + " to " + ChatColor.GREEN + "TranxCraft " + ChatColor.WHITE + "- " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion());
-                    }
+                else if (TCP_Util.isAdminMode() == true && !(plugin.adminConfig.getStringList("Admin_IPs").contains(ip))) {
+                    event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, adminmode is on - come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                 }
-            }
-            else {
-                if (TCP_Ban.isIPBanned(event.getAddress().getHostAddress())) {
-                    event.setMotd(ChatColor.RED + "You are banned.");
+                else if (Bukkit.hasWhitelist() && Bukkit.getWhitelistedPlayers().contains(Bukkit.getOfflinePlayer(player)) == false) {
+                    event.setMotd(ChatColor.RED + "Hey " + player + ", sadly, the whitelist is on - come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                 }
-                else if (TCP_Util.isAdminMode() == true) {
-                    event.setMotd(ChatColor.RED + "Adminmode enabled.");
-                }
-                else if (Bukkit.hasWhitelist()) {
-                    event.setMotd(ChatColor.RED + "Whitelist enabled.");
-                }
-                else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers()) {
-                    event.setMotd(ChatColor.RED + "Server is full.");
+                else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers() && !(TCP_ModeratorList.isPlayerMod(player) || TCP_DonatorList.isPlayerDonator(player))) {
+                    event.setMotd(ChatColor.RED + "Hey " + (String) getPlayerData().get(playerIP) + ", sadly, the server is full - come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                 }
                 else {
-                    event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Alpha!");
+                    event.setMotd(ChatColor.GREEN + "Welcome " + ChatColor.GOLD + (String) getPlayerData().get(playerIP) + ChatColor.WHITE + " to " + ChatColor.GREEN + "TranxCraft " + ChatColor.WHITE + "- " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion());
                 }
+            }
+            else if (TCP_Ban.isIPBanned(event.getAddress().getHostAddress())) {
+                event.setMotd(ChatColor.RED + "You are banned.");
+            }
+            else if (TCP_Util.isAdminMode() == true) {
+                event.setMotd(ChatColor.RED + "Adminmode enabled.");
+            }
+            else if (Bukkit.hasWhitelist()) {
+                event.setMotd(ChatColor.RED + "Whitelist enabled.");
+            }
+            else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers()) {
+                event.setMotd(ChatColor.RED + "Server is full.");
+            }
+            else {
+                event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Alpha!");
             }
         }
         catch (FileNotFoundException ex) {
+            event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Alpha!");
         }
         catch (IOException | ClassNotFoundException ex) {
+            event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Alpha!");
         }
     }
 
@@ -472,7 +465,7 @@ public class TranxListener implements Listener {
     private Map<String, String> getPlayerData() throws FileNotFoundException, IOException, ClassNotFoundException {
         Map<String, String> players;
 
-        try (FileInputStream fis = new FileInputStream("playerData.dat"); ObjectInputStream ois = new ObjectInputStream(fis)) {
+        try (FileInputStream fis = new FileInputStream(plugin.getDataFolder() + "playerData.dat"); ObjectInputStream ois = new ObjectInputStream(fis)) {
             players = (HashMap) ois.readObject();
         }
 

@@ -33,11 +33,6 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
         }
 
         Player player = getPlayer(args[0]);
-        Player sender_p = null;
-
-        if (sender instanceof Player) {
-            sender_p = (Player) sender;
-        }
 
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
@@ -45,7 +40,7 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
         }
 
         if (sender instanceof Player) {
-            if (player == sender_p) {
+            if (player == playerSender) {
                 sender.sendMessage(ChatColor.RED + "Don't try to ban yourself, idiot.");
                 return true;
             }
@@ -58,13 +53,13 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
             }
         }
 
-        String ban_reason = null;
+        String banReason = null;
 
         if (args.length >= 2) {
-            ban_reason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
+            banReason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
         }
 
-        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + ban_reason);
+        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + banReason);
         Bukkit.dispatchCommand(sender, "co rollback " + player.getName() + " t:500d r:#global");
 
         //set gamemode to survival
@@ -80,10 +75,10 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
         }
 
         //Ban Username
-        TCP_Ban.banUser(player, sender.getName(), ban_reason);
+        TCP_Ban.banUser(player, sender.getName(), banReason);
 
         // kick Player:
-        player.kickPlayer(ChatColor.RED + "GTFO" + (ban_reason != null ? ("\nReason: " + ChatColor.YELLOW + ban_reason) : ""));
+        player.kickPlayer(ChatColor.RED + "GTFO" + (banReason != null ? ("\nReason: " + ChatColor.YELLOW + banReason) : ""));
 
         return true;
     }

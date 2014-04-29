@@ -39,7 +39,7 @@ public class Command_plm extends BukkitCommand {
             }
 
             if (args.length != 2) {
-                sender.sendMessage(TCP_Util.Invalid_Usage);
+                sender.sendMessage(TCP_Util.invalidUsage);
                 return true;
             }
 
@@ -58,7 +58,7 @@ public class Command_plm extends BukkitCommand {
 
         if (args[0].equalsIgnoreCase("enable")) {
             if (args.length != 2) {
-                sender.sendMessage(TCP_Util.Invalid_Usage);
+                sender.sendMessage(TCP_Util.invalidUsage);
                 return false;
             }
 
@@ -76,7 +76,7 @@ public class Command_plm extends BukkitCommand {
 
         if (args[0].equalsIgnoreCase("disable")) {
             if (args.length != 2) {
-                sender.sendMessage(TCP_Util.Invalid_Usage);
+                sender.sendMessage(TCP_Util.invalidUsage);
                 return true;
             }
 

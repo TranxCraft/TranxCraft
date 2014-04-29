@@ -37,11 +37,6 @@ public class Command_banoffline extends BukkitCommand<TranxCraft> {
         }
 
         OfflinePlayer player = getOfflinePlayer(args[0]);
-        Player sender_p = null;
-
-        if (sender instanceof Player) {
-            sender_p = (Player) sender;
-        }
 
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
@@ -49,7 +44,7 @@ public class Command_banoffline extends BukkitCommand<TranxCraft> {
         }
 
         if (sender instanceof Player) {
-            if (player == sender_p) {
+            if (player == playerSender) {
                 sender.sendMessage(ChatColor.RED + "Don't try to ban yourself, idiot.");
                 return true;
             }
@@ -73,19 +68,19 @@ public class Command_banoffline extends BukkitCommand<TranxCraft> {
             }
         }
 
-        String ban_reason = null;
+        String banReason = null;
 
         if (args.length >= 2) {
-            ban_reason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
+            banReason = StringUtils.join(ArrayUtils.subarray(args, 1, args.length), " ");
         }
 
-        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + ban_reason);
+        Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + banReason);
 
         //Ban Username
-        TCP_Ban.banUser(playerID, sender.getName(), ban_reason);
+        TCP_Ban.banUser(playerID, sender.getName(), banReason);
 
         try {
-            plugin.updateDatabase("INSERT INTO bans (username, admin, reason, ip) VALUES ('" + player.getName() + "', '" + sender.getName() + "', '" + ban_reason + "', '" + "127.0.0.2" + "');");
+            plugin.updateDatabase("INSERT INTO bans (username, admin, reason, ip) VALUES ('" + player.getName() + "', '" + sender.getName() + "', '" + banReason + "', '" + "127.0.0.2" + "');");
         }
         catch (SQLException ex) {
             LoggerUtils.severe(plugin, ex);

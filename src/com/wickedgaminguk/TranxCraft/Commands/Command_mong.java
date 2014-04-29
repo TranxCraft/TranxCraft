@@ -25,33 +25,26 @@ public class Command_mong extends BukkitCommand<TranxCraft> {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(TCP_Util.Invalid_Usage);
+            sender.sendMessage(TCP_Util.invalidUsage);
             return false;
         }
 
         Player player;
         player = getPlayer(args[0]);
 
-        Player sender_p = player;
-
-        try {
-            sender_p = (Player) sender;
-        }
-        catch (Exception ex) {
-            sender.sendMessage(ChatColor.RED + "Player could not be found.");
-        }
-
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
             return true;
         }
-
-        if (player == sender_p) {
-            sender.sendMessage(ChatColor.RED + "What are you trying to do, you stupid player.");
-            sender_p.getWorld().strikeLightning(player.getLocation());
-            Bukkit.broadcastMessage(ChatColor.RED + sender.getName() + " is a mong, (s)he tried to mong him/herself!");
-            sender_p.kickPlayer(ChatColor.RED + "You have been kicked, don't try to mong yourself...");
-            return true;
+        
+        if (sender instanceof Player) {
+            if (player == playerSender) {
+                    sender.sendMessage(ChatColor.RED + "What are you trying to do, you stupid player.");
+                    playerSender.getWorld().strikeLightning(player.getLocation());
+                    Bukkit.broadcastMessage(ChatColor.RED + sender.getName() + " is a mong, (s)he tried to mong him/herself!");
+                    playerSender.kickPlayer(ChatColor.RED + "You have been kicked, don't try to mong yourself...");
+                    return true;
+            }
         }
 
         if (!sender.hasPermission("tranxcraft.supermong")) {

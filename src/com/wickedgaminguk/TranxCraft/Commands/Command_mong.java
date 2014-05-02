@@ -36,14 +36,14 @@ public class Command_mong extends BukkitCommand<TranxCraft> {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
             return true;
         }
-        
+
         if (sender instanceof Player) {
             if (player == playerSender) {
-                    sender.sendMessage(ChatColor.RED + "What are you trying to do, you stupid player.");
-                    playerSender.getWorld().strikeLightning(player.getLocation());
-                    Bukkit.broadcastMessage(ChatColor.RED + sender.getName() + " is a mong, (s)he tried to mong him/herself!");
-                    playerSender.kickPlayer(ChatColor.RED + "You have been kicked, don't try to mong yourself...");
-                    return true;
+                sender.sendMessage(ChatColor.RED + "What are you trying to do, you stupid player.");
+                playerSender.getWorld().strikeLightning(player.getLocation());
+                Bukkit.broadcastMessage(ChatColor.RED + sender.getName() + " is a mong, (s)he tried to mong him/herself!");
+                playerSender.kickPlayer(ChatColor.RED + "You have been kicked, don't try to mong yourself...");
+                return true;
             }
         }
 

@@ -13,33 +13,4 @@
         <copy file="appinfo.properties" todir="${build.classes.dir}" />
         <delete file="appinfo.properties" />
     </target>
-    
-    <target name="-post-jar">
-        <echo level="info" message="---- Finalizing Build" />
-    
-        <copy file="${dist.jar}" tofile="${dist.dir}/${ant.project.name}-unmapped.jar" />
-        <delete file="${dist.dir}/${ant.project.name}.jar" />
-    
-        <jar compress="${jar.compress}"  destfile="${dist.jar}">
-		
-            <zipfileset src="${dist.dir}/${ant.project.name}-unmapped.jar" excludes="META-INF/*" />
-		
-            <zipgroupfileset dir="${dist.dir}/lib/" includes="BukkitLib*" />
-            <zipgroupfileset dir="${dist.dir}/lib/" includes="twitter4j*" />
-            <zipgroupfileset dir="${dist.dir}/lib/" includes="mail*" />
-            <zipgroupfileset dir="${dist.dir}/lib/" includes="activation*" />
-            <zipgroupfileset dir="${dist.dir}/lib/" includes="commons*" />
-            <zipgroupfileset dir="${dist.dir}/lib/" includes="MySQL*" />
-		
-            <manifest>
-                <attribute name="Main-Class" value="${main.class}" />
-            </manifest>
-        </jar>
-    
-        <delete file="${dist.dir}/README.TXT" />
-    
-        <delete dir="${dist.dir}/lib/" />
-	
-        <echo level="info" message="---- Done" />
-    </target>
 </project>

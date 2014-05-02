@@ -82,7 +82,7 @@ public class TCP_ModeratorList {
         plugin.adminConfig.set("Admin_IPs", plugin.adminConfig.getStringList("Admin_IPs").remove(player.getAddress().getHostString()));
         plugin.adminConfig.save();
     }
-    
+
     public void toggleAdminChat(Player player) {
         if (plugin.adminConfig.getBoolean("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle") == false) {
             plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle", true);
@@ -91,7 +91,7 @@ public class TCP_ModeratorList {
             plugin.adminConfig.set("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle", false);
         }
     }
-    
+
     public boolean hasAdminChatEnabled(Player player) {
         return plugin.adminConfig.getBoolean("Admins." + player.getUniqueId().toString() + ".AdminChat_Toggle");
     }

@@ -1,7 +1,6 @@
 # Netbeans excludes
 /nbproject/private/
-/dist/TranxCraft.jar
-/dist/README.txt
+/dist/
 /build/
 manifest.mf
 nbactions.xml

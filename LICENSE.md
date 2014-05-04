@@ -1,5 +1,5 @@
-TranxCraft Minecraft Server Plugin
-Copyright © TranxCraft 2013 
+TranxCraft Minecraft Server Plugin<br>
+Copyright © TranxCraft 2014
 
 This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike License and the GNU General Public License v3.
 

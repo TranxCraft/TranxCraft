@@ -106,14 +106,7 @@ public class TranxCraft extends BukkitPlugin {
         register(entityListener);
         register(playerListener);
         register(serverListener);
-
-        //mail.send(RecipientType.SYS, "TranxCraft Reports - Server Started", "Hey there, TranxCraft has been successfully started on " + TCP_Time.getDate());
-        /*try {
-         TCP_Twitter.tweet("TranxCraft has been successfully started on " + TCP_Time.getDate());
-         }
-         catch (TwitterException | IOException ex) {
-         LoggerUtils.warning("[TranxCraft] Twitter functionality is broken!\n" + ex);
-         }*/
+        
         setupPermissions();
 
         handler.setCommandLocation(Command_tranxcraft.class.getPackage());

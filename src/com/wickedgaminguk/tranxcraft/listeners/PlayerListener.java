@@ -211,7 +211,7 @@ public class PlayerListener implements Listener {
     
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!ChatColor.stripColor(event.getInventory().getName()).equalsIgnoreCase("Server Utilites")) {
+        if (ChatColor.stripColor(event.getInventory().getName()).equalsIgnoreCase("Server Utilities")) {
             Player player = (Player) event.getWhoClicked();            
             event.setCancelled(true);
             

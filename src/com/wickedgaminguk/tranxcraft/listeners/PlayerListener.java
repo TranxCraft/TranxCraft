@@ -2,6 +2,7 @@ package com.wickedgaminguk.tranxcraft.listeners;
 
 import com.wickedgaminguk.tranxcraft.TCP_Ban;
 import com.wickedgaminguk.tranxcraft.TCP_DonatorList;
+import com.wickedgaminguk.tranxcraft.TCP_DonatorList.DonatorType;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
 import com.wickedgaminguk.tranxcraft.TCP_UCP;
@@ -19,15 +20,23 @@ import net.pravian.bukkitlib.util.LoggerUtils;
 import net.pravian.bukkitlib.util.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
@@ -182,8 +191,83 @@ public class PlayerListener implements Listener {
                 }
             }.runTaskLater(plugin, 40L);
         }
+        
+        if(!(TCP_Util.hasItem(player, new ItemStack(Material.COMPASS)))) {
+            TCP_Util.sendItem(player, Material.COMPASS, 1, null);
+        }
     }
-
+    
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Action a = event.getAction();        
+        ItemStack is = event.getItem();
+        
+        if (!(a == Action.PHYSICAL || is == null || is.getType() == Material.AIR)) {
+            if (is.getType() == Material.COMPASS) {
+                TCP_Util.openGUI(event.getPlayer());
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!ChatColor.stripColor(event.getInventory().getName()).equalsIgnoreCase("Server Utilites")) {
+            Player player = (Player) event.getWhoClicked();            
+            event.setCancelled(true);
+            
+            if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR || !event.getCurrentItem().hasItemMeta()) {
+                player.closeInventory();
+                return;
+            }
+            
+            switch (event.getCurrentItem().getType()) {
+                case COMPASS: {
+                    player.teleport(player.getWorld().getSpawnLocation());
+                    player.closeInventory();
+                    player.sendMessage(ChatColor.GREEN + "You have successfully teleported to Spawn!");
+                    break;
+                }
+                
+                case DIAMOND_SWORD: {
+                    TCP_Util.teleport(player.getWorld(), player, 116, 66, 315);
+                    player.closeInventory();
+                    player.sendMessage(ChatColor.GREEN + "You have successfully teleported to the Survival Games Lobby!");
+                    break;
+                }
+                
+                default: {
+                    player.closeInventory();
+                    break;
+                }
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        
+        if (TCP_Util.hasDoubleJump(player) && TCP_Util.hasPermission("tranxcraft.donator", player) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().subtract(0, 1, 0).getBlock().getType() != Material.AIR) && (!player.isFlying())) {
+            player.setAllowFlight(true);
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
+        Player player = event.getPlayer();  
+        
+        if (TCP_Util.hasDoubleJump(player) && TCP_Util.hasPermission("tranxcraft.donator", player) && !(player.getGameMode() == GameMode.CREATIVE)) {
+            event.setCancelled(true);
+            player.setAllowFlight(false);
+            player.setFlying(false);
+            player.setVelocity(player.getLocation().getDirection().multiply(1.5).setY(1));
+            
+            if (!plugin.noFall.contains(player)) {
+                plugin.noFall.add(player);
+            }
+        }
+    }
+    
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (TCP_ModeratorList.hasAdminChatEnabled(event.getPlayer())) {

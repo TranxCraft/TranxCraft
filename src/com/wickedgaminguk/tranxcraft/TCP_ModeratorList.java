@@ -12,7 +12,7 @@ public class TCP_ModeratorList {
 
     public enum AdminType {
 
-        SYS, EXECUTIVE, LEADADMIN, ADMIN, MODERATOR;
+        COMMANDER, EXECUTIVE, LEADADMIN, ADMIN, MODERATOR;
     }
 
     public TCP_ModeratorList(TranxCraft plugin) {
@@ -35,8 +35,8 @@ public class TCP_ModeratorList {
                 case "executive": {
                     return AdminType.EXECUTIVE;
                 }
-                case "sys": {
-                    return AdminType.SYS;
+                case "commander": {
+                    return AdminType.COMMANDER;
                 }
             }
         }
@@ -59,8 +59,8 @@ public class TCP_ModeratorList {
                 case "executive": {
                     return AdminType.EXECUTIVE;
                 }
-                case "sys": {
-                    return AdminType.SYS;
+                case "commander": {
+                    return AdminType.COMMANDER;
                 }
             }
         }

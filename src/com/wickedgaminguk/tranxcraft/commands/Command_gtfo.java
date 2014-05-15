@@ -1,14 +1,19 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_Util;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
 import com.wickedgaminguk.tranxcraft.TCP_Ban;
-import com.wickedgaminguk.tranxcraft.TranxCraft;
+import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
-import net.pravian.bukkitlib.command.*;
+import com.wickedgaminguk.tranxcraft.TCP_Util;
+import com.wickedgaminguk.tranxcraft.TranxCraft;
+import net.pravian.bukkitlib.command.BukkitCommand;
+import net.pravian.bukkitlib.command.CommandPermissions;
+import net.pravian.bukkitlib.command.SourceType;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

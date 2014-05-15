@@ -11,15 +11,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import me.confuser.barapi.BarAPI;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 public class TCP_Util {
@@ -52,6 +56,22 @@ public class TCP_Util {
 
         if (mode == false) {
             plugin.playerConfig.set(player.getUniqueId().toString() + ".grapple", false);
+        }
+
+        plugin.playerConfig.save();
+    }
+    
+    public boolean hasDoubleJump(Player player) {
+        return plugin.playerConfig.getBoolean(player.getUniqueId().toString() + ".doublejump");
+    }
+
+    public void setDoubleJump(Player player, boolean mode) {
+        if (mode == true) {
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".doublejump", true);
+        }
+
+        if (mode == false) {
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".doublejump", false);
         }
 
         plugin.playerConfig.save();
@@ -180,11 +200,7 @@ public class TCP_Util {
 
     public boolean hasPermission(AdminType adminType, CommandSender sender) {
         return TCP_ModeratorList.getRank(sender).equals(adminType);
-    }
-
-    public boolean hasPermission(DonatorType donatorType, Player player) {
-        return TCP_DonatorList.getRank(player).equals(donatorType);
-    }
+    }   
 
     public boolean hasPermission(AdminType adminType, Player player) {
         return TCP_ModeratorList.getRank(player).equals(adminType);
@@ -194,9 +210,42 @@ public class TCP_Util {
         return TCP_DonatorList.getRank(player).equals(donatorType);
     }
 
+    public boolean hasPermission(DonatorType donatorType, Player player) {
+        return TCP_DonatorList.getRank(player).equals(donatorType);
+    }
+
     public int getTotalUniquePlayers() {
         int total = plugin.playerConfig.getValues(false).size();
         return total;
+    }
+    
+    public void setBarMessage(String message, int seconds) {
+        BarAPI.setMessage(message, seconds);
+    }
+    
+    public void teleport(World world, Player player, int x, int y, int z) {
+        player.teleport(new Location(world, x ,y ,z));
+    }
+    
+    public void openGUI(Player player) {
+        Inventory inv = Bukkit.createInventory(null, 9, ChatColor.DARK_GREEN + "Server Utilities");
+        
+        ItemStack spawn = new ItemStack(Material.COMPASS);
+        ItemStack lobby = new ItemStack(Material.DIAMOND_SWORD);
+        
+        ItemMeta spawnMeta = spawn.getItemMeta();
+        ItemMeta lobbyMeta = lobby.getItemMeta();
+        
+        spawnMeta.setDisplayName(ChatColor.GREEN + "Spawn");
+        lobbyMeta.setDisplayName(ChatColor.RED + "Survival Games Lobby");
+        
+        spawn.setItemMeta(spawnMeta);
+        lobby.setItemMeta(lobbyMeta);
+        
+        inv.setItem(0, spawn);
+        inv.setItem(1, lobby);
+        
+        player.openInventory(inv);
     }
 
     public String[] getCredits() {

@@ -22,7 +22,7 @@ public class TCP_Mail {
 
     public enum RecipientType {
 
-        SYS, EXECUTIVE, LEADADMIN, ADMIN, MODERATOR, ALL;
+        COMMANDER, EXECUTIVE, LEADADMIN, ADMIN, MODERATOR, ALL;
 
         private final List<String> addresses;
 
@@ -40,13 +40,13 @@ public class TCP_Mail {
     }
 
     private void addRecipientTypes() {
-        RecipientType.SYS.addAll(plugin.config.getStringList("sys_mail"));
+        RecipientType.COMMANDER.addAll(plugin.config.getStringList("commander_mail"));
         RecipientType.EXECUTIVE.addAll(plugin.config.getStringList("executive_mail"));
         RecipientType.LEADADMIN.addAll(plugin.config.getStringList("leadadmin_mail"));
         RecipientType.ADMIN.addAll(plugin.config.getStringList("admin_mail"));
         RecipientType.MODERATOR.addAll(plugin.config.getStringList("moderator_mail"));
 
-        RecipientType.ALL.addAll(plugin.config.getStringList("sys_mail"));
+        RecipientType.ALL.addAll(plugin.config.getStringList("commander_mail"));
         RecipientType.ALL.addAll(plugin.config.getStringList("executive_mail"));
         RecipientType.ALL.addAll(plugin.config.getStringList("leadadmin_mail"));
         RecipientType.ALL.addAll(plugin.config.getStringList("admin_mail"));

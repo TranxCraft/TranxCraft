@@ -1,6 +1,7 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
 import com.wickedgaminguk.tranxcraft.TCP_Mail.RecipientType;
+import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
 import com.wickedgaminguk.tranxcraft.TCP_Time;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import java.sql.SQLException;
@@ -23,29 +24,28 @@ public class Command_report extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
+        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
+        
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Incorrect Usage");
             return false;
         }
 
         Player player = getPlayer(args[0]);
-        Player sender_p = player;
-
-        try {
-            sender_p = (Player) sender;
-        }
-        catch (Exception ex) {
-            sender.sendMessage(ChatColor.RED + "Player could not be found.");
-        }
 
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
             return true;
         }
 
-        if (player == sender_p) {
+        if (player == playerSender) {
             sender.sendMessage(ChatColor.RED + "Don't try to report yourself, idiot.");
-            sender_p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 1200, 50));
+            playerSender.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 1200, 50));
+            return true;
+        }
+        
+        if (TCP_ModeratorList.isPlayerMod(player)) {
+            sender.sendMessage(ChatColor.RED + "You may not report " + player.getName() + ", they are a moderator. For issues with our moderators, report them on our forums.");
             return true;
         }
 

@@ -27,7 +27,7 @@
             <zipgroupfileset dir="${dist.dir}/lib/" includes="twitter4j*" />
             <zipgroupfileset dir="${dist.dir}/lib/" includes="mail*" />
             <zipgroupfileset dir="${dist.dir}/lib/" includes="activation*" />
-            <zipgroupfileset dir="${dist.dir}/lib/" includes="commons*" />
+            <zipgroupfileset dir="${dist.dir}/lib/" includes="barapi*" />
             <zipgroupfileset dir="${dist.dir}/lib/" includes="MySQL*" />
             
             <manifest>

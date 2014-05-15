@@ -130,7 +130,7 @@ public class TranxCraft extends BukkitPlugin {
 
     @Override
     public void onDisable() {
-        LoggerUtils.info(plugin.getName() + " v" + plugin.getVersion() + " by" + plugin.getAuthor() + " is disabled.");
+        LoggerUtils.info(plugin.getName() + " v" + plugin.getVersion() + " by " + plugin.getAuthor() + " is disabled.");
     }
 
     @Override

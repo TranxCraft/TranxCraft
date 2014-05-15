@@ -1,5 +1,5 @@
 name: TranxCraft
-main: com.wickedgaminguk.TranxCraft.TranxCraft
+main: com.wickedgaminguk.tranxcraft.TranxCraft
 version: 2.0
 authors: [WickedGamingUK]
 description: The custom developed plugin for TranxCraft.
@@ -87,3 +87,13 @@ commands:
     loginmessage:
       usage: /<command> <message>
       description: Sets the custom login message.
+    getname:
+      usage: /<command> <uuid>
+      description: Gets the name of a UUID.
+    getuuid:
+      usage: /<command> <player>
+      description: Gets the UUID of a player.
+    doublejump:
+      usage: /<command> <enable|disable>
+      description: Turn on or off Double Jump.
+      

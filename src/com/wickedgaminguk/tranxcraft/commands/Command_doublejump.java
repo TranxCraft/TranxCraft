@@ -1,6 +1,6 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_DonatorList.DonatorType;
+import com.wickedgaminguk.tranxcraft.TCP_PremiumList.PremiumType;
 import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
@@ -15,7 +15,7 @@ public class Command_doublejump extends BukkitCommand<TranxCraft> {
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_Util TCP_Util = new TCP_Util(plugin);
 
-        if (!(TCP_Util.hasPermission("tranxcraft.donator", sender) || TCP_Util.hasPermission(DonatorType.ONE, sender))) {
+        if (!(TCP_Util.hasPermission("tranxcraft.premium", sender) || TCP_Util.hasPermission(PremiumType.ONE, sender))) {
             return noPerms();
         }
 
@@ -62,10 +62,10 @@ public class Command_doublejump extends BukkitCommand<TranxCraft> {
             }
 
             TCP_Util.setDoubleJump(playerSender, false);
-            
+
             playerSender.setFlying(false);
             playerSender.setAllowFlight(false);
-            
+
             sender.sendMessage(ChatColor.GREEN + "You have disabled Double Jump.");
             return true;
         }

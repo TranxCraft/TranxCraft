@@ -1,12 +1,15 @@
 package com.wickedgaminguk.tranxcraft.listeners;
 
+import com.vexsoftware.votifier.model.Vote;
+import com.vexsoftware.votifier.model.VotifierEvent;
 import com.wickedgaminguk.tranxcraft.TCP_Ban;
-import com.wickedgaminguk.tranxcraft.TCP_DonatorList;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
+import com.wickedgaminguk.tranxcraft.TCP_PremiumList;
 import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.UUID;
 import net.minecraft.server.v1_7_R3.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,14 +22,14 @@ public class ServerListener implements Listener {
 
     private final TranxCraft plugin;
     private final TCP_ModeratorList TCP_ModeratorList;
-    private final TCP_DonatorList TCP_DonatorList;
+    private final TCP_PremiumList TCP_PremiumList;
     private final TCP_Util TCP_Util;
     private final TCP_Ban TCP_Ban;
 
     public ServerListener(TranxCraft plugin) {
         this.plugin = plugin;
         this.TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        this.TCP_DonatorList = new TCP_DonatorList(plugin);
+        this.TCP_PremiumList = new TCP_PremiumList(plugin);
         this.TCP_Util = new TCP_Util(plugin);
         this.TCP_Ban = new TCP_Ban(plugin);
     }
@@ -51,7 +54,7 @@ public class ServerListener implements Listener {
                 else if (Bukkit.hasWhitelist() && Bukkit.getWhitelistedPlayers().contains(Bukkit.getOfflinePlayer(player)) == false) {
                     event.setMotd(ChatColor.RED + "Hey " + player + ", sadly, the whitelist is on - come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                 }
-                else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers() && !(TCP_ModeratorList.isPlayerMod(player) || TCP_DonatorList.isPlayerDonator(player))) {
+                else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers() && !(TCP_ModeratorList.isPlayerMod(player) || TCP_PremiumList.isPlayerPremium(player))) {
                     event.setMotd(ChatColor.RED + "Hey " + player + ", sadly, the server is full - come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                 }
                 else {
@@ -80,5 +83,19 @@ public class ServerListener implements Listener {
         catch (IOException | ClassNotFoundException ex) {
             event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Alpha!");
         }
+    }
+    
+    @EventHandler(priority=EventPriority.NORMAL)
+    public void onVotifierEvent(VotifierEvent event) {
+        Vote vote = event.getVote();
+        
+        String player = vote.getUsername();
+        UUID playerId = TCP_Util.playerToUUID(player);
+        
+        TCP_Util.setVotes(playerId);
+        
+        Bukkit.broadcastMessage(ChatColor.GOLD + player + ChatColor.GREEN + " has voted for TranxCraft on " + vote.getServiceName() + "! They have been rewarded with $500!");
+        
+        TCP_Util.depositPlayer(player, 500.0);
     }
 }

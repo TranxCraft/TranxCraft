@@ -23,6 +23,8 @@ public class Command_plm extends BukkitCommand<TranxCraft> {
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_PluginHandler TCP_PluginHandler = new TCP_PluginHandler();
         TCP_Util TCP_Util = new TCP_Util(plugin);
+        TCP_Time TCP_Time = new TCP_Time();
+        
         PluginManager pm = Bukkit.getPluginManager();
 
         if (!(TCP_Util.hasPermission("tranxcraft.exec", sender) || TCP_Util.hasPermission(AdminType.EXECUTIVE, sender))) {

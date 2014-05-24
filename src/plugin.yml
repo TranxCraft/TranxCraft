@@ -4,96 +4,128 @@ version: 2.0
 authors: [WickedGamingUK]
 description: The custom developed plugin for TranxCraft.
 website: https://www.tranxcraft.com/
-depend: [Vault]
+depend: [Vault, Votifier, Essentials]
 commands:
     tranxcraft:
-      usage: /<command>
-      description: Displays useful information about TranxCraft.
-      aliases: [tc]
+        usage: /<command>
+        description: Displays useful information about TranxCraft.
+        aliases: [tc]
     mong:
-      usage: /<command> <player>
-      description: Kicks a player telling the player to read the rules.
-      aliases: [noob, GRTFR]
-    donator:
-      usage: /<command> <add|remove|activate>
-      description: Donator Handling.
-      aliases: [dn]
+        usage: /<command> <player>
+        description: Kicks a player telling the player to read the rules.
+        aliases: [noob, GRTFR]
+        permissions: tranxcraft.moderator
+    premium:
+        usage: /<command> <add|remove|activate>
+        description: Premium Member Handling.
+        aliases: [dn]
+        permissions: tranxcraft.owner
     admininfo:
-      usage: /<command>
-      description: How to apply for moderator on TranxCraft.
-      aliases: [ai, modinfo, moderatorinfo, mi, admin, moderator]
+        usage: /<command>
+        description: How to apply for moderator on TranxCraft.
+        aliases: [ai, modinfo, moderatorinfo, mi, admin, moderator]
     gtfo:
-      usage: /<command> <player> <reason>
-      description: Bans a player.
+        usage: /<command> <player> <reason>
+        description: Bans a player.
+        permissions: tranxcraft.moderator
     fuckoff:
-      usage: /<command> <player>
-      description: Completely fucks over a player.
-      aliases: [doom]
+        usage: /<command> <player>
+        description: Completely fucks over a player.
+        aliases: [doom]
+        permissions: tranxcraft.exec
     grandslam:
-      usage: /<command> <player> <reason>
-      description: Slams a player to the ground.
-      aliases: [gt, gs]
+        usage: /<command> <player> <reason>
+        description: Slams a player to the ground.
+        aliases: [gt, gs]
+        permissions: tranxcraft.moderator
     catapult:
-      usage: /<command> <player>
-      description: Catapults a player.
+        usage: /<command> <player>
+        description: Catapults a player.
+        permissions: tranxcraft.moderator
     report:
-      usage: /<command> <player> <reason>
-      description: Reports a Player.
+        usage: /<command> <player> <reason>
+        description: Reports a Player.
     ucpsync:
-      usage: /<command>
-      description: Syncs User Data.
+        usage: /<command>
+        description: Syncs User Data.
+        permissions: tranxcraft.admin
     o:
-      usage: /<command> <message>
-      description: TranxCraft's Admin Chat
-      aliases: [ac, adminchat]
+        usage: /<command> <message>
+        description: TranxCraft's Admin Chat
+        aliases: [ac, adminchat]
+        permissions: tranxcraft.moderator
     acceptrules:
-      usage: /<command>
-      description: Accept TranxCraft's Rules
-      aliases: [ar]
+        usage: /<command>
+        description: Accept TranxCraft's Rules
+        aliases: [ar]
     warn:
-      usage: /<command> <player> <reason>
-      description: Warns a player.
+        usage: /<command> <player> <reason>
+        description: Warns a player.
+        permissions: tranxcraft.moderator
     plm:
-      usage: /<command> <reload|enable|disable> <plugin>
-      description: Plugin management.
-      aliases: [plc, pluginmanagement]
+        usage: /<command> <reload|enable|disable> <plugin>
+        description: Plugin management.
+        aliases: [plc, pluginmanagement]
+        permissions: tranxcraft.exec
     system:
-      usage: /<command> <add|remove> <rank> <player>
-      description: Rank management.
-      aliases: [sys, playerrank]
+        usage: /<command> <add|remove> <rank> <player>
+        description: Rank management.
+        aliases: [sys, playerrank]
+        permissions: tranxcraft.owner
     adminmode:
-      usage: /<command> <on|off>
-      description: Turns Adminmode on or off.
-      aliases: [am, moderatormode]
+        usage: /<command> <on|off>
+        description: Turns Adminmode on or off.
+        aliases: [am, moderatormode]
+        permissions: tranxcraft.admin
     food:
-      usage: /<command> <food>
-      description: Gives everyone who's currently on the server some free food :)
+        usage: /<command> <food>
+        description: Gives everyone who's currently on the server some free food :)
+        permissions: tranxcraft.moderator
     ban:
-      usage: /<command> <player> <reason>
-      description: Bans a player.
+        usage: /<command> <player> <reason>
+        description: Bans a player.
+        permissions: tranxcraft.moderator
     banip:
-      usage: /<command> <player> <reason>
-      description: Bans a player's IP.
+        usage: /<command> <player> <reason>
+        description: Bans a player's IP.
+        permissions: tranxcraft.moderator
     banoffline:
-      usage: /<command> <offlineplayer> <reason>
-      description: Bans an offline player.
-      aliases: [oban, bano, offlineban]
+        usage: /<command> <offlineplayer> <reason>
+        description: Bans an offline player.
+        aliases: [oban, bano, offlineban]
+        permissions: tranxcraft.moderator
     unban:
-      usage: /<command> <player|IP>
-      description: Unbans a player or IP.
+        usage: /<command> <player|IP>
+        description: Unbans a player or IP.
+        permissions: tranxcraft.moderator
     grapple:
-      usage: /<command> <enable|disable>
-      description: Turn on or off grapple mode.
+        usage: /<command> <enable|disable>
+        description: Turn on or off grapple mode.
+        permissions: tranxcraft.premium
     loginmessage:
-      usage: /<command> <message>
-      description: Sets the custom login message.
+        usage: /<command> <message>
+        description: Sets the custom login message.
     getname:
-      usage: /<command> <uuid>
-      description: Gets the name of a UUID.
+        usage: /<command> <uuid>
+        description: Gets the name of a UUID.
+        permissions: tranxcraft.moderator
     getuuid:
-      usage: /<command> <player>
-      description: Gets the UUID of a player.
+        usage: /<command> <player>
+        description: Gets the UUID of a player.
+        permissions: tranxcraft.moderator
     doublejump:
-      usage: /<command> <enable|disable>
-      description: Turn on or off Double Jump.
+        usage: /<command> <enable|disable>
+        description: Turn on or off Double Jump.
+        permissions: tranxcraft.premium
+    register:
+        usage: /<command> <email>
+        description: Registers for the TranxCraft User Panel.
+    sha512:
+        usage: /<command> <stuff>
+        description: Returns a sha512 of what you enter.
+        permissions: tranxcraft.exec
+    email:
+        usage: /<command> <email> <message>
+        description: Sends an e-mail.
+        permissions: tranxcraft.exec
       

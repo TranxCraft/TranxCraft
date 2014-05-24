@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 public class Command_getuuid extends BukkitCommand<TranxCraft> {
 
     @Override
-    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {        
+    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_Util TCP_Util = new TCP_Util(plugin);
 
         if (!(TCP_Util.hasPermission("tranxcraft.moderator", sender) || TCP_Util.hasPermission(AdminType.MODERATOR, sender))) {
@@ -26,14 +26,14 @@ public class Command_getuuid extends BukkitCommand<TranxCraft> {
         }
 
         String player = args[0];
-        
+
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
             return true;
         }
-        
+
         sender.sendMessage(ChatColor.GOLD + player + ChatColor.GREEN + "'s UUID is: " + ChatColor.GOLD + TCP_Util.playerToUUID(player));
-        
+
         return true;
     }
 }

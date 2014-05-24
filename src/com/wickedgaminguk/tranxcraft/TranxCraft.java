@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.pravian.bukkitlib.BukkitLib;
 import net.pravian.bukkitlib.command.BukkitCommandHandler;
@@ -42,17 +43,22 @@ public class TranxCraft extends BukkitPlugin {
     public YamlConfig config;
     public YamlConfig playerConfig;
     public YamlConfig adminConfig;
-    public YamlConfig donatorConfig;
+    public YamlConfig premiumConfig;
     public YamlConfig bans;
     public BukkitCommandHandler handler;
     public Permission permission;
+    public Economy economy;
     public PluginManager pm;
     public MySQL mySQL;
+    public MySQL registration;
+    Connection mySQLConnection;
+    Connection registrationConnection;
     public TCP_Mail mail;
     public TCP_Twitter twitter;
     public TCP_Util util;
     public TCP_ModeratorList moderatorList;
-    public TCP_DonatorList donatorList;
+    public TCP_PremiumList premiumList;
+    public TCP_Time time;
     public Scoreboard board;
     public Objective o;
     public HashMap<String, Score> kills = new HashMap<>();
@@ -65,7 +71,7 @@ public class TranxCraft extends BukkitPlugin {
         config = new YamlConfig(plugin, "config.yml");
         playerConfig = new YamlConfig(plugin, "players.yml");
         adminConfig = new YamlConfig(plugin, "admins.yml");
-        donatorConfig = new YamlConfig(plugin, "donators.yml");
+        premiumConfig = new YamlConfig(plugin, "premium.yml");
         bans = new YamlConfig(plugin, "bans.yml");
         playerLogins = new HashMap<>();
         handler = new BukkitCommandHandler(plugin);
@@ -73,7 +79,8 @@ public class TranxCraft extends BukkitPlugin {
         twitter = new TCP_Twitter(plugin);
         util = new TCP_Util(plugin);
         moderatorList = new TCP_ModeratorList(plugin);
-        donatorList = new TCP_DonatorList(plugin);
+        premiumList = new TCP_PremiumList(plugin);
+        time = new TCP_Time();
     }
 
     @Override
@@ -85,11 +92,15 @@ public class TranxCraft extends BukkitPlugin {
         config.load();
         playerConfig.load();
         adminConfig.load();
-        donatorConfig.load();
+        premiumConfig.load();
         bans.load();
 
         mySQL = new MySQL(plugin, config.getString("hostname"), config.getString("port"), config.getString("database"), config.getString("user"), config.getString("password"));
-
+        registration = new MySQL(plugin, config.getString("registration_hostname"), config.getString("registration_port"), config.getString("registration_database"), config.getString("registration_user"), config.getString("registration_password"));
+                
+        mySQLConnection = mySQL.openConnection();        
+        registrationConnection = registration.openConnection();
+        
         twitter.init();
 
         LoggerUtils.info(plugin.getName() + " v." + plugin.getVersion() + " by " + plugin.getAuthor() + " is enabled");
@@ -106,8 +117,9 @@ public class TranxCraft extends BukkitPlugin {
         register(entityListener);
         register(playerListener);
         register(serverListener);
-        
+
         setupPermissions();
+        setupEconomy();
 
         handler.setCommandLocation(Command_tranxcraft.class.getPackage());
         handler.setPermissionMessage(ChatColor.RED + "You don't have permission for this command.");
@@ -117,7 +129,7 @@ public class TranxCraft extends BukkitPlugin {
         o = board.registerNewObjective("test", "dummy");
         o.setDisplayName("Stats");
         o.setDisplaySlot(DisplaySlot.SIDEBAR);
-
+        
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
@@ -151,6 +163,18 @@ public class TranxCraft extends BukkitPlugin {
         res.next();
         return res;
     }
+    
+    public void updateRegistrationDatabase(String SQLquery) throws SQLException {
+        Statement statement = registrationConnection.createStatement();
+        statement.executeUpdate(SQLquery);
+    }
+
+    public ResultSet getValueFromRegistration(String SQLquery) throws SQLException {
+        Statement statement = registrationConnection.createStatement();
+        ResultSet res = statement.executeQuery(SQLquery);
+        res.next();
+        return res;
+    }
 
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
@@ -160,8 +184,12 @@ public class TranxCraft extends BukkitPlugin {
         return (permission != null);
     }
 
-    public String getPlayerGroup(Player player) {
-        String perm = permission.getPrimaryGroup(player);
-        return perm;
+    private boolean setupEconomy() {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
     }
 }

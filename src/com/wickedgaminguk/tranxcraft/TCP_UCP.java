@@ -10,9 +10,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class TCP_UCP extends BukkitRunnable {
 
     private final TranxCraft plugin;
+    private final TCP_Util TCP_Util;
+    private final TCP_Time TCP_Time;
 
     public TCP_UCP(TranxCraft instance) {
         this.plugin = instance;
+        this.TCP_Util = new TCP_Util(plugin);
+        this.TCP_Time = new TCP_Time();
     }
 
     @Override
@@ -50,7 +54,7 @@ public class TCP_UCP extends BukkitRunnable {
                 String playerPermission = null;
 
                 try {
-                    playerPermission = plugin.getPlayerGroup(player);
+                    playerPermission = TCP_Util.getPlayerGroup(player);
                 }
                 catch (Exception ex) {
 

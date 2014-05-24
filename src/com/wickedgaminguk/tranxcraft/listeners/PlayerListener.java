@@ -1,10 +1,9 @@
 package com.wickedgaminguk.tranxcraft.listeners;
 
+import com.earth2me.essentials.User;
 import com.wickedgaminguk.tranxcraft.TCP_Ban;
-import com.wickedgaminguk.tranxcraft.TCP_DonatorList;
-import com.wickedgaminguk.tranxcraft.TCP_DonatorList.DonatorType;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
+import com.wickedgaminguk.tranxcraft.TCP_PremiumList;
 import com.wickedgaminguk.tranxcraft.TCP_UCP;
 import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
@@ -21,7 +20,9 @@ import net.pravian.bukkitlib.util.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -37,6 +38,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
@@ -45,14 +47,14 @@ public class PlayerListener implements Listener {
 
     private final TranxCraft plugin;
     private final TCP_ModeratorList TCP_ModeratorList;
-    private final TCP_DonatorList TCP_DonatorList;
+    private final TCP_PremiumList TCP_PremiumList;
     private final TCP_Util TCP_Util;
     private final TCP_Ban TCP_Ban;
 
     public PlayerListener(TranxCraft plugin) {
         this.plugin = plugin;
         this.TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        this.TCP_DonatorList = new TCP_DonatorList(plugin);
+        this.TCP_PremiumList = new TCP_PremiumList(plugin);
         this.TCP_Util = new TCP_Util(plugin);
         this.TCP_Ban = new TCP_Ban(plugin);
     }
@@ -61,7 +63,6 @@ public class PlayerListener implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) throws FileNotFoundException, IOException {
         Player player = event.getPlayer();
         String IP = event.getAddress().getHostAddress().trim();
-        LoggerUtils.info(IP);
 
         if (TCP_Util.permBan.contains(player.getUniqueId().toString())) {
             if (player.getUniqueId().toString().equals("3d4ad828721f44a4b6e1a18aeac31f88")) {
@@ -87,7 +88,7 @@ public class PlayerListener implements Listener {
         }
 
         if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
-            if (TCP_ModeratorList.isPlayerMod(player) || TCP_DonatorList.isPlayerDonator(player)) {
+            if (TCP_ModeratorList.isPlayerMod(player) || TCP_PremiumList.isPlayerPremium(player)) {
                 TCP_Util.kickPlayer(player, event);
                 event.allow();
                 Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + ChatColor.GREEN + " is a reserved member!");
@@ -102,7 +103,9 @@ public class PlayerListener implements Listener {
             plugin.playerConfig.set(player.getUniqueId().toString() + ".time", 0);
             plugin.playerConfig.set(player.getUniqueId().toString() + ".kills", 0);
             plugin.playerConfig.set(player.getUniqueId().toString() + ".deaths", 0);
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".votes", 0);
             plugin.playerConfig.set(player.getUniqueId().toString() + ".grapple", false);
+            plugin.playerConfig.set(player.getUniqueId().toString() + ".registered", false);
             plugin.playerConfig.save();
         }
 
@@ -135,7 +138,7 @@ public class PlayerListener implements Listener {
         totalPlayers++;
 
         plugin.config.set("total_players", totalPlayers);
-        plugin.saveConfig();
+        plugin.config.save();
 
         Bukkit.broadcastMessage(ChatColor.BLUE + "[Player Counter] " + totalPlayers + " players & " + TCP_Util.getTotalUniquePlayers() + " unique players have joined in total.");
 
@@ -144,20 +147,28 @@ public class PlayerListener implements Listener {
         if (!(TCP_ModeratorList.getLoginMessage(player).equals(""))) {
             Bukkit.broadcastMessage(ChatUtils.colorize(TCP_ModeratorList.getLoginMessage(player)));
         }
-        else if (TCP_ModeratorList.getRank(player) == AdminType.LEADADMIN) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a lead Admin.");
+        else {
+            switch (TCP_ModeratorList.getRank(player)) {
+                case EXECUTIVE: {
+                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an executive Admin.");
+                }
+
+                case LEADADMIN: {
+                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a lead Admin.");
+                }
+
+                case ADMIN: {
+                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an " + ChatColor.GOLD + "Admin.");
+                }
+
+                case MODERATOR: {
+                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.DARK_PURPLE + "Moderator.");
+                }
+            }
         }
-        else if (TCP_ModeratorList.getRank(player) == AdminType.EXECUTIVE) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an executive Admin.");
-        }
-        else if (TCP_ModeratorList.getRank(player) == AdminType.ADMIN) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an " + ChatColor.GOLD + "Admin.");
-        }
-        else if (TCP_ModeratorList.getRank(player) == AdminType.MODERATOR) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.DARK_PURPLE + "Moderator.");
-        }
-        else if (TCP_DonatorList.isPlayerDonator(player)) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.LIGHT_PURPLE + "Donator! <3");
+
+        if (TCP_PremiumList.isPlayerPremium(player)) {
+            Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is " + ChatColor.LIGHT_PURPLE + "Premium! <3");
         }
 
         player.setScoreboard(plugin.board);
@@ -191,35 +202,43 @@ public class PlayerListener implements Listener {
                 }
             }.runTaskLater(plugin, 40L);
         }
-        
-        if(!(TCP_Util.hasItem(player, new ItemStack(Material.COMPASS)))) {
-            TCP_Util.sendItem(player, Material.COMPASS, 1, null);
+
+        ItemStack serverUtilities = new ItemStack(Material.BLAZE_ROD);
+        ItemMeta serverUtilitiesMeta = serverUtilities.getItemMeta();
+
+        serverUtilitiesMeta.setDisplayName(ChatColor.GREEN + "Server Utilities");
+        serverUtilitiesMeta.addEnchant(Enchantment.LUCK, 9005, true);
+
+        serverUtilities.setItemMeta(serverUtilitiesMeta);
+
+        if (!(TCP_Util.hasItem(player, serverUtilities))) {
+            TCP_Util.sendItem(player, serverUtilities, null);
         }
     }
-    
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        Action a = event.getAction();        
+        Action a = event.getAction();
         ItemStack is = event.getItem();
-        
+
         if (!(a == Action.PHYSICAL || is == null || is.getType() == Material.AIR)) {
-            if (is.getType() == Material.COMPASS) {
+            if (is.getType() == Material.BLAZE_ROD) {
                 TCP_Util.openGUI(event.getPlayer());
             }
         }
     }
-    
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (ChatColor.stripColor(event.getInventory().getName()).equalsIgnoreCase("Server Utilities")) {
-            Player player = (Player) event.getWhoClicked();            
+            Player player = (Player) event.getWhoClicked();
             event.setCancelled(true);
-            
+
             if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR || !event.getCurrentItem().hasItemMeta()) {
                 player.closeInventory();
                 return;
             }
-            
+
             switch (event.getCurrentItem().getType()) {
                 case COMPASS: {
                     player.teleport(player.getWorld().getSpawnLocation());
@@ -227,14 +246,54 @@ public class PlayerListener implements Listener {
                     player.sendMessage(ChatColor.GREEN + "You have successfully teleported to Spawn!");
                     break;
                 }
-                
-                case DIAMOND_SWORD: {
+
+                case BOW: {
                     TCP_Util.teleport(player.getWorld(), player, 116, 66, 315);
                     player.closeInventory();
                     player.sendMessage(ChatColor.GREEN + "You have successfully teleported to the Survival Games Lobby!");
                     break;
                 }
-                
+
+                case GOLD_BLOCK: {
+                    TCP_Util.teleport(player.getWorld(), player, 265, 71, 409);
+                    player.closeInventory();
+                    player.sendMessage(ChatColor.GREEN + "You have successfully teleported to the Shop!");
+                    break;
+                }
+
+                case MAP: {
+                    if (event.getCurrentItem().hasItemMeta()) {
+                        switch (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())) {
+                            case "Adeam Kingdom": {
+                                TCP_Util.teleport(player.getWorld(), player, 1100, 69, -92);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+
+                case BED: {
+                    User playerUser = TCP_Util.getEssentialsUser(player.getName());
+                    Location spawnPoint;
+
+                    try {
+                        spawnPoint = playerUser.getHome(playerUser.getHomes().get(0));
+                    }
+                    catch (Exception ex) {
+                        spawnPoint = player.getBedSpawnLocation();
+                    }
+
+                    if (spawnPoint != null) {
+                        player.teleport(spawnPoint);
+                    }
+                    else {
+                        player.sendMessage(ChatColor.RED + "You haven't set a home to teleport to.");
+                    }
+
+                    break;
+                }
+
                 default: {
                     player.closeInventory();
                     break;
@@ -242,32 +301,32 @@ public class PlayerListener implements Listener {
             }
         }
     }
-    
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        
-        if (TCP_Util.hasDoubleJump(player) && TCP_Util.hasPermission("tranxcraft.donator", player) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().subtract(0, 1, 0).getBlock().getType() != Material.AIR) && (!player.isFlying())) {
+
+        if (TCP_Util.hasDoubleJump(player) && TCP_Util.hasPermission("tranxcraft.premium", player) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().subtract(0, 1, 0).getBlock().getType() != Material.AIR) && (!player.isFlying())) {
             player.setAllowFlight(true);
         }
     }
-    
+
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
-        Player player = event.getPlayer();  
-        
-        if (TCP_Util.hasDoubleJump(player) && TCP_Util.hasPermission("tranxcraft.donator", player) && !(player.getGameMode() == GameMode.CREATIVE)) {
+        Player player = event.getPlayer();
+
+        if (TCP_Util.hasDoubleJump(player) && TCP_Util.hasPermission("tranxcraft.premium", player) && !(player.getGameMode() == GameMode.CREATIVE)) {
             event.setCancelled(true);
             player.setAllowFlight(false);
             player.setFlying(false);
             player.setVelocity(player.getLocation().getDirection().multiply(1.5).setY(1));
-            
+
             if (!plugin.noFall.contains(player)) {
                 plugin.noFall.add(player);
             }
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (TCP_ModeratorList.hasAdminChatEnabled(event.getPlayer())) {

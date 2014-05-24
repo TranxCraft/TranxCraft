@@ -1,7 +1,7 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_DonatorList;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
+import com.wickedgaminguk.tranxcraft.TCP_PremiumList;
 import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
@@ -18,10 +18,10 @@ public class Command_loginmessage extends BukkitCommand<TranxCraft> {
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_DonatorList TCP_DonatorList = new TCP_DonatorList(plugin);
+        TCP_PremiumList TCP_PremiumList = new TCP_PremiumList(plugin);
         TCP_Util TCP_Util = new TCP_Util(plugin);
 
-        if (!(TCP_ModeratorList.isPlayerMod(playerSender) || TCP_DonatorList.isPlayerDonator(playerSender) || sender instanceof Player)) {
+        if (!(TCP_ModeratorList.isPlayerMod(playerSender) || TCP_PremiumList.isPlayerPremium(playerSender) || sender instanceof Player)) {
             return noPerms();
         }
 
@@ -39,10 +39,10 @@ public class Command_loginmessage extends BukkitCommand<TranxCraft> {
             return true;
         }
 
-        if (TCP_DonatorList.isPlayerDonator(playerSender)) {
+        if (TCP_PremiumList.isPlayerPremium(playerSender)) {
             loginMessage = StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ");
-            TCP_DonatorList.setLoginMessage(playerSender, loginMessage);
-            sender.sendMessage(ChatColor.GREEN + "Set login message to: " + ChatUtils.colorize(TCP_DonatorList.getLoginMessage(playerSender)));
+            TCP_PremiumList.setLoginMessage(playerSender, loginMessage);
+            sender.sendMessage(ChatColor.GREEN + "Set login message to: " + ChatUtils.colorize(TCP_PremiumList.getLoginMessage(playerSender)));
             return true;
         }
 

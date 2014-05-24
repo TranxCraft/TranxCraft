@@ -29,6 +29,8 @@
             <zipgroupfileset dir="${dist.dir}/lib/" includes="activation*" />
             <zipgroupfileset dir="${dist.dir}/lib/" includes="barapi*" />
             <zipgroupfileset dir="${dist.dir}/lib/" includes="MySQL*" />
+            <zipgroupfileset dir="${dist.dir}/lib/" includes="commons*" />
+            <zipgroupfileset dir="${dist.dir}/lib/" includes="j*" />
             
             <manifest>
                 <attribute name="Main-Class" value="${main.class}" />

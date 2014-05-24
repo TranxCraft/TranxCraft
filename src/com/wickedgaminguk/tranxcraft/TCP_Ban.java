@@ -1,18 +1,23 @@
 package com.wickedgaminguk.tranxcraft;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 import java.util.UUID;
 import net.pravian.bukkitlib.util.IpUtils;
+import net.pravian.bukkitlib.util.LoggerUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class TCP_Ban {
 
-    TranxCraft plugin;
-    TCP_Util TCP_Util;
+    private final TranxCraft plugin;
+    private final TCP_Util TCP_Util;
+    private final TCP_Time TCP_Time;
 
     public TCP_Ban(TranxCraft plugin) {
         this.plugin = plugin;
         this.TCP_Util = new TCP_Util(plugin);
+        this.TCP_Time = new TCP_Time();
     }
 
     public void banUser(Player player, String source, String reason) {
@@ -39,6 +44,23 @@ public class TCP_Ban {
         plugin.bans.set("bans." + UUID + ".time", TCP_Time.getLongDate());
     }
 
+    public void banUserByIp(String IP, String source, String reason) {
+        for (String key : plugin.playerConfig.getKeys(false)) {
+            if (plugin.playerConfig.get(key + ".ip") == IP) {
+                LoggerUtils.info(plugin, key);
+                banUser(key, source, reason);
+            }
+        }
+    }
+
+    public void banIpByUser(Player player, String source, String reason) {
+        for (String key : plugin.playerConfig.getKeys(false)) {
+            if (plugin.playerConfig.getString(key).equals(player.getUniqueId().toString())) {
+                banIP(player.getAddress().getHostString(), source, reason);
+            }
+        }
+    }
+
     public void banUser(UUID uuid, String source, String reason) {
         String player = TCP_Util.UUIDToPlayer(uuid);
         String IP = IpUtils.toEscapedString(plugin.playerConfig.getString(uuid + ".ip"));
@@ -48,6 +70,46 @@ public class TCP_Ban {
         plugin.bans.set("bans." + uuid + ".source", source);
         plugin.bans.set("bans." + uuid + ".reason", reason);
         plugin.bans.set("bans." + uuid + ".time", TCP_Time.getLongDate());
+    }
+
+    public void banUsers(List<Player> player, String source, String reason) {
+        player.stream().forEach((Player p) -> {
+            banUser(p, source, reason);
+        });
+    }
+
+    public void banUsers(Player[] player, String source, String reason) {
+        for (Player p : player) {
+            banUser(p, source, reason);
+        }
+    }
+
+    public void banUser(List<String> player, String source, String reason) {
+        player.stream().forEach((String p) -> {
+            banUser(p, source, reason);
+        });
+    }
+
+    public void banUser(String[] player, String source, String reason) {
+        for (String p : player) {
+            banUser(player, source, reason);
+        }
+    }
+
+    public void banStartsWith(String prefix, String source, String reason) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
+                banUser(p, source, reason);
+            }
+        }
+    }
+
+    public void banEndsWith(String suffix, String source, String reason) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.getName().toLowerCase().endsWith(suffix.toLowerCase())) {
+                banUser(p, source, reason);
+            }
+        }
     }
 
     public void unbanUser(Player player) {

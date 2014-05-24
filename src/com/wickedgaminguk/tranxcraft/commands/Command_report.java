@@ -25,7 +25,8 @@ public class Command_report extends BukkitCommand<TranxCraft> {
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        
+        TCP_Time TCP_Time = new TCP_Time();
+
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Incorrect Usage");
             return false;
@@ -43,7 +44,7 @@ public class Command_report extends BukkitCommand<TranxCraft> {
             playerSender.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 1200, 50));
             return true;
         }
-        
+
         if (TCP_ModeratorList.isPlayerMod(player)) {
             sender.sendMessage(ChatColor.RED + "You may not report " + player.getName() + ", they are a moderator. For issues with our moderators, report them on our forums.");
             return true;

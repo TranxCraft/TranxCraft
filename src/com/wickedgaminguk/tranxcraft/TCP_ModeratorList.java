@@ -22,7 +22,7 @@ public class TCP_ModeratorList {
 
     public AdminType getRank(Player player) {
         if (plugin.adminConfig.contains("admins." + player.getUniqueId().toString())) {
-            switch (plugin.adminConfig.getString("admins." + player.getUniqueId().toString() + ".rank")) {
+            switch (plugin.adminConfig.getString("admins." + player.getUniqueId().toString() + ".rank").toLowerCase()) {
                 case "moderator": {
                     return AdminType.MODERATOR;
                 }
@@ -46,7 +46,7 @@ public class TCP_ModeratorList {
     public AdminType getRank(CommandSender sender) {
         Player player = (Player) sender;
         if (plugin.adminConfig.contains("admins." + player.getUniqueId().toString())) {
-            switch (plugin.adminConfig.getString("admins." + player.getUniqueId().toString() + ".rank")) {
+            switch (plugin.adminConfig.getString("admins." + player.getUniqueId().toString() + ".rank").toLowerCase()) {
                 case "moderator": {
                     return AdminType.MODERATOR;
                 }
@@ -106,6 +106,22 @@ public class TCP_ModeratorList {
             plugin.adminConfig.save();
         }
     }
+    
+    public String getEmail(Player player) {
+        if (plugin.adminConfig.contains("admins." + player.getUniqueId().toString())) {
+            return plugin.adminConfig.getString("admins." + player.getUniqueId().toString() + ".email");
+        }
+        else {
+            return "";
+        }
+    }
+
+    public void setEmail(Player player, String email) {
+        if (plugin.adminConfig.contains("admins." + player.getUniqueId().toString())) {
+            plugin.adminConfig.set("admins." + player.getUniqueId().toString() + ".email", email);
+            plugin.adminConfig.save();
+        }
+    }
 
     public void remove(Player player) {
         plugin.adminConfig.set("admins." + player.getUniqueId().toString(), null);
@@ -125,4 +141,17 @@ public class TCP_ModeratorList {
     public boolean hasAdminChatEnabled(Player player) {
         return plugin.adminConfig.getBoolean("admins." + player.getUniqueId().toString() + ".adminchat_toggle");
     }
+    
+    public void toggleCommandViewer(Player player) {
+        if (plugin.adminConfig.getBoolean("admins." + player.getUniqueId().toString() + ".command_viewer") == false) {
+            plugin.adminConfig.set("admins." + player.getUniqueId().toString() + ".command_viewer", true);
+        }
+        else if (plugin.adminConfig.getBoolean("admins." + player.getUniqueId().toString() + ".command_viewer") == true) {
+            plugin.adminConfig.set("admins." + player.getUniqueId().toString() + ".command_viewer", false);
+        }
+    }
+
+    public boolean hasCommandViewerEnabled(Player player) {
+        return plugin.adminConfig.getBoolean("admins." + player.getUniqueId().toString() + ".command_viewer");
+    }    
 }

@@ -1,7 +1,6 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
 import com.wickedgaminguk.tranxcraft.TCP_PremiumList.PremiumType;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import org.bukkit.ChatColor;
@@ -15,9 +14,7 @@ public class Command_grapple extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_Util TCP_Util = new TCP_Util(plugin);
-
-        if (!(TCP_Util.hasPermission("tranxcraft.premium", sender) || TCP_Util.hasPermission(PremiumType.ONE, sender))) {
+        if (!(plugin.util.hasPermission("tranxcraft.premium", sender) || plugin.util.hasPermission(PremiumType.ONE, sender))) {
             return noPerms();
         }
 
@@ -27,14 +24,14 @@ public class Command_grapple extends BukkitCommand<TranxCraft> {
         }
 
         if (args.length > 1) {
-            sender.sendMessage(TCP_Util.invalidUsage);
+            sender.sendMessage(plugin.util.invalidUsage);
             return true;
         }
 
         if (args.length == 0) {
             String status;
 
-            if (TCP_Util.hasGrapple(playerSender)) {
+            if (plugin.util.hasGrapple(playerSender)) {
                 status = ChatColor.GREEN + "enabled.";
             }
             else {
@@ -46,28 +43,28 @@ public class Command_grapple extends BukkitCommand<TranxCraft> {
         }
 
         if (args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("on")) {
-            if (TCP_Util.hasGrapple(playerSender)) {
+            if (plugin.util.hasGrapple(playerSender)) {
                 sender.sendMessage(ChatColor.RED + "You already have grapple enabled.");
                 return true;
             }
 
-            TCP_Util.setGrapple(playerSender, true);
+            plugin.util.setGrapple(playerSender, true);
             sender.sendMessage(ChatColor.GREEN + "You have enabled grapple.");
 
-            if (!(TCP_Util.hasItem(playerSender, new ItemStack(Material.FISHING_ROD)))) {
-                TCP_Util.sendItem(playerSender, Material.FISHING_ROD, 1, null);
+            if (!(plugin.util.hasItem(playerSender, new ItemStack(Material.FISHING_ROD)))) {
+                plugin.util.sendItem(playerSender, Material.FISHING_ROD, 1, null);
             }
 
             return true;
         }
 
         if (args[0].equalsIgnoreCase("disable") || args[0].equalsIgnoreCase("off")) {
-            if (TCP_Util.hasGrapple(playerSender) == false) {
+            if (plugin.util.hasGrapple(playerSender) == false) {
                 sender.sendMessage(ChatColor.RED + "You already have grapple disabled.");
                 return true;
             }
 
-            TCP_Util.setGrapple(playerSender, false);
+            plugin.util.setGrapple(playerSender, false);
             sender.sendMessage(ChatColor.GREEN + "You have disabled grapple.");
             return true;
         }

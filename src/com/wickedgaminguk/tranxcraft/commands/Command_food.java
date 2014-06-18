@@ -1,7 +1,6 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
@@ -16,89 +15,87 @@ public class Command_food extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_Util TCP_Util = new TCP_Util(plugin);
-
-        if (!(TCP_Util.hasPermission("tranxcraft.moderator", sender) || TCP_Util.hasPermission(AdminType.MODERATOR, sender))) {
+        if (!(plugin.util.hasPermission("tranxcraft.moderator", sender) || plugin.util.hasPermission(AdminType.MODERATOR, sender))) {
             return noPerms();
         }
 
         if (args.length != 1) {
-            sender.sendMessage(TCP_Util.invalidUsage);
+            sender.sendMessage(plugin.util.invalidUsage);
             return false;
         }
 
         switch (args[0].toLowerCase()) {
             case "cake": {
-                TCP_Util.broadcastItem(Material.CAKE, 1, ChatColor.GREEN + "Free Cake for everyone!");
+                plugin.util.broadcastItem(Material.CAKE, 1, ChatColor.GREEN + "Free Cake for everyone!");
                 break;
             }
 
             case "cookie": {
-                TCP_Util.broadcastItem(Material.COOKIE, 64, ChatColor.GREEN + "Free Cookies for everyone!");
+                plugin.util.broadcastItem(Material.COOKIE, 64, ChatColor.GREEN + "Free Cookies for everyone!");
                 break;
             }
 
             case "melon": {
-                TCP_Util.broadcastItem(Material.MELON, 64, ChatColor.GREEN + "Free Melons for everyone!");
+                plugin.util.broadcastItem(Material.MELON, 64, ChatColor.GREEN + "Free Melons for everyone!");
                 break;
             }
 
             case "goldenapple": {
-                TCP_Util.broadcastItem(Material.GOLDEN_APPLE, 1, ChatColor.GREEN + "A free Golden Apple for everyone!");
+                plugin.util.broadcastItem(Material.GOLDEN_APPLE, 1, ChatColor.GREEN + "A free Golden Apple for everyone!");
                 break;
             }
 
             case "apple": {
-                TCP_Util.broadcastItem(Material.APPLE, 64, ChatColor.GREEN + "A free Apple for everyone!");
+                plugin.util.broadcastItem(Material.APPLE, 64, ChatColor.GREEN + "A free Apple for everyone!");
                 break;
             }
 
             case "porkchop": {
-                TCP_Util.broadcastItem(Material.PORK, 64, ChatColor.GREEN + "Free Pork for everyone!");
+                plugin.util.broadcastItem(Material.PORK, 64, ChatColor.GREEN + "Free Pork for everyone!");
                 break;
             }
 
             case "steak":
             case "beef": {
-                TCP_Util.broadcastItem(Material.COOKED_BEEF, 64, ChatColor.GREEN + "Free Beef for everyone!");
+                plugin.util.broadcastItem(Material.COOKED_BEEF, 64, ChatColor.GREEN + "Free Beef for everyone!");
                 break;
             }
 
             case "chicken": {
-                TCP_Util.broadcastItem(Material.COOKED_CHICKEN, 64, ChatColor.GREEN + "Free Chicken for everyone!");
+                plugin.util.broadcastItem(Material.COOKED_CHICKEN, 64, ChatColor.GREEN + "Free Chicken for everyone!");
                 break;
             }
 
             case "fish": {
-                TCP_Util.broadcastItem(Material.COOKED_FISH, 64, ChatColor.GREEN + "Free Fish for everyone!");
+                plugin.util.broadcastItem(Material.COOKED_FISH, 64, ChatColor.GREEN + "Free Fish for everyone!");
                 break;
             }
 
             case "stew":
             case "mushroomstew":
             case "mushroom": {
-                TCP_Util.broadcastItem(Material.MUSHROOM_SOUP, 1, ChatColor.GREEN + "Free Mushroom Stew for everyone!");
+                plugin.util.broadcastItem(Material.MUSHROOM_SOUP, 1, ChatColor.GREEN + "Free Mushroom Stew for everyone!");
                 break;
             }
 
             case "bread": {
-                TCP_Util.broadcastItem(Material.BREAD, 64, ChatColor.GREEN + "Free bread for everyone!");
+                plugin.util.broadcastItem(Material.BREAD, 64, ChatColor.GREEN + "Free bread for everyone!");
                 break;
             }
 
             case "potato": {
-                TCP_Util.broadcastItem(Material.POTATO, 1, ChatColor.GREEN + "A free Potato for everyone!");
+                plugin.util.broadcastItem(Material.POTATO, 1, ChatColor.GREEN + "A free Potato for everyone!");
                 break;
             }
 
             case "carrot":
             case "goldencarrot": {
-                TCP_Util.broadcastItem(Material.GOLDEN_CARROT, 64, ChatColor.GREEN + "Free Golden Carrots for everyone!");
+                plugin.util.broadcastItem(Material.GOLDEN_CARROT, 64, ChatColor.GREEN + "Free Golden Carrots for everyone!");
                 break;
             }
 
             case "pumpkinpie": {
-                TCP_Util.broadcastItem(Material.PUMPKIN_PIE, 1, ChatColor.GREEN + "Free pumpkin pie for everyone!");
+                plugin.util.broadcastItem(Material.PUMPKIN_PIE, 1, ChatColor.GREEN + "Free pumpkin pie for everyone!");
                 break;
             }
 

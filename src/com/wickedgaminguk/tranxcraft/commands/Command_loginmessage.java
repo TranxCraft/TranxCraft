@@ -1,8 +1,5 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
-import com.wickedgaminguk.tranxcraft.TCP_PremiumList;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.util.ChatUtils;
@@ -17,32 +14,28 @@ public class Command_loginmessage extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_PremiumList TCP_PremiumList = new TCP_PremiumList(plugin);
-        TCP_Util TCP_Util = new TCP_Util(plugin);
-
-        if (!(TCP_ModeratorList.isPlayerMod(playerSender) || TCP_PremiumList.isPlayerPremium(playerSender) || sender instanceof Player)) {
+        if (!(plugin.moderatorList.isPlayerMod(playerSender) || plugin.premiumList.isPlayerPremium(playerSender) || sender instanceof Player)) {
             return noPerms();
         }
 
         if (args.length == 0) {
-            sender.sendMessage(TCP_Util.invalidUsage);
+            sender.sendMessage(plugin.util.invalidUsage);
             return false;
         }
 
         String loginMessage;
 
-        if (TCP_ModeratorList.isPlayerMod(playerSender)) {
+        if (plugin.moderatorList.isPlayerMod(playerSender)) {
             loginMessage = StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ");
-            TCP_ModeratorList.setLoginMessage(playerSender, loginMessage);
-            sender.sendMessage(ChatColor.GREEN + "Set login message to: " + ChatUtils.colorize(TCP_ModeratorList.getLoginMessage(playerSender)));
+            plugin.moderatorList.setLoginMessage(playerSender, loginMessage);
+            sender.sendMessage(ChatColor.GREEN + "Set login message to: " + ChatUtils.colorize(plugin.moderatorList.getLoginMessage(playerSender)));
             return true;
         }
 
-        if (TCP_PremiumList.isPlayerPremium(playerSender)) {
+        if (plugin.premiumList.isPlayerPremium(playerSender)) {
             loginMessage = StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ");
-            TCP_PremiumList.setLoginMessage(playerSender, loginMessage);
-            sender.sendMessage(ChatColor.GREEN + "Set login message to: " + ChatUtils.colorize(TCP_PremiumList.getLoginMessage(playerSender)));
+            plugin.premiumList.setLoginMessage(playerSender, loginMessage);
+            sender.sendMessage(ChatColor.GREEN + "Set login message to: " + ChatUtils.colorize(plugin.premiumList.getLoginMessage(playerSender)));
             return true;
         }
 

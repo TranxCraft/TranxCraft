@@ -45,20 +45,18 @@ public class TCP_Ban {
     }
 
     public void banUserByIp(String IP, String source, String reason) {
-        for (String key : plugin.playerConfig.getKeys(false)) {
-            if (plugin.playerConfig.get(key + ".ip") == IP) {
-                LoggerUtils.info(plugin, key);
-                banUser(key, source, reason);
-            }
-        }
+        plugin.playerConfig.getKeys(false).stream().filter((key) -> (plugin.playerConfig.get(key + ".ip") == IP)).map((key) -> {
+            LoggerUtils.info(plugin, key);
+            return key;
+        }).forEach((key) -> {
+            banUser(key, source, reason);
+        });
     }
 
     public void banIpByUser(Player player, String source, String reason) {
-        for (String key : plugin.playerConfig.getKeys(false)) {
-            if (plugin.playerConfig.getString(key).equals(player.getUniqueId().toString())) {
-                banIP(player.getAddress().getHostString(), source, reason);
-            }
-        }
+        plugin.playerConfig.getKeys(false).stream().filter((key) -> (plugin.playerConfig.getString(key).equals(player.getUniqueId().toString()))).forEach((_item) -> {
+            banIP(player.getAddress().getHostString(), source, reason);
+        });
     }
 
     public void banUser(UUID uuid, String source, String reason) {
@@ -92,7 +90,7 @@ public class TCP_Ban {
 
     public void banUser(String[] player, String source, String reason) {
         for (String p : player) {
-            banUser(player, source, reason);
+            banUser(p, source, reason);
         }
     }
 

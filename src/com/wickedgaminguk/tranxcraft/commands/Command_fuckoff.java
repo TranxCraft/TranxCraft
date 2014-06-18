@@ -1,10 +1,7 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_Ban;
 import com.wickedgaminguk.tranxcraft.TCP_Mail.RecipientType;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
@@ -19,14 +16,9 @@ import org.bukkit.util.Vector;
 
 @CommandPermissions(source = SourceType.CONSOLE)
 public class Command_fuckoff extends BukkitCommand<TranxCraft> {
-
-    TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-    TCP_Util TCP_Util = new TCP_Util(plugin);
-    TCP_Ban TCP_Ban = new TCP_Ban(plugin);
-
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (!(TCP_Util.hasPermission("tranxcraft.exec", sender) || TCP_Util.hasPermission(AdminType.EXECUTIVE, sender))) {
+        if (!(plugin.util.hasPermission("tranxcraft.exec", sender) || plugin.util.hasPermission(AdminType.EXECUTIVE, sender))) {
             return noPerms();
         }
 
@@ -43,7 +35,7 @@ public class Command_fuckoff extends BukkitCommand<TranxCraft> {
         final String IP = player.getAddress().getHostString();
 
         // remove from TranxCraft Moderator Ranks
-        TCP_ModeratorList.remove(player);
+        plugin.moderatorList.remove(player);
 
         // remove from whitelist
         player.setWhitelisted(false);
@@ -52,10 +44,10 @@ public class Command_fuckoff extends BukkitCommand<TranxCraft> {
         player.setOp(false);
 
         // ban IP
-        TCP_Ban.banIP(IP, sender.getName(), "You've been fucked off, you must've done something " + ChatColor.UNDERLINE + "very" + ChatColor.RESET + " badly.");
+        plugin.ban.banIP(IP, sender.getName(), "You've been fucked off, you must've done something " + ChatColor.UNDERLINE + "very" + ChatColor.RESET + " badly.");
 
         // ban name
-        TCP_Ban.banUser(player, sender.getName(), "You've been fucked off, you must've done something " + ChatColor.UNDERLINE + "very" + ChatColor.RESET + " badly.");
+        plugin.ban.banUser(player, sender.getName(), "You've been fucked off, you must've done something " + ChatColor.UNDERLINE + "very" + ChatColor.RESET + " badly.");
 
         // set gamemode to survival
         player.setGameMode(GameMode.SURVIVAL);

@@ -1,9 +1,6 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_Ban;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
@@ -23,11 +20,7 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_Ban TCP_Ban = new TCP_Ban(plugin);
-        TCP_Util TCP_Util = new TCP_Util(plugin);
-
-        if (!(TCP_Util.hasPermission("tranxcraft.moderator", sender) || TCP_Util.hasPermission(AdminType.MODERATOR, sender))) {
+        if (!(plugin.util.hasPermission("tranxcraft.moderator", sender) || plugin.util.hasPermission(AdminType.MODERATOR, sender))) {
             return noPerms();
         }
 
@@ -50,7 +43,7 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
         }
 
         if (!sender.hasPermission("tranxcraft.override")) {
-            if (!((TCP_ModeratorList.isPlayerMod(player)))) {
+            if (!((plugin.moderatorList.isPlayerMod(player)))) {
                 sender.sendMessage(ChatColor.RED + "You may not ban " + player.getName());
                 return true;
             }
@@ -63,6 +56,8 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
         }
 
         Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + banReason);
+        
+        //Not using the Core Protect API because this seems to do a better job in my experience, I don't get why.
         Bukkit.dispatchCommand(sender, "co rollback " + player.getName() + " t:500d r:#global");
 
         //set gamemode to survival
@@ -78,7 +73,7 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
         }
 
         //Ban Username
-        TCP_Ban.banUser(player, sender.getName(), banReason);
+        plugin.ban.banUser(player, sender.getName(), banReason);
 
         // kick Player:
         player.kickPlayer(ChatColor.RED + "GTFO" + (banReason != null ? ("\nReason: " + ChatColor.YELLOW + banReason) : ""));

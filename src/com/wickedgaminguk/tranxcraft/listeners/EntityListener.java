@@ -1,6 +1,5 @@
 package com.wickedgaminguk.tranxcraft.listeners;
 
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import java.util.ArrayList;
 import net.pravian.bukkitlib.util.LocationUtils;
@@ -23,11 +22,9 @@ import org.bukkit.util.Vector;
 public class EntityListener implements Listener {
 
     private final TranxCraft plugin;
-    private final TCP_Util TCP_Util;
 
     public EntityListener(TranxCraft plugin) {
         this.plugin = plugin;
-        this.TCP_Util = new TCP_Util(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -71,7 +68,7 @@ public class EntityListener implements Listener {
         if (!(player.hasPermission("tranxcraft.grapple"))) {
         }
         else {
-            if (TCP_Util.hasGrapple(player)) {
+            if (plugin.util.hasGrapple(player)) {
                 if (plugin.cooldown.contains(player)) {
                     event.setCancelled(true);
                     return;
@@ -93,7 +90,7 @@ public class EntityListener implements Listener {
 
                 player.teleport(player.getLocation().add(0, 0.5, 0));
 
-                final Vector v = TCP_Util.getVectorForPoints(player.getLocation(), target);
+                final Vector v = plugin.util.getVectorForPoints(player.getLocation(), target);
 
                 event.getEntity().setVelocity(v);
 

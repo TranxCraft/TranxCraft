@@ -2,7 +2,6 @@ package com.wickedgaminguk.tranxcraft;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.pravian.bukkitlib.util.LoggerUtils;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -84,7 +83,7 @@ public class TCP_Mail {
             email.send();
         }
         catch (EmailException ex) {
-            LoggerUtils.severe(ex);
+            plugin.util.debug(ex);
         }
     }
 }

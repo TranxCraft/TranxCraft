@@ -2,10 +2,6 @@ package com.wickedgaminguk.tranxcraft.listeners;
 
 import com.vexsoftware.votifier.model.Vote;
 import com.vexsoftware.votifier.model.VotifierEvent;
-import com.wickedgaminguk.tranxcraft.TCP_Ban;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
-import com.wickedgaminguk.tranxcraft.TCP_PremiumList;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,17 +17,9 @@ import org.bukkit.event.server.ServerListPingEvent;
 public class ServerListener implements Listener {
 
     private final TranxCraft plugin;
-    private final TCP_ModeratorList TCP_ModeratorList;
-    private final TCP_PremiumList TCP_PremiumList;
-    private final TCP_Util TCP_Util;
-    private final TCP_Ban TCP_Ban;
 
     public ServerListener(TranxCraft plugin) {
         this.plugin = plugin;
-        this.TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        this.TCP_PremiumList = new TCP_PremiumList(plugin);
-        this.TCP_Util = new TCP_Util(plugin);
-        this.TCP_Ban = new TCP_Ban(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -41,30 +29,30 @@ public class ServerListener implements Listener {
         playerIP = playerIP.replaceAll("\\.", "-");
 
         try {
-            if (TCP_Util.getPlayerData().containsKey(playerIP)) {
-                final String player = TCP_Util.getPlayerData().get(playerIP);
+            if (plugin.util.getPlayerData().containsKey(playerIP)) {
+                final String player = plugin.util.getPlayerData().get(playerIP);
                 final String ip = event.getAddress().getHostAddress();
 
-                if (TCP_Ban.isUUIDBanned(player) || TCP_Ban.isIPBanned(ip)) {
+                if (plugin.ban.isUUIDBanned(player) || plugin.ban.isIPBanned(ip)) {
                     event.setMotd(ChatColor.RED + "Hey " + player + ", you are" + ChatColor.BOLD + " banned.");
                 }
-                else if (TCP_Util.isAdminMode() == true && !(plugin.adminConfig.getStringList("Admin_IPs").contains(ip))) {
+                else if (plugin.util.isAdminMode() == true && !(plugin.adminConfig.getStringList("Admin_IPs").contains(ip))) {
                     event.setMotd(ChatColor.RED + "Hey " + player + ", sadly, adminmode is on - come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                 }
                 else if (Bukkit.hasWhitelist() && Bukkit.getWhitelistedPlayers().contains(Bukkit.getOfflinePlayer(player)) == false) {
                     event.setMotd(ChatColor.RED + "Hey " + player + ", sadly, the whitelist is on - come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                 }
-                else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers() && !(TCP_ModeratorList.isPlayerMod(player) || TCP_PremiumList.isPlayerPremium(player))) {
+                else if (Bukkit.getOnlinePlayers().length >= Bukkit.getMaxPlayers() && !(plugin.moderatorList.isPlayerMod(player) || plugin.premiumList.isPlayerPremium(player))) {
                     event.setMotd(ChatColor.RED + "Hey " + player + ", sadly, the server is full - come back soon!" + ChatColor.LIGHT_PURPLE + " <3");
                 }
                 else {
                     event.setMotd(ChatColor.GREEN + "Welcome " + ChatColor.GOLD + (String) player + ChatColor.WHITE + " to " + ChatColor.GREEN + "TranxCraft " + ChatColor.WHITE + "- " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion());
                 }
             }
-            else if (TCP_Ban.isIPBanned(event.getAddress().getHostAddress())) {
+            else if (plugin.ban.isIPBanned(event.getAddress().getHostAddress())) {
                 event.setMotd(ChatColor.RED + "You are banned.");
             }
-            else if (TCP_Util.isAdminMode() == true) {
+            else if (plugin.util.isAdminMode() == true) {
                 event.setMotd(ChatColor.RED + "Adminmode enabled.");
             }
             else if (Bukkit.hasWhitelist()) {
@@ -90,12 +78,12 @@ public class ServerListener implements Listener {
         Vote vote = event.getVote();
         
         String player = vote.getUsername();
-        UUID playerId = TCP_Util.playerToUUID(player);
+        UUID playerId = plugin.util.playerToUUID(player);
         
-        TCP_Util.setVotes(playerId);
+        plugin.util.setVotes(playerId);
         
         Bukkit.broadcastMessage(ChatColor.GOLD + player + ChatColor.GREEN + " has voted for TranxCraft on " + vote.getServiceName() + "! They have been rewarded with $500!");
         
-        TCP_Util.depositPlayer(player, 500.0);
+        plugin.util.depositPlayer(player, 500.0);
     }
 }

@@ -1,5 +1,7 @@
 #TranxCraft Plugin Configuration File By WickedGamingUK
 ##
+auto-update: true
+##
 total_players: 0
 ##
 #Auto Broadcast  

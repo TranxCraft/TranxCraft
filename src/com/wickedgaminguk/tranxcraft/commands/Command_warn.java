@@ -1,10 +1,10 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_Util;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
-import com.wickedgaminguk.tranxcraft.TranxCraft;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
-import net.pravian.bukkitlib.command.*;
+import com.wickedgaminguk.tranxcraft.TranxCraft;
+import net.pravian.bukkitlib.command.BukkitCommand;
+import net.pravian.bukkitlib.command.CommandPermissions;
+import net.pravian.bukkitlib.command.SourceType;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -17,10 +17,7 @@ public class Command_warn extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_Util TCP_Util = new TCP_Util(plugin);
-
-        if (!(TCP_Util.hasPermission("tranxcraft.moderator", sender) || TCP_Util.hasPermission(AdminType.MODERATOR, sender))) {
+        if (!(plugin.util.hasPermission("tranxcraft.moderator", sender) || plugin.util.hasPermission(AdminType.MODERATOR, sender))) {
             return noPerms();
         }
 
@@ -48,8 +45,8 @@ public class Command_warn extends BukkitCommand<TranxCraft> {
         }
 
         if (!sender.hasPermission("tranxcraft.override")) {
-            if (!((TCP_ModeratorList.isPlayerMod(player)))) {
-                sender.sendMessage(ChatColor.RED + "You may not ban " + player.getName());
+            if (!((plugin.moderatorList.isPlayerMod(player)))) {
+                sender.sendMessage(ChatColor.RED + "You may not warn " + player.getName());
                 return true;
             }
         }

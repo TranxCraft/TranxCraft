@@ -1,10 +1,10 @@
 name: TranxCraft
 main: com.wickedgaminguk.tranxcraft.TranxCraft
-version: 2.0
+version: 2.1
 authors: [WickedGamingUK]
 description: The custom developed plugin for TranxCraft.
 website: https://www.tranxcraft.com/
-depend: [Vault, Votifier, Essentials]
+depend: [Vault, Votifier, Essentials, GroupManager]
 commands:
     tranxcraft:
         usage: /<command>
@@ -113,6 +113,10 @@ commands:
         usage: /<command> <player>
         description: Gets the UUID of a player.
         permissions: tranxcraft.moderator
+    getrank:
+        usage: /<command> <player>
+        description: Gets the rank of a player.
+        permissions: tranxcraft.moderator
     doublejump:
         usage: /<command> <enable|disable>
         description: Turn on or off Double Jump.
@@ -128,4 +132,17 @@ commands:
         usage: /<command> <email> <message>
         description: Sends an e-mail.
         permissions: tranxcraft.exec
+    getip:
+        usage: /<command> <player>
+        description: Gets the IP of a player.
+        permissions: tranxcraft.moderator
+    tweet:
+        usage: /<command> <tweet>
+        description: Tweets from the server's twitter.
+        permissions: tranxcraft.exec
+    commandviewer:
+        usage: /<command> <player>
+        description: Toggles command viewer.
+        aliases: [cmdviewer]
+        permissions: tranxcraft.moderator
       

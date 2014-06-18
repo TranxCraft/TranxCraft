@@ -1,10 +1,10 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_Util;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
-import com.wickedgaminguk.tranxcraft.TranxCraft;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
-import net.pravian.bukkitlib.command.*;
+import com.wickedgaminguk.tranxcraft.TranxCraft;
+import net.pravian.bukkitlib.command.BukkitCommand;
+import net.pravian.bukkitlib.command.CommandPermissions;
+import net.pravian.bukkitlib.command.SourceType;
 import net.pravian.bukkitlib.util.ChatUtils;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -20,17 +20,14 @@ public class Command_o extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_Util TCP_Util = new TCP_Util(plugin);
-
-        if (!(TCP_Util.hasPermission("tranxcraft.moderator", sender) || TCP_Util.hasPermission(AdminType.MODERATOR, sender))) {
+        if (!(plugin.util.hasPermission("tranxcraft.moderator", sender) || plugin.util.hasPermission(AdminType.MODERATOR, sender))) {
             return noPerms();
         }
 
         if (args.length == 0) {
             if (playerSender instanceof Player) {
-                TCP_ModeratorList.toggleAdminChat(playerSender);
-                if (TCP_ModeratorList.hasAdminChatEnabled(playerSender)) {
+                plugin.moderatorList.toggleAdminChat(playerSender);
+                if (plugin.moderatorList.hasAdminChatEnabled(playerSender)) {
                     sender.sendMessage(ChatColor.GREEN + "Toggled AdminChat on.");
                     return true;
                 }
@@ -59,7 +56,7 @@ public class Command_o extends BukkitCommand<TranxCraft> {
         if (!(sender instanceof Player)) {
             String playerName = " &4[" + sender.getName() + "]&f";
             Bukkit.broadcast(ChatUtils.colorize(prefix + playerName + ": &b" + msg), "tranxcraft.moderator");
-            LoggerUtils.info(ChatColor.stripColor(prefix + playerName + ": " + msg));
+            LoggerUtils.info(plugin, ChatColor.stripColor(prefix + playerName + ": " + msg));
         }
 
         return true;

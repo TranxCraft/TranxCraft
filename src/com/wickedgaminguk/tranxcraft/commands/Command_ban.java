@@ -1,15 +1,11 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_Ban;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import java.sql.SQLException;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import net.pravian.bukkitlib.command.CommandPermissions;
 import net.pravian.bukkitlib.command.SourceType;
-import net.pravian.bukkitlib.util.LoggerUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -24,11 +20,7 @@ public class Command_ban extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_Ban TCP_Ban = new TCP_Ban(plugin);
-        TCP_Util TCP_Util = new TCP_Util(plugin);
-
-        if (!(TCP_Util.hasPermission("tranxcraft.moderator", sender) || TCP_Util.hasPermission(AdminType.MODERATOR, sender))) {
+        if (!(plugin.util.hasPermission("tranxcraft.moderator", sender) || plugin.util.hasPermission(AdminType.MODERATOR, sender))) {
             return noPerms();
         }
 
@@ -51,7 +43,7 @@ public class Command_ban extends BukkitCommand<TranxCraft> {
         }
 
         if (!sender.hasPermission("tranxcraft.override")) {
-            if (!((TCP_ModeratorList.isPlayerMod(player)))) {
+            if (!((plugin.moderatorList.isPlayerMod(player)))) {
                 sender.sendMessage(ChatColor.RED + "You may not ban " + player.getName());
                 return true;
             }
@@ -72,13 +64,13 @@ public class Command_ban extends BukkitCommand<TranxCraft> {
         player.kickPlayer(ChatColor.RED + "You have been banned by " + sender.getName() + "." + (banReason != null ? ("\nReason: " + ChatColor.YELLOW + banReason) : ""));
 
         //Ban Username
-        TCP_Ban.banUser(player, sender.getName(), banReason);
+        plugin.ban.banUser(player, sender.getName(), banReason);
 
         try {
             plugin.updateDatabase("INSERT INTO bans (username, admin, reason, ip) VALUES ('" + player.getName() + "', '" + sender.getName() + "', '" + banReason + "', '" + player.getAddress().getHostString() + "');");
         }
         catch (SQLException ex) {
-            LoggerUtils.severe(plugin, ex);
+            plugin.util.debug(ex);
         }
 
         return true;

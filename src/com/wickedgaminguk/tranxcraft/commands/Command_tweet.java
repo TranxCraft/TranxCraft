@@ -5,10 +5,11 @@ import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-public class Command_sha512 extends BukkitCommand<TranxCraft> {
+public class Command_tweet extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
@@ -16,11 +17,19 @@ public class Command_sha512 extends BukkitCommand<TranxCraft> {
             return noPerms();
         }
 
-        if (args.length == 0) {
+        if (args.length != 1) {
             return false;
         }
 
-        sender.sendMessage(plugin.util.sha512Hash(StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ")));
+        String tweet = StringUtils.join(ArrayUtils.subarray(args, 0, args.length), " ");
+
+        if (tweet.length() > 140) {
+            sender.sendMessage(ChatColor.RED + "Tweets have a limit of 140 characters.");
+            return true;
+        }
+
+        plugin.twitter.tweet(tweet);
+
         return true;
     }
 }

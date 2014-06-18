@@ -19,9 +19,11 @@ import net.milkbowl.vault.permission.Permission;
 import net.pravian.bukkitlib.BukkitLib;
 import net.pravian.bukkitlib.command.BukkitCommandHandler;
 import net.pravian.bukkitlib.config.YamlConfig;
+import net.pravian.bukkitlib.implementation.BukkitLogger;
 import net.pravian.bukkitlib.implementation.BukkitPlugin;
 import net.pravian.bukkitlib.metrics.Metrics;
 import net.pravian.bukkitlib.util.LoggerUtils;
+import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -43,27 +45,35 @@ public class TranxCraft extends BukkitPlugin {
     public YamlConfig config;
     public YamlConfig playerConfig;
     public YamlConfig adminConfig;
-    public YamlConfig premiumConfig;
+    public YamlConfig premiumConfig;    
+    public YamlConfig pluginConfig;
     public YamlConfig bans;
     public BukkitCommandHandler handler;
+    public BukkitLogger logger;
     public Permission permission;
     public Economy economy;
     public PluginManager pm;
     public MySQL mySQL;
     public MySQL registration;
-    Connection mySQLConnection;
-    Connection registrationConnection;
     public TCP_Mail mail;
     public TCP_Twitter twitter;
     public TCP_Util util;
     public TCP_ModeratorList moderatorList;
     public TCP_PremiumList premiumList;
     public TCP_Time time;
+    public TCP_Shop shop;
+    public TCP_Logger tranxcraftLogger;
+    public TCP_Ban ban;
+    public TCP_PluginHandler pluginHandler;
+    public GroupManagerBridge groupManager;
     public Scoreboard board;
     public Objective o;
     public HashMap<String, Score> kills = new HashMap<>();
     public HashMap<String, Score> deaths = new HashMap<>();
-    public HashMap<String, Score> kd = new HashMap<>();
+    public HashMap<String, Score> kd = new HashMap<>();    
+    
+    private Connection mySQLConnection;
+    private Connection registrationConnection;
 
     @Override
     public void onLoad() {
@@ -72,15 +82,22 @@ public class TranxCraft extends BukkitPlugin {
         playerConfig = new YamlConfig(plugin, "players.yml");
         adminConfig = new YamlConfig(plugin, "admins.yml");
         premiumConfig = new YamlConfig(plugin, "premium.yml");
+        pluginConfig = new YamlConfig(plugin, "plugins.yml");
         bans = new YamlConfig(plugin, "bans.yml");
         playerLogins = new HashMap<>();
         handler = new BukkitCommandHandler(plugin);
+        logger = new BukkitLogger(plugin);
         mail = new TCP_Mail(plugin);
         twitter = new TCP_Twitter(plugin);
         util = new TCP_Util(plugin);
         moderatorList = new TCP_ModeratorList(plugin);
-        premiumList = new TCP_PremiumList(plugin);
+        premiumList = new TCP_PremiumList(plugin);        
+        shop = new TCP_Shop(plugin);
+        tranxcraftLogger = new TCP_Logger(plugin);
+        ban = new TCP_Ban(plugin);
+        pluginHandler = new TCP_PluginHandler();
         time = new TCP_Time();
+        groupManager = new GroupManagerBridge((GroupManager) Bukkit.getServer().getPluginManager().getPlugin("GroupManager"));
     }
 
     @Override
@@ -93,18 +110,17 @@ public class TranxCraft extends BukkitPlugin {
         playerConfig.load();
         adminConfig.load();
         premiumConfig.load();
+        pluginConfig.load();
         bans.load();
 
         mySQL = new MySQL(plugin, config.getString("hostname"), config.getString("port"), config.getString("database"), config.getString("user"), config.getString("password"));
         registration = new MySQL(plugin, config.getString("registration_hostname"), config.getString("registration_port"), config.getString("registration_database"), config.getString("registration_user"), config.getString("registration_password"));
-                
-        mySQLConnection = mySQL.openConnection();        
+
+        mySQLConnection = mySQL.openConnection();
         registrationConnection = registration.openConnection();
-        
+
         twitter.init();
-
-        LoggerUtils.info(plugin.getName() + " v." + plugin.getVersion() + " by " + plugin.getAuthor() + " is enabled");
-
+        
         new TCP_Scheduler(plugin).runTaskTimer(plugin, config.getInt("interval") * 20L, config.getInt("interval") * 20L);
         new TCP_UCP(plugin).runTaskTimer(plugin, 6000L, 6000L);
 
@@ -131,6 +147,13 @@ public class TranxCraft extends BukkitPlugin {
         o.setDisplaySlot(DisplaySlot.SIDEBAR);
         
         try {
+            util.update();
+        }
+        catch (IOException ex) {
+            LoggerUtils.info(ex.getMessage());
+        }
+        
+        try {
             Metrics metrics = new Metrics(this);
             metrics.start();
             LoggerUtils.info(plugin, "Metrics have started.");
@@ -138,6 +161,8 @@ public class TranxCraft extends BukkitPlugin {
         catch (IOException ex) {
             LoggerUtils.severe(plugin, "Plugin Metrics failed to submit to McStats.\n " + ex);
         }
+        
+        LoggerUtils.info(plugin.getName() + " v" + plugin.getVersion() + " by " + plugin.getAuthor() + " is enabled");
     }
 
     @Override
@@ -151,19 +176,16 @@ public class TranxCraft extends BukkitPlugin {
     }
 
     public void updateDatabase(String SQLquery) throws SQLException {
-        Connection c = mySQL.openConnection();
-        Statement statement = c.createStatement();
+        Statement statement = mySQLConnection.createStatement();
         statement.executeUpdate(SQLquery);
     }
 
     public ResultSet getValueFromDB(String SQLquery) throws SQLException {
-        Connection c = mySQL.openConnection();
-        Statement statement = c.createStatement();
+        Statement statement = mySQLConnection.createStatement();
         ResultSet res = statement.executeQuery(SQLquery);
-        res.next();
         return res;
     }
-    
+
     public void updateRegistrationDatabase(String SQLquery) throws SQLException {
         Statement statement = registrationConnection.createStatement();
         statement.executeUpdate(SQLquery);

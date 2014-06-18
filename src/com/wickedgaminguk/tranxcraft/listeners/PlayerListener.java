@@ -1,11 +1,7 @@
 package com.wickedgaminguk.tranxcraft.listeners;
 
 import com.earth2me.essentials.User;
-import com.wickedgaminguk.tranxcraft.TCP_Ban;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
-import com.wickedgaminguk.tranxcraft.TCP_PremiumList;
 import com.wickedgaminguk.tranxcraft.TCP_UCP;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +27,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -46,17 +43,9 @@ public class PlayerListener implements Listener {
     private final Map<String, String> playerData = new HashMap();
 
     private final TranxCraft plugin;
-    private final TCP_ModeratorList TCP_ModeratorList;
-    private final TCP_PremiumList TCP_PremiumList;
-    private final TCP_Util TCP_Util;
-    private final TCP_Ban TCP_Ban;
 
     public PlayerListener(TranxCraft plugin) {
         this.plugin = plugin;
-        this.TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        this.TCP_PremiumList = new TCP_PremiumList(plugin);
-        this.TCP_Util = new TCP_Util(plugin);
-        this.TCP_Ban = new TCP_Ban(plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -64,23 +53,23 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         String IP = event.getAddress().getHostAddress().trim();
 
-        if (TCP_Util.permBan.contains(player.getUniqueId().toString())) {
+        if (plugin.util.permBan.contains(player.getUniqueId().toString())) {
             if (player.getUniqueId().toString().equals("3d4ad828721f44a4b6e1a18aeac31f88")) {
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "xXWilee999Xx, you are a pot stirring fuck, you're not allowed on TranxCraft, ever.");
             }
             else {
-                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + TCP_Util.UUIDToPlayer(player.getUniqueId()) + ", you are permbanned, you are " + ChatColor.UNDERLINE + "never" + ChatColor.RESET + ChatColor.RED + " allowed on TranxCraft again.");
+                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + plugin.util.UUIDToPlayer(player.getUniqueId()) + ", you are permbanned, you are " + ChatColor.UNDERLINE + "never" + ChatColor.RESET + ChatColor.RED + " allowed on TranxCraft again.");
             }
         }
 
-        if (TCP_Ban.isUUIDBanned(player)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + TCP_Util.UUIDToPlayer(player.getUniqueId()) + ", your UUID is banned.\nReason: " + ChatColor.YELLOW + TCP_Ban.getBanReason(player) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
+        if (plugin.ban.isUUIDBanned(player)) {
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + plugin.util.UUIDToPlayer(player.getUniqueId()) + ", your UUID is banned.\nReason: " + ChatColor.YELLOW + plugin.ban.getBanReason(player) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
         }
-        else if (TCP_Ban.isIPBanned(IP)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + TCP_Util.UUIDToPlayer(player.getUniqueId()) + ", your IP is banned.\nReason: " + ChatColor.YELLOW + TCP_Ban.getIPBanReason(IP) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
+        else if (plugin.ban.isIPBanned(IP)) {
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + plugin.util.UUIDToPlayer(player.getUniqueId()) + ", your IP is banned.\nReason: " + ChatColor.YELLOW + plugin.ban.getIPBanReason(IP) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
         }
 
-        if (!(TCP_ModeratorList.isPlayerMod(player))) {
+        if (!(plugin.moderatorList.isPlayerMod(player))) {
             if (plugin.config.getBoolean("adminmode") == true) {
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "TranxCraft is currently open to moderators and admins only - sorry about that.");
                 return;
@@ -88,8 +77,8 @@ public class PlayerListener implements Listener {
         }
 
         if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
-            if (TCP_ModeratorList.isPlayerMod(player) || TCP_PremiumList.isPlayerPremium(player)) {
-                TCP_Util.kickPlayer(player, event);
+            if (plugin.moderatorList.isPlayerMod(player) || plugin.premiumList.isPlayerPremium(player)) {
+                plugin.util.kickPlayer(player, event);
                 event.allow();
                 Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + ChatColor.GREEN + " is a reserved member!");
             }
@@ -140,35 +129,40 @@ public class PlayerListener implements Listener {
         plugin.config.set("total_players", totalPlayers);
         plugin.config.save();
 
-        Bukkit.broadcastMessage(ChatColor.BLUE + "[Player Counter] " + totalPlayers + " players & " + TCP_Util.getTotalUniquePlayers() + " unique players have joined in total.");
+        Bukkit.broadcastMessage(ChatColor.BLUE + "[Player Counter] " + totalPlayers + " players & " + plugin.util.getTotalUniquePlayers() + " unique players have joined in total.");
 
         final Player player = event.getPlayer();
+        if (plugin.moderatorList.isPlayerMod(player)) {
+            if (!(plugin.moderatorList.getLoginMessage(player).equals(""))) {
+                Bukkit.broadcastMessage(ChatUtils.colorize(plugin.moderatorList.getLoginMessage(player)));
+            }
+            else {
+                switch (plugin.moderatorList.getRank(player)) {
+                    case EXECUTIVE: {
+                        Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an executive Admin.");
+                    }
 
-        if (!(TCP_ModeratorList.getLoginMessage(player).equals(""))) {
-            Bukkit.broadcastMessage(ChatUtils.colorize(TCP_ModeratorList.getLoginMessage(player)));
-        }
-        else {
-            switch (TCP_ModeratorList.getRank(player)) {
-                case EXECUTIVE: {
-                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an executive Admin.");
-                }
+                    case LEADADMIN: {
+                        Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a lead Admin.");
+                    }
 
-                case LEADADMIN: {
-                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a lead Admin.");
-                }
+                    case ADMIN: {
+                        Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an " + ChatColor.GOLD + "Admin.");
+                    }
 
-                case ADMIN: {
-                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is an " + ChatColor.GOLD + "Admin.");
-                }
-
-                case MODERATOR: {
-                    Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.DARK_PURPLE + "Moderator.");
+                    case MODERATOR: {
+                        Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is a " + ChatColor.DARK_PURPLE + "Moderator.");
+                    }
                 }
             }
-        }
 
-        if (TCP_PremiumList.isPlayerPremium(player)) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is " + ChatColor.LIGHT_PURPLE + "Premium! <3");
+            if (plugin.premiumList.isPlayerPremium(player)) {
+                Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is " + ChatColor.LIGHT_PURPLE + "Premium! <3");
+            }
+        }
+        
+        if (player.getName().equals("Anna_Mac")) {
+            Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "The glorious Anna is here!");
         }
 
         player.setScoreboard(plugin.board);
@@ -197,7 +191,7 @@ public class PlayerListener implements Listener {
                 @Override
                 public void run() {
                     player.sendMessage(ChatColor.GREEN + "Welcome to TranxCraft!\nBefore you can continue, please read the following rules and then accept them with /acceptrules to become Member.");
-                    Bukkit.dispatchCommand(player, "rules");
+                    player.performCommand("rules");
                     player.sendMessage(ChatColor.GREEN + "Remember to read these rules and accept them with /acceptrules !");
                 }
             }.runTaskLater(plugin, 40L);
@@ -211,8 +205,8 @@ public class PlayerListener implements Listener {
 
         serverUtilities.setItemMeta(serverUtilitiesMeta);
 
-        if (!(TCP_Util.hasItem(player, serverUtilities))) {
-            TCP_Util.sendItem(player, serverUtilities, null);
+        if (!(plugin.util.hasItem(player, serverUtilities))) {
+            plugin.util.sendItem(player, serverUtilities, null);
         }
     }
 
@@ -223,7 +217,7 @@ public class PlayerListener implements Listener {
 
         if (!(a == Action.PHYSICAL || is == null || is.getType() == Material.AIR)) {
             if (is.getType() == Material.BLAZE_ROD) {
-                TCP_Util.openGUI(event.getPlayer());
+                plugin.util.openGUI(event.getPlayer());
             }
         }
     }
@@ -248,14 +242,14 @@ public class PlayerListener implements Listener {
                 }
 
                 case BOW: {
-                    TCP_Util.teleport(player.getWorld(), player, 116, 66, 315);
+                    plugin.util.teleport(player.getWorld(), player, 116, 66, 315);
                     player.closeInventory();
                     player.sendMessage(ChatColor.GREEN + "You have successfully teleported to the Survival Games Lobby!");
                     break;
                 }
 
                 case GOLD_BLOCK: {
-                    TCP_Util.teleport(player.getWorld(), player, 265, 71, 409);
+                    plugin.util.teleport(player.getWorld(), player, 265, 71, 409);
                     player.closeInventory();
                     player.sendMessage(ChatColor.GREEN + "You have successfully teleported to the Shop!");
                     break;
@@ -265,7 +259,7 @@ public class PlayerListener implements Listener {
                     if (event.getCurrentItem().hasItemMeta()) {
                         switch (ChatColor.stripColor(event.getCurrentItem().getItemMeta().getDisplayName())) {
                             case "Adeam Kingdom": {
-                                TCP_Util.teleport(player.getWorld(), player, 1100, 69, -92);
+                                plugin.util.teleport(player.getWorld(), player, 1100, 69, -92);
                                 break;
                             }
                         }
@@ -274,7 +268,7 @@ public class PlayerListener implements Listener {
                 }
 
                 case BED: {
-                    User playerUser = TCP_Util.getEssentialsUser(player.getName());
+                    User playerUser = plugin.util.getEssentialsUser(player.getName());
                     Location spawnPoint;
 
                     try {
@@ -306,7 +300,7 @@ public class PlayerListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        if (TCP_Util.hasDoubleJump(player) && TCP_Util.hasPermission("tranxcraft.premium", player) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().subtract(0, 1, 0).getBlock().getType() != Material.AIR) && (!player.isFlying())) {
+        if (plugin.util.hasDoubleJump(player) && plugin.util.hasPermission("tranxcraft.premium", player) && (player.getGameMode() != GameMode.CREATIVE) && (player.getLocation().subtract(0, 1, 0).getBlock().getType() != Material.AIR) && (!player.isFlying())) {
             player.setAllowFlight(true);
         }
     }
@@ -315,7 +309,7 @@ public class PlayerListener implements Listener {
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
 
-        if (TCP_Util.hasDoubleJump(player) && TCP_Util.hasPermission("tranxcraft.premium", player) && !(player.getGameMode() == GameMode.CREATIVE)) {
+        if (plugin.util.hasDoubleJump(player) && plugin.util.hasPermission("tranxcraft.premium", player) && !(player.getGameMode() == GameMode.CREATIVE)) {
             event.setCancelled(true);
             player.setAllowFlight(false);
             player.setFlying(false);
@@ -329,9 +323,18 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (TCP_ModeratorList.hasAdminChatEnabled(event.getPlayer())) {
+        if (plugin.moderatorList.hasAdminChatEnabled(event.getPlayer())) {
             event.getPlayer().performCommand("o " + event.getMessage());
             event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPreprocessCommand(PlayerCommandPreprocessEvent event) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (plugin.moderatorList.hasCommandViewerEnabled(player)) {
+                player.sendMessage(ChatColor.GRAY + ChatColor.stripColor(event.getPlayer().getName() + ": " + event.getMessage()));
+            }
         }
     }
 

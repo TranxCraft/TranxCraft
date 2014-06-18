@@ -1,8 +1,6 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
 import com.wickedgaminguk.tranxcraft.TCP_Mail.RecipientType;
-import com.wickedgaminguk.tranxcraft.TCP_ModeratorList;
-import com.wickedgaminguk.tranxcraft.TCP_Time;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import java.sql.SQLException;
 import net.pravian.bukkitlib.command.BukkitCommand;
@@ -24,9 +22,6 @@ public class Command_report extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_ModeratorList TCP_ModeratorList = new TCP_ModeratorList(plugin);
-        TCP_Time TCP_Time = new TCP_Time();
-
         if (args.length < 2) {
             sender.sendMessage(ChatColor.RED + "Incorrect Usage");
             return false;
@@ -45,7 +40,7 @@ public class Command_report extends BukkitCommand<TranxCraft> {
             return true;
         }
 
-        if (TCP_ModeratorList.isPlayerMod(player)) {
+        if (plugin.moderatorList.isPlayerMod(player)) {
             sender.sendMessage(ChatColor.RED + "You may not report " + player.getName() + ", they are a moderator. For issues with our moderators, report them on our forums.");
             return true;
         }
@@ -61,12 +56,12 @@ public class Command_report extends BukkitCommand<TranxCraft> {
         plugin.mail.send(RecipientType.ALL, "TranxCraft Reports - User " + Reported + " has been reported", "Hey, just to let you know, " + Reported + " has been reported by " + Reporter + " for " + Report);
 
         try {
-            plugin.updateDatabase("INSERT INTO reports (Reported, Reporter, Report, Time, Status) VALUES ('" + Reported + "', '" + Reporter + "', '" + Report + "', '" + TCP_Time.getLongDate() + "', 'open');");
+            plugin.updateDatabase("INSERT INTO reports (Reported, Reporter, Report, Time, Status) VALUES ('" + Reported + "', '" + Reporter + "', '" + Report + "', '" + plugin.time.getLongDate() + "', 'open');");
             LoggerUtils.info(plugin, "New Report Added by: " + Reporter);
         }
         catch (SQLException ex) {
             sender.sendMessage("Error submitting report to Database.");
-            LoggerUtils.severe(plugin, ex);
+            plugin.util.debug(ex);
         }
 
         return true;

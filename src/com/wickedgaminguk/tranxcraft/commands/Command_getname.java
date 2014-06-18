@@ -1,7 +1,6 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
-import com.wickedgaminguk.tranxcraft.TCP_Util;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import java.util.UUID;
 import net.pravian.bukkitlib.command.BukkitCommand;
@@ -16,9 +15,7 @@ public class Command_getname extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_Util TCP_Util = new TCP_Util(plugin);
-
-        if (!(TCP_Util.hasPermission("tranxcraft.moderator", sender) || TCP_Util.hasPermission(AdminType.MODERATOR, sender))) {
+        if (!(plugin.util.hasPermission("tranxcraft.moderator", sender) || plugin.util.hasPermission(AdminType.MODERATOR, sender))) {
             return noPerms();
         }
 
@@ -36,7 +33,7 @@ public class Command_getname extends BukkitCommand<TranxCraft> {
             return true;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "The Current Player Name of " + ChatColor.GOLD + uuid.toString() + ChatColor.GREEN + " is: " + ChatColor.GOLD + TCP_Util.UUIDToPlayer(uuid));
+        sender.sendMessage(ChatColor.GREEN + "The Current Player Name of " + ChatColor.GOLD + uuid.toString() + ChatColor.GREEN + " is: " + ChatColor.GOLD + plugin.util.UUIDToPlayer(uuid));
 
         return true;
     }

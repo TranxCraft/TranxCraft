@@ -1,6 +1,6 @@
 /*
  UUID Fetcher made by evilmidget38: http://forums.bukkit.org/threads/player-name-uuid-fetcher.250926/
- */
+*/
 package com.wickedgaminguk.tranxcraft;
 
 import com.google.common.collect.ImmutableList;

@@ -12,32 +12,34 @@ public class TCP_UCP extends BukkitRunnable {
     private final TranxCraft plugin;
     private final TCP_Util TCP_Util;
     private final TCP_Time TCP_Time;
+    private final TCP_Logger logger;
 
     public TCP_UCP(TranxCraft instance) {
         this.plugin = instance;
         this.TCP_Util = new TCP_Util(plugin);
         this.TCP_Time = new TCP_Time();
+        this.logger = plugin.tranxcraftLogger;
     }
 
     @Override
     public void run() {
-        LoggerUtils.info(plugin, "Starting UCP Sync Now.");
+        logger.info(plugin, "Starting UCP Sync Now.");
 
         if (Bukkit.getOnlinePlayers().length == 0) {
-            LoggerUtils.info(plugin, "No players online, recreating table...");
+            logger.info(plugin, "No players online, recreating table...");
 
             try {
                 plugin.updateDatabase("DROP TABLE players");
                 plugin.updateDatabase("CREATE TABLE players ( ID INT NOT NULL AUTO_INCREMENT, InGameName CHAR(30), OnlineTime CHAR(30), Rank CHAR(30), LastUpdated CHAR(30), PRIMARY KEY(ID) )");
                 plugin.updateDatabase("INSERT INTO players (LastUpdated) VALUES ('" + TCP_Time.getUnixTimestamp() + "');");
-                LoggerUtils.info(plugin, "Table Recreated");
+                logger.info(plugin, "Table Recreated");
             }
             catch (SQLException ex) {
                 LoggerUtils.severe(plugin, "SQL Connection Failed.");
-                LoggerUtils.severe(ex);
+                plugin.util.debug(ex);
             }
 
-            LoggerUtils.info(plugin, "UCP Sync Finished.");
+            logger.info(plugin, "UCP Sync Finished.");
         }
 
         if (Bukkit.getOnlinePlayers().length != 0) {
@@ -46,8 +48,8 @@ public class TCP_UCP extends BukkitRunnable {
                 plugin.updateDatabase("CREATE TABLE players ( ID INT NOT NULL AUTO_INCREMENT, InGameName CHAR(30), OnlineTime CHAR(30), Rank CHAR(30), LastUpdated CHAR(30), PRIMARY KEY(ID) )");
             }
             catch (SQLException ex) {
-                LoggerUtils.severe(plugin, "SQL Connection Failed.");
-                LoggerUtils.severe(ex);
+                logger.severe(plugin, "SQL Connection Failed.");
+                plugin.util.debug(ex);
             }
 
             for (Player player : plugin.getServer().getOnlinePlayers()) {
@@ -67,20 +69,20 @@ public class TCP_UCP extends BukkitRunnable {
                 String playerName = player.getName();
 
                 long Unix = TimeUtils.getUnix();
-                long PlayerTime = plugin.playerLogins.get(player.getUniqueId().toString());
-                final long currentOnlineTime = (Unix - PlayerTime);
+                long playerTime = plugin.playerLogins.get(player.getUniqueId().toString());
+                final long currentOnlineTime = (Unix - playerTime);
 
                 try {
                     plugin.updateDatabase("INSERT INTO players (InGameName, OnlineTime, Rank, LastUpdated) VALUES ('" + playerName + "', " + currentOnlineTime + ", '" + playerPermission + "', '" + TCP_Time.getUnixTimestamp() + "');");
                 }
                 catch (SQLException ex) {
-                    LoggerUtils.severe(plugin, "SQL Connection Failed.");
-                    LoggerUtils.severe(ex);
+                    logger.severe(plugin, "SQL Connection Failed.");
+                    plugin.util.debug(ex);
                 }
 
             }
 
-            LoggerUtils.info(plugin, "UCP Sync Finished.");
+            logger.info(plugin, "UCP Sync Finished.");
         }
     }
 }

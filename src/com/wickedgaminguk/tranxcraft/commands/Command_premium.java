@@ -1,6 +1,5 @@
 package com.wickedgaminguk.tranxcraft.commands;
 
-import com.wickedgaminguk.tranxcraft.TCP_PremiumList;
 import com.wickedgaminguk.tranxcraft.TCP_PremiumList.PremiumType;
 import com.wickedgaminguk.tranxcraft.TranxCraft;
 import net.pravian.bukkitlib.command.BukkitCommand;
@@ -17,8 +16,6 @@ public class Command_premium extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        TCP_PremiumList TCP_PremiumList = new TCP_PremiumList(plugin);
-
         if (args.length != 3) {
             return false;
         }
@@ -34,21 +31,21 @@ public class Command_premium extends BukkitCommand<TranxCraft> {
             String playerName = player.getName();
 
             if (args[1].equalsIgnoreCase("one")) {
-                TCP_PremiumList.add(PremiumType.ONE, player);
+                plugin.premiumList.add(PremiumType.ONE, player);
                 Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level one premium rank, congratulations!");
 
                 plugin.twitter.tweet("Say congratulations to " + playerName + ", they have just bought a Level One Premium Rank!");
             }
 
             if (args[1].equalsIgnoreCase("two")) {
-                TCP_PremiumList.add(PremiumType.TWO, player);
+                plugin.premiumList.add(PremiumType.TWO, player);
                 Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level two premium rank, congratulations!");
 
                 plugin.twitter.tweet("Say congratulations to " + playerName + ", they have just bought a Level two Premium Rank!");
             }
 
             if (args[1].equalsIgnoreCase("three")) {
-                TCP_PremiumList.add(PremiumType.THREE, player);
+                plugin.premiumList.add(PremiumType.THREE, player);
                 Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has bought a level three premium rank, congratulations!");
 
                 plugin.twitter.tweet("Say congratulations to " + playerName + ", they have just bought a Level three Premium Rank!");
@@ -58,7 +55,7 @@ public class Command_premium extends BukkitCommand<TranxCraft> {
         if (args[0].equalsIgnoreCase("remove")) {
             player = getPlayer(args[1]);
             String playerName = player.getName();
-            TCP_PremiumList.remove(player);
+            plugin.premiumList.remove(player);
 
             Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been striped of their premium privileges!");
         }

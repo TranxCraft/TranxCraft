@@ -24,7 +24,7 @@ public class Command_getip extends BukkitCommand<TranxCraft> {
         }
 
         String player = args[0];
-        UUID uuid = plugin.util.playerToUUID(player);
+        UUID uuid = plugin.util.playerToUuid(player);
 
         sender.sendMessage(ChatColor.GOLD + player + ChatColor.GREEN + "'s IP is: " + ChatColor.GOLD + plugin.util.getIp(uuid));
 

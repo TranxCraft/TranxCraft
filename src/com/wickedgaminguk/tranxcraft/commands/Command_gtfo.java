@@ -56,7 +56,7 @@ public class Command_gtfo extends BukkitCommand<TranxCraft> {
         }
 
         Bukkit.broadcastMessage(ChatColor.RED + "" + sender.getName() + " - banning " + player.getName() + " for " + banReason);
-        
+
         //Not using the Core Protect API because this seems to do a better job in my experience, I don't get why.
         Bukkit.dispatchCommand(sender, "co rollback " + player.getName() + " t:500d r:#global");
 

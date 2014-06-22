@@ -11,9 +11,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class BlockListener implements Listener {
-    
+
     TranxCraft plugin;
-    
+
     public BlockListener(TranxCraft plugin) {
         this.plugin = plugin;
     }

@@ -25,7 +25,7 @@ public class TCP_Twitter {
         AccessToken oathAccessToken = new AccessToken(ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
 
         twitter.setOAuthAccessToken(oathAccessToken);
-        
+
         try {
             LoggerUtils.info("Tweeting: " + tweet);
             twitter.updateStatus(tweet);

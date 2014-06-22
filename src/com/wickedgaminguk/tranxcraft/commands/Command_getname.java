@@ -33,7 +33,7 @@ public class Command_getname extends BukkitCommand<TranxCraft> {
             return true;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "The Current Player Name of " + ChatColor.GOLD + uuid.toString() + ChatColor.GREEN + " is: " + ChatColor.GOLD + plugin.util.UUIDToPlayer(uuid));
+        sender.sendMessage(ChatColor.GREEN + "The Current Player Name of " + ChatColor.GOLD + uuid.toString() + ChatColor.GREEN + " is: " + ChatColor.GOLD + plugin.util.uuidToPlayer(uuid));
 
         return true;
     }

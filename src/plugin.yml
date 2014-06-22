@@ -145,4 +145,12 @@ commands:
         description: Toggles command viewer.
         aliases: [cmdviewer]
         permissions: tranxcraft.moderator
+    backpack:
+        usage: /<command>
+        description: Opens the backpack, if the player has bought one.
+        aliases: [bp]
+    buybackpack:
+        usage: /<command>
+        description: Buys a backpack - costs $100.
+        aliases: [bbp]
       

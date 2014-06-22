@@ -15,7 +15,7 @@ public class TCP_Logger {
         this.plugin = plugin;
     }
 
-    private void write(String message) {        
+    private void write(String message) {
         try {
             File file = new File(plugin.getDataFolder() + "/log.log");
 

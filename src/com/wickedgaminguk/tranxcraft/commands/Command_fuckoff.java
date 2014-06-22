@@ -16,6 +16,7 @@ import org.bukkit.util.Vector;
 
 @CommandPermissions(source = SourceType.CONSOLE)
 public class Command_fuckoff extends BukkitCommand<TranxCraft> {
+
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!(plugin.util.hasPermission("tranxcraft.exec", sender) || plugin.util.hasPermission(AdminType.EXECUTIVE, sender))) {

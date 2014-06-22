@@ -29,7 +29,7 @@ public class Command_getuuid extends BukkitCommand<TranxCraft> {
             return true;
         }
 
-        sender.sendMessage(ChatColor.GOLD + player + ChatColor.GREEN + "'s UUID is: " + ChatColor.GOLD + plugin.util.playerToUUID(player));
+        sender.sendMessage(ChatColor.GOLD + player + ChatColor.GREEN + "'s UUID is: " + ChatColor.GOLD + plugin.util.playerToUuid(player));
 
         return true;
     }

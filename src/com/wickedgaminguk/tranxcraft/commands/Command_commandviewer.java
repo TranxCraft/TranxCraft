@@ -14,16 +14,16 @@ public class Command_commandviewer extends BukkitCommand<TranxCraft> {
         if (!(plugin.util.hasPermission("tranxcraft.moderator", sender) || plugin.util.hasPermission(AdminType.MODERATOR, sender))) {
             return noPerms();
         }
-        
+
         plugin.moderatorList.toggleCommandViewer(playerSender);
-        
+
         if (plugin.moderatorList.hasCommandViewerEnabled(playerSender)) {
             sender.sendMessage(ChatColor.GREEN + "Command Viewer is now: enabled");
         }
         else {
             sender.sendMessage(ChatColor.GREEN + "Command Viewer is now: disabled");
         }
-        
+
         return true;
     }
 }

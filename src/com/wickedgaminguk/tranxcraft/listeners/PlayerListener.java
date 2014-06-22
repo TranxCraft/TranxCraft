@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import net.pravian.bukkitlib.serializable.SerializableInventory;
 import net.pravian.bukkitlib.util.ChatUtils;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import net.pravian.bukkitlib.util.TimeUtils;
@@ -26,6 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -58,15 +60,15 @@ public class PlayerListener implements Listener {
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "xXWilee999Xx, you are a pot stirring fuck, you're not allowed on TranxCraft, ever.");
             }
             else {
-                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + plugin.util.UUIDToPlayer(player.getUniqueId()) + ", you are permbanned, you are " + ChatColor.UNDERLINE + "never" + ChatColor.RESET + ChatColor.RED + " allowed on TranxCraft again.");
+                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + plugin.util.uuidToPlayer(player.getUniqueId()) + ", you are permbanned, you are " + ChatColor.UNDERLINE + "never" + ChatColor.RESET + ChatColor.RED + " allowed on TranxCraft again.");
             }
         }
 
         if (plugin.ban.isUUIDBanned(player)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + plugin.util.UUIDToPlayer(player.getUniqueId()) + ", your UUID is banned.\nReason: " + ChatColor.YELLOW + plugin.ban.getBanReason(player) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + plugin.util.uuidToPlayer(player.getUniqueId()) + ", your UUID is banned.\nReason: " + ChatColor.YELLOW + plugin.ban.getBanReason(player) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
         }
         else if (plugin.ban.isIPBanned(IP)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + plugin.util.UUIDToPlayer(player.getUniqueId()) + ", your IP is banned.\nReason: " + ChatColor.YELLOW + plugin.ban.getIPBanReason(IP) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
+            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, ChatColor.RED + plugin.util.uuidToPlayer(player.getUniqueId()) + ", your IP is banned.\nReason: " + ChatColor.YELLOW + plugin.ban.getIPBanReason(IP) + ChatColor.RED + "\nIf you think this was made in error, appeal here: " + ChatColor.YELLOW + "https://www.tranxcraft.com/forums/");
         }
 
         if (!(plugin.moderatorList.isPlayerMod(player))) {
@@ -160,7 +162,7 @@ public class PlayerListener implements Listener {
                 Bukkit.broadcastMessage(ChatColor.AQUA + player.getName() + " is " + ChatColor.LIGHT_PURPLE + "Premium! <3");
             }
         }
-        
+
         if (player.getName().equals("Anna_Mac")) {
             Bukkit.broadcastMessage(ChatColor.DARK_PURPLE + "The glorious Anna is here!");
         }
@@ -207,6 +209,14 @@ public class PlayerListener implements Listener {
 
         if (!(plugin.util.hasItem(player, serverUtilities))) {
             plugin.util.sendItem(player, serverUtilities, null);
+        }
+        
+        SerializableInventory backpack = new SerializableInventory(Bukkit.getServer().createInventory(player, 27, "Backpack"));
+        
+        if (!(plugin.util.getBackpackData().containsKey(event.getPlayer().getUniqueId()))) {
+            plugin.util.getBackpackData().put(event.getPlayer().getUniqueId(), backpack.serialize());
+            LoggerUtils.info(plugin, "Added backpack inventory for "  + event.getPlayer().getName());
+            plugin.util.saveBackpackData(event.getPlayer().getUniqueId(), backpack);
         }
     }
 
@@ -297,6 +307,15 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        LoggerUtils.info(plugin, event.getPlayer().getName() + " has triggered a InventoryCloseEvent!");
+        if (event.getInventory().getName().toLowerCase().equals("backpack")) {
+            plugin.util.getBackpackData().put(event.getPlayer().getUniqueId(), event.getInventory().toString());
+            LoggerUtils.info(plugin, "Inventory saved");
+        }
+    }
+
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
@@ -328,7 +347,7 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPreprocessCommand(PlayerCommandPreprocessEvent event) {
         for (Player player : Bukkit.getOnlinePlayers()) {

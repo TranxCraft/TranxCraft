@@ -22,6 +22,7 @@ import net.pravian.bukkitlib.config.YamlConfig;
 import net.pravian.bukkitlib.implementation.BukkitLogger;
 import net.pravian.bukkitlib.implementation.BukkitPlugin;
 import net.pravian.bukkitlib.metrics.Metrics;
+import net.pravian.bukkitlib.serializable.SerializableInventory;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.Bukkit;
@@ -45,7 +46,7 @@ public class TranxCraft extends BukkitPlugin {
     public YamlConfig config;
     public YamlConfig playerConfig;
     public YamlConfig adminConfig;
-    public YamlConfig premiumConfig;    
+    public YamlConfig premiumConfig;
     public YamlConfig pluginConfig;
     public YamlConfig bans;
     public BukkitCommandHandler handler;
@@ -70,8 +71,8 @@ public class TranxCraft extends BukkitPlugin {
     public Objective o;
     public HashMap<String, Score> kills = new HashMap<>();
     public HashMap<String, Score> deaths = new HashMap<>();
-    public HashMap<String, Score> kd = new HashMap<>();    
-    
+    public HashMap<String, Score> kd = new HashMap<>();
+
     private Connection mySQLConnection;
     private Connection registrationConnection;
 
@@ -91,7 +92,7 @@ public class TranxCraft extends BukkitPlugin {
         twitter = new TCP_Twitter(plugin);
         util = new TCP_Util(plugin);
         moderatorList = new TCP_ModeratorList(plugin);
-        premiumList = new TCP_PremiumList(plugin);        
+        premiumList = new TCP_PremiumList(plugin);
         shop = new TCP_Shop(plugin);
         tranxcraftLogger = new TCP_Logger(plugin);
         ban = new TCP_Ban(plugin);
@@ -120,7 +121,7 @@ public class TranxCraft extends BukkitPlugin {
         registrationConnection = registration.openConnection();
 
         twitter.init();
-        
+
         new TCP_Scheduler(plugin).runTaskTimer(plugin, config.getInt("interval") * 20L, config.getInt("interval") * 20L);
         new TCP_UCP(plugin).runTaskTimer(plugin, 6000L, 6000L);
 
@@ -145,14 +146,14 @@ public class TranxCraft extends BukkitPlugin {
         o = board.registerNewObjective("test", "dummy");
         o.setDisplayName("Stats");
         o.setDisplaySlot(DisplaySlot.SIDEBAR);
-        
+
         try {
             util.update();
         }
         catch (IOException ex) {
             LoggerUtils.info(ex.getMessage());
         }
-        
+
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();
@@ -161,12 +162,16 @@ public class TranxCraft extends BukkitPlugin {
         catch (IOException ex) {
             LoggerUtils.severe(plugin, "Plugin Metrics failed to submit to McStats.\n " + ex);
         }
-        
+
         LoggerUtils.info(plugin.getName() + " v" + plugin.getVersion() + " by " + plugin.getAuthor() + " is enabled");
     }
 
     @Override
     public void onDisable() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            util.saveBackpackData(player.getUniqueId(), new SerializableInventory(util.getBackpack(player)));
+        }
+
         LoggerUtils.info(plugin.getName() + " v" + plugin.getVersion() + " by " + plugin.getAuthor() + " is disabled.");
     }
 

@@ -2,13 +2,21 @@ package com.wickedgaminguk.tranxcraft;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
 import com.wickedgaminguk.tranxcraft.TCP_PremiumList.PremiumType;
 import com.wickedgaminguk.tranxcraft.Updater.UpdateType;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -23,9 +31,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
 import me.confuser.barapi.BarAPI;
+import net.pravian.bukkitlib.serializable.SerializableInventory;
 import net.pravian.bukkitlib.util.FileUtils;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -34,7 +44,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -50,16 +63,10 @@ import org.json.simple.parser.ParseException;
 public class TCP_Util {
 
     private final TranxCraft plugin;
-    private final TCP_ModeratorList TCP_ModeratorList;
-    private final TCP_PremiumList TCP_PremiumList;
-    private final TCP_Shop TCP_Shop;
     private Essentials essentialsPlugin = null;
 
     public TCP_Util(TranxCraft plugin) {
         this.plugin = plugin;
-        this.TCP_ModeratorList = plugin.moderatorList;
-        this.TCP_PremiumList = plugin.premiumList;
-        this.TCP_Shop = plugin.shop;
     }
 
     public final String invalidUsage = ChatColor.RED + "Invalid Usage.";
@@ -86,7 +93,7 @@ public class TCP_Util {
         plugin.playerConfig.set(player.getUniqueId().toString() + ".doublejump", mode);
         plugin.playerConfig.save();
     }
-    
+
     public void broadcastItem(Material material, int quantity, String message) {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             ItemStack item = new ItemStack(material, quantity);
@@ -130,7 +137,7 @@ public class TCP_Util {
         return false;
     }
 
-    public UUID playerToUUID(String player) {
+    public UUID playerToUuid(String player) {
         UUID playerID = null;
 
         try {
@@ -142,7 +149,7 @@ public class TCP_Util {
         return playerID;
     }
 
-    public UUID playerToUUID(Player player) {
+    public UUID playerToUuid(Player player) {
         UUID playerID = null;
 
         try {
@@ -154,7 +161,7 @@ public class TCP_Util {
         return playerID;
     }
 
-    public String UUIDToPlayer(UUID uuid) {
+    public String uuidToPlayer(UUID uuid) {
         NameFetcher fetcher = new NameFetcher(Arrays.asList(uuid));
         Map<UUID, String> response = null;
 
@@ -173,7 +180,7 @@ public class TCP_Util {
         Player[] players = plugin.getServer().getOnlinePlayers();
 
         for (Player p : players) {
-            if (!((TCP_ModeratorList.isPlayerMod(player))) || TCP_PremiumList.isPlayerPremium(player)) {
+            if (!((plugin.moderatorList.isPlayerMod(player))) || plugin.premiumList.isPlayerPremium(player)) {
                 p.kickPlayer("I'm sorry, but you've been kicked to make room for a reserved player, to stop this happening, buy a premium rank!");
                 event.allow();
                 LoggerUtils.info(plugin, "Allowed player " + player.getName() + " to join full server by kicking player " + p.getName() + "!");
@@ -222,19 +229,19 @@ public class TCP_Util {
     }
 
     public boolean hasPermission(AdminType adminType, CommandSender sender) {
-        return TCP_ModeratorList.getRank(sender).equals(adminType);
+        return hasPermission(adminType, (Player) sender);
     }
 
     public boolean hasPermission(AdminType adminType, Player player) {
-        return TCP_ModeratorList.getRank(player).equals(adminType);
+        return plugin.moderatorList.getRank(player).equals(adminType);
     }
 
-    public boolean hasPermission(PremiumType premiumType, CommandSender player) {
-        return TCP_PremiumList.getRank(player).equals(premiumType);
+    public boolean hasPermission(PremiumType premiumType, CommandSender sender) {
+        return hasPermission(premiumType, (Player) sender);
     }
 
     public boolean hasPermission(PremiumType premiumType, Player player) {
-        return TCP_PremiumList.getRank(player).equals(premiumType);
+        return plugin.premiumList.getRank(player).equals(premiumType);
     }
 
     public boolean hasPermission(AdminType adminType, PremiumType premiumType, Player player) {
@@ -356,7 +363,7 @@ public class TCP_Util {
     }
 
     public double getPlayerBalance(UUID uuid) {
-        return getPlayerBalance(UUIDToPlayer(uuid));
+        return getPlayerBalance(uuidToPlayer(uuid));
     }
 
     public void depositPlayer(String player, double amount) {
@@ -368,7 +375,7 @@ public class TCP_Util {
     }
 
     public void depositPlayer(UUID uuid, double amount) {
-        depositPlayer(UUIDToPlayer(uuid), amount);
+        depositPlayer(uuidToPlayer(uuid), amount);
     }
 
     public void withdrawPlayer(String player, double amount) {
@@ -380,15 +387,15 @@ public class TCP_Util {
     }
 
     public void withdrawPlayer(UUID uuid, double amount) {
-        withdrawPlayer(UUIDToPlayer(uuid), amount);
+        withdrawPlayer(uuidToPlayer(uuid), amount);
     }
 
     public void buyItem(Player player, Material material, int quantity) {
-        TCP_Shop.buy(player, material, quantity);
+        plugin.shop.buy(player, material, quantity);
     }
 
     public String getIp(String player) {
-        return plugin.playerConfig.getString(playerToUUID(player) + ".ip");
+        return plugin.playerConfig.getString(playerToUuid(player) + ".ip");
     }
 
     public String getIp(UUID uuid) {
@@ -610,6 +617,130 @@ public class TCP_Util {
         }
 
         return uuid;
+    }
+
+    public void getCommands() {
+        SimpleCommandMap scm = new SimpleCommandMap(Bukkit.getServer());
+
+        for (Command command : scm.getCommands()) {
+            LoggerUtils.info("Found Command " + command.getName());
+            PluginCommand pluginCommand = Bukkit.getServer().getPluginCommand(command.getName());
+
+            if (pluginCommand != null) {
+                Plugin p = pluginCommand.getPlugin();
+                String name = p.getName();
+                LoggerUtils.info(Bukkit.getServer().getPluginCommand(command.getName()).getPlugin().getName());
+            }
+        }
+    }
+
+    public void sftpUpload(File file, String directory) {
+        try {
+            String host = plugin.config.getString("sftp_host");
+            int port = plugin.config.getInt("sftp_port");
+
+            JSch jsch = new JSch();
+            LoggerUtils.info(plugin, "Connecting to " + host + port);
+            Session session = jsch.getSession(plugin.config.getString("sftp_user"), host, port);
+            session.setPassword(plugin.config.getString("sftp_pass"));
+
+            Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+
+            session.setConfig(config);
+            session.connect();
+            LoggerUtils.info(plugin, "Sucessfully connected to " + host + port);
+
+            LoggerUtils.info(plugin, "Opening SFTP Channel.");
+            Channel channel = session.openChannel("sftp");
+            channel.connect();
+            LoggerUtils.info(plugin, "SFTP Channel opened.");
+
+            ChannelSftp channelSftp = (ChannelSftp) channel;
+            channelSftp.cd(directory);
+            LoggerUtils.info(plugin, "Uploading " + file.getName() + " to " + directory);
+            channelSftp.put(new FileInputStream(file), file.getName(), ChannelSftp.OVERWRITE);
+            LoggerUtils.info(plugin, "Upload successful.");
+            channelSftp.exit();
+
+            session.disconnect();
+            LoggerUtils.info(plugin, "Closed connection.");
+        }
+        catch (FileNotFoundException | JSchException | SftpException ex) {
+            plugin.util.debug(ex);
+        }
+    }
+
+    public boolean hasBoughtBackpack(UUID uuid) {
+        return plugin.playerConfig.getBoolean(uuid.toString() + ".backpack");
+    }
+
+    public Inventory getBackpack(Player player) {
+        if (getBackpackData().containsKey(player.getUniqueId())) {
+            return new SerializableInventory(getBackpackData().get(player.getUniqueId())).deserialize();
+        }
+        else {
+            return Bukkit.getServer().createInventory(player, 27, "Backpack");
+        }
+    }
+
+    public Map<UUID, String> getBackpackData() {
+        Map<UUID, String> backpackMap = new HashMap<>();
+        
+        try {            
+            File backpackData = new File(plugin.getDataFolder() + "/backpack.dat");
+            
+            if (isFileEmpty(backpackData) == true) {
+                return backpackMap;
+            }
+            else {            
+                return (Map<UUID, String>) FileUtils.loadObject(backpackData);
+            }
+        }
+        catch (IOException | ClassNotFoundException ex) {
+            debug(ex);
+        }
+        
+        return backpackMap;
+    }
+
+    public void saveBackpackData(UUID uuid, SerializableInventory inventory) {        
+        Map<UUID, String> backpackData = getBackpackData();
+        backpackData.put(uuid, inventory.serialize());
+        
+        try {
+            FileUtils.saveObject(backpackData, new File(plugin.getDataFolder() + "/backpack.dat"));
+        }
+        catch (IOException ex) {
+            debug(ex);
+        }
+    }
+    
+    public boolean isFileEmpty(File f) {
+        BufferedReader br = null; 
+        
+        try {
+            br = new BufferedReader(new FileReader(f));
+            if (br.readLine() == null) {
+                return true;
+            }
+        }
+        catch (FileNotFoundException ex) {
+            debug(ex);
+        }
+        catch (IOException ex) {
+            debug(ex);
+        }
+        finally {
+            try {
+                br.close();
+            }
+            catch (IOException ex) {
+                debug(ex);
+            }
+        }
+        
+        return false;
     }
 
     public String[] getCredits() {

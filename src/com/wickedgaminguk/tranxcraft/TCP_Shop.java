@@ -8,10 +8,10 @@ import org.bukkit.entity.Player;
 
 public class TCP_Shop {
 
-    private final TCP_Util TCP_Util;
+    private final TranxCraft plugin;
 
     public TCP_Shop(TranxCraft plugin) {
-        this.TCP_Util = new TCP_Util(plugin);
+        this.plugin = plugin;
     }
 
     private final Map<Material, Double> itemPrice = new HashMap();
@@ -93,10 +93,10 @@ public class TCP_Shop {
     }
 
     public void buy(Player player, Material material, int quantity) {
-        TCP_Util.withdrawPlayer(player, getPrice(material) * quantity);
+        plugin.util.withdrawPlayer(player, getPrice(material) * quantity);
 
         if (getPrice(material) != 0) {
-            TCP_Util.sendItem(player, material, quantity, ChatColor.GREEN + "You have just bought " + ChatColor.GOLD + material.toString() + ChatColor.GREEN + " for $" + ChatColor.GOLD + getPrice(material));
+            plugin.util.sendItem(player, material, quantity, ChatColor.GREEN + "You have just bought " + ChatColor.GOLD + material.toString() + ChatColor.GREEN + " for $" + ChatColor.GOLD + getPrice(material));
         }
     }
 

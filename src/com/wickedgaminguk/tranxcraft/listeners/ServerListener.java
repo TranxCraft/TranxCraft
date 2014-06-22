@@ -62,28 +62,28 @@ public class ServerListener implements Listener {
                 event.setMotd(ChatColor.RED + "Server is full.");
             }
             else {
-                event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Alpha!");
+                event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Beta!");
             }
         }
         catch (FileNotFoundException ex) {
-            event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Alpha!");
+            event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Beta!");
         }
         catch (IOException | ClassNotFoundException ex) {
-            event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Alpha!");
+            event.setMotd(ChatColor.GREEN + "TranxCraft" + ChatColor.WHITE + " - " + ChatColor.DARK_PURPLE + "Craftbukkit " + MinecraftServer.getServer().getVersion() + ChatColor.WHITE + " - " + ChatColor.RED + "Currently in Beta!");
         }
     }
-    
-    @EventHandler(priority=EventPriority.NORMAL)
+
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onVotifierEvent(VotifierEvent event) {
         Vote vote = event.getVote();
-        
+
         String player = vote.getUsername();
-        UUID playerId = plugin.util.playerToUUID(player);
-        
+        UUID playerId = plugin.util.playerToUuid(player);
+
         plugin.util.setVotes(playerId);
-        
+
         Bukkit.broadcastMessage(ChatColor.GOLD + player + ChatColor.GREEN + " has voted for TranxCraft on " + vote.getServiceName() + "! They have been rewarded with $500!");
-        
+
         plugin.util.depositPlayer(player, 500.0);
     }
 }

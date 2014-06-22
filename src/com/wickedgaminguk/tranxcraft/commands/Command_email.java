@@ -18,24 +18,24 @@ public class Command_email extends BukkitCommand<TranxCraft> {
             if (!(plugin.util.hasPermission("tranxcraft.moderator", sender) || plugin.util.hasPermission(AdminType.MODERATOR, sender))) {
                 return noPerms();
             }
-            
+
             if (args[0].equalsIgnoreCase("list")) {
-                String email = plugin.moderatorList.getEmail(playerSender);                
+                String email = plugin.moderatorList.getEmail(playerSender);
                 sender.sendMessage(ChatColor.GOLD + "The e-mail that you have associated with your account is: " + ChatColor.AQUA + email);
                 return true;
             }
-            
+
             if (args[0].equalsIgnoreCase("set")) {
                 if (!(EmailValidator.getInstance().isValid(args[1]))) {
                     sender.sendMessage(ChatColor.RED + "The e-mail that you have entered is invalid.");
                     return true;
                 }
-                
-                plugin.moderatorList.setEmail(playerSender, args[1]);                
+
+                plugin.moderatorList.setEmail(playerSender, args[1]);
                 sender.sendMessage(ChatColor.GREEN + "You have successfully set your e-mail to: " + ChatColor.GOLD + args[1]);
                 return true;
             }
-            
+
             if (args[0].equalsIgnoreCase("remove")) {
                 plugin.moderatorList.setEmail(playerSender, null);
                 sender.sendMessage(ChatColor.RED + "You have removed your e-mail.");

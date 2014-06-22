@@ -49,7 +49,7 @@ public class TCP_Mail {
 
     public void send(RecipientType rt, String subject, String msg) {
         addRecipientTypes();
-        
+
         rt.getAddresses().stream().forEach((String recipients) -> {
             send(recipients, subject, msg);
         });
@@ -67,9 +67,9 @@ public class TCP_Mail {
         final String user = plugin.config.getString("login_username");
         final String pass = plugin.config.getString("login_password");
         final String from = plugin.config.getString("email_from");
-        
+
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-        
+
         try {
             HtmlEmail email = new HtmlEmail();
             email.setHostName(host);

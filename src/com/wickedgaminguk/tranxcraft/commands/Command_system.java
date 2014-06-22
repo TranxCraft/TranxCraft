@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public class Command_system extends BukkitCommand<TranxCraft> {
 
     @Override
-    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) { 
+    public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (sender instanceof Player && !(sender.hasPermission("tranxcraft.owner"))) {
             return noPerms();
         }
@@ -25,18 +25,18 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             return false;
         }
 
-        Player player = getPlayer(args[2]);        
-        
+        Player player = getPlayer(args[2]);
+
         if (player == null) {
             sender.sendMessage(ChatColor.RED + "This player either isn't online, or doesn't exist.");
             return true;
         }
-        
+
         String playerName = player.getName();
 
         if (args[0].equalsIgnoreCase("add")) {
             if (args[1].equalsIgnoreCase("moderator")) {
-                plugin.moderatorList.add(AdminType.MODERATOR, player);                
+                plugin.moderatorList.add(AdminType.MODERATOR, player);
                 plugin.groupManager.setGroup(player, "moderator");
 
                 Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Moderator, congratulations!");
@@ -50,7 +50,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
                 plugin.groupManager.setGroup(player, "admin");
 
                 Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
-                
+
                 plugin.mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been promoted to Admin!", "Hey there, just to let you know, " + playerName + " has been promoted to Admin by " + sender.getName());
                 plugin.twitter.tweet("Say congratulations to " + playerName + ", they have been promoted to Admin status by " + sender.getName() + "!");
             }
@@ -58,7 +58,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             if (args[1].equalsIgnoreCase("leadadmin")) {
                 plugin.moderatorList.add(AdminType.LEADADMIN, player);
                 plugin.groupManager.setGroup(player, "leadadmin");
-                
+
                 Bukkit.broadcastMessage(ChatColor.GREEN + playerName + " has been promoted to Admin, congratulations!");
 
                 plugin.mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been promoted to Lead Admin!", "Hey there, just to let you know, " + playerName + " has been promoted to Lead Admin by " + sender.getName());
@@ -80,7 +80,7 @@ public class Command_system extends BukkitCommand<TranxCraft> {
             if (args[1].equalsIgnoreCase("Moderator")) {
                 plugin.moderatorList.remove(player);
                 plugin.groupManager.setGroup(player, "member");
-                
+
                 Bukkit.broadcastMessage(ChatColor.RED + playerName + " has been removed from Moderator!");
 
                 plugin.mail.send(RecipientType.ALL, "TranxCraft Reports - " + playerName + " has been removed from Moderator", "Hey there, just to let you know, " + playerName + " has been removed from Moderator by " + sender.getName());

@@ -43,7 +43,7 @@ public class Command_unban extends BukkitCommand<TranxCraft> {
             sender.sendMessage(ChatColor.RED + "You can't unban yourself.");
         }
 
-        UUID playerID = plugin.util.playerToUUID(player);
+        UUID playerID = plugin.util.playerToUuid(player);
 
         if (playerID != null) {
             if (!(plugin.ban.isUUIDBanned(playerID.toString()))) {
@@ -53,7 +53,7 @@ public class Command_unban extends BukkitCommand<TranxCraft> {
 
             plugin.ban.unbanUser(playerID);
 
-            String playerName = plugin.util.UUIDToPlayer(playerID);
+            String playerName = plugin.util.uuidToPlayer(playerID);
 
             sender.sendMessage(ChatColor.GREEN + "You have successfully unbanned: " + playerName + " with the UUID of " + playerID.toString());
         }

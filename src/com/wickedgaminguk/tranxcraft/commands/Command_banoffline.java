@@ -48,7 +48,7 @@ public class Command_banoffline extends BukkitCommand<TranxCraft> {
             return true;
         }
 
-        UUID playerID = plugin.util.playerToUUID(player.getName());
+        UUID playerID = plugin.util.playerToUuid(player.getName());
 
         if (plugin.ban.isUUIDBanned(playerID)) {
             sender.sendMessage(ChatColor.RED + player.getName() + " is already banned.");

@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 public class TCP_ModeratorList {
 
     private final TranxCraft plugin;
-    private final TCP_Util TCP_Util;
 
     public enum AdminType {
 
@@ -17,7 +16,6 @@ public class TCP_ModeratorList {
 
     public TCP_ModeratorList(TranxCraft plugin) {
         this.plugin = plugin;
-        this.TCP_Util = plugin.util;
     }
 
     public AdminType getRank(Player player) {
@@ -77,7 +75,7 @@ public class TCP_ModeratorList {
     }
 
     public boolean isPlayerMod(String player) {
-        return plugin.adminConfig.contains("admins." + TCP_Util.playerToUUID(player).toString());
+        return plugin.adminConfig.contains("admins." + plugin.util.playerToUuid(player).toString());
     }
 
     public void add(AdminType at, Player player) {
@@ -106,7 +104,7 @@ public class TCP_ModeratorList {
             plugin.adminConfig.save();
         }
     }
-    
+
     public String getEmail(Player player) {
         if (plugin.adminConfig.contains("admins." + player.getUniqueId().toString())) {
             return plugin.adminConfig.getString("admins." + player.getUniqueId().toString() + ".email");
@@ -141,7 +139,7 @@ public class TCP_ModeratorList {
     public boolean hasAdminChatEnabled(Player player) {
         return plugin.adminConfig.getBoolean("admins." + player.getUniqueId().toString() + ".adminchat_toggle");
     }
-    
+
     public void toggleCommandViewer(Player player) {
         if (plugin.adminConfig.getBoolean("admins." + player.getUniqueId().toString() + ".command_viewer") == false) {
             plugin.adminConfig.set("admins." + player.getUniqueId().toString() + ".command_viewer", true);
@@ -153,5 +151,5 @@ public class TCP_ModeratorList {
 
     public boolean hasCommandViewerEnabled(Player player) {
         return plugin.adminConfig.getBoolean("admins." + player.getUniqueId().toString() + ".command_viewer");
-    }    
+    }
 }

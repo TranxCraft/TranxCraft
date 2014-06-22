@@ -11,13 +11,9 @@ import org.bukkit.entity.Player;
 public class TCP_Ban {
 
     private final TranxCraft plugin;
-    private final TCP_Util TCP_Util;
-    private final TCP_Time TCP_Time;
 
     public TCP_Ban(TranxCraft plugin) {
         this.plugin = plugin;
-        this.TCP_Util = new TCP_Util(plugin);
-        this.TCP_Time = new TCP_Time();
     }
 
     public void banUser(Player player, String source, String reason) {
@@ -29,19 +25,19 @@ public class TCP_Ban {
         plugin.bans.set("bans." + UUID + ".ip", playerIP);
         plugin.bans.set("bans." + UUID + ".source", source);
         plugin.bans.set("bans." + UUID + ".reason", reason);
-        plugin.bans.set("bans." + UUID + ".time", TCP_Time.getLongDate());
+        plugin.bans.set("bans." + UUID + ".time", plugin.time.getLongDate());
         plugin.bans.save();
     }
 
     public void banUser(String player, String source, String reason) {
-        String UUID = TCP_Util.playerToUUID(player).toString();
+        String UUID = plugin.util.playerToUuid(player).toString();
         String IP = IpUtils.toEscapedString(plugin.playerConfig.getString(UUID + ".ip"));
 
         plugin.bans.set("bans." + UUID + ".ign", player);
         plugin.bans.set("bans." + UUID + ".ip", IP);
         plugin.bans.set("bans." + UUID + ".source", source);
         plugin.bans.set("bans." + UUID + ".reason", reason);
-        plugin.bans.set("bans." + UUID + ".time", TCP_Time.getLongDate());
+        plugin.bans.set("bans." + UUID + ".time", plugin.time.getLongDate());
     }
 
     public void banUserByIp(String IP, String source, String reason) {
@@ -60,14 +56,14 @@ public class TCP_Ban {
     }
 
     public void banUser(UUID uuid, String source, String reason) {
-        String player = TCP_Util.UUIDToPlayer(uuid);
+        String player = plugin.util.uuidToPlayer(uuid);
         String IP = IpUtils.toEscapedString(plugin.playerConfig.getString(uuid + ".ip"));
 
         plugin.bans.set("bans." + uuid + ".ign", player);
         plugin.bans.set("bans." + uuid + ".ip", IP);
         plugin.bans.set("bans." + uuid + ".source", source);
         plugin.bans.set("bans." + uuid + ".reason", reason);
-        plugin.bans.set("bans." + uuid + ".time", TCP_Time.getLongDate());
+        plugin.bans.set("bans." + uuid + ".time", plugin.time.getLongDate());
     }
 
     public void banUsers(List<Player> player, String source, String reason) {
@@ -129,7 +125,7 @@ public class TCP_Ban {
         String Ip = IpUtils.toEscapedString(IP);
         plugin.bans.set("bans.banned_ips." + Ip + ".source", source);
         plugin.bans.set("bans.banned_ips." + Ip + ".reason", reason);
-        plugin.bans.set("bans.banned_ips." + Ip + ".time", TCP_Time.getLongDate());
+        plugin.bans.set("bans.banned_ips." + Ip + ".time", plugin.time.getLongDate());
         plugin.bans.save();
     }
 
@@ -137,7 +133,7 @@ public class TCP_Ban {
         String IP = IpUtils.toEscapedString(player.getAddress().getHostString());
         plugin.bans.set("bans.banned_ips." + IP + ".source", source);
         plugin.bans.set("bans.banned_ips." + IP + ".reason", reason);
-        plugin.bans.set("bans.banned_ips." + IP + ".time", TCP_Time.getLongDate());
+        plugin.bans.set("bans.banned_ips." + IP + ".time", plugin.time.getLongDate());
         plugin.bans.save();
     }
 
@@ -145,7 +141,7 @@ public class TCP_Ban {
         String IP = IpUtils.toEscapedString(address.getHostString());
         plugin.bans.set("bans.banned_ips." + IP + ".source", source);
         plugin.bans.set("bans.banned_ips." + IP + ".reason", reason);
-        plugin.bans.set("bans.banned_ips." + IP + ".time", TCP_Time.getLongDate());
+        plugin.bans.set("bans.banned_ips." + IP + ".time", plugin.time.getLongDate());
         plugin.bans.save();
     }
 
@@ -184,7 +180,7 @@ public class TCP_Ban {
     }
 
     public String getBanReason(String player) {
-        String playerID = TCP_Util.playerToUUID(player).toString();
+        String playerID = plugin.util.playerToUuid(player).toString();
 
         if (plugin.bans.contains("bans." + playerID)) {
             return plugin.bans.getString("bans." + playerID + ".reason");

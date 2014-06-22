@@ -17,21 +17,34 @@ public class Command_tranxcraft extends BukkitCommand<TranxCraft> {
 
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
-        if (args[0].equalsIgnoreCase("update")) {
+        if (args.length == 0) {
+            plugin.util.getCommands();
+            sender.sendMessage(ChatColor.GREEN + "-- Basic TranxCraft Information --");
+            sender.sendMessage(ChatColor.AQUA + "Owner: WickedGamingUK");
+            sender.sendMessage(ChatColor.AQUA + "Lead Developer: WickedGamingUK");
+            sender.sendMessage(ChatColor.AQUA + "Plugin Version: " + plugin.getVersion());
+            sender.sendMessage(ChatColor.AQUA + "Credits: " + StringUtils.join(plugin.util.getCredits(), ", "));
+            sender.sendMessage(ChatColor.AQUA + "Website: http://www.tranxcraft.com/");
+            sender.sendMessage(ChatColor.AQUA + "Forums: http://www.tranxcraft.com/forums");
+            sender.sendMessage(ChatColor.GREEN + "------------------------");
+            return true;
+        }
+        else if (args[0].equalsIgnoreCase("update")) {
             if (!(plugin.util.hasPermission("tranxcraft.exec", AdminType.EXECUTIVE, (Player) sender))) {
                 return noPerms();
             }
 
             try {
                 plugin.util.update();
+                return true;
             }
             catch (IOException ex) {
                 sender.sendMessage(ChatColor.RED + "Updating the plugins on TranxCraft failed - check the logs.");
                 plugin.util.debug(ex);
+                return true;
             }
         }
-
-        if (args[0].equalsIgnoreCase("debug")) {
+        else if (args[0].equalsIgnoreCase("debug")) {
             if (!(plugin.util.hasPermission("tranxcraft.exec", AdminType.EXECUTIVE, (Player) sender))) {
                 return noPerms();
             }
@@ -45,16 +58,7 @@ public class Command_tranxcraft extends BukkitCommand<TranxCraft> {
 
             plugin.util.debug("Debug mode is now: " + plugin.logger.getDebugMode() + ". Change made by " + sender.getName());
             sender.sendMessage(ChatColor.GREEN + "Debug Mode: " + plugin.logger.getDebugMode());
-        }
-        else {
-            sender.sendMessage(ChatColor.GREEN + "-- Basic TranxCraft Information --");
-            sender.sendMessage(ChatColor.AQUA + "Owner: WickedGamingUK");
-            sender.sendMessage(ChatColor.AQUA + "Lead Developer: WickedGamingUK");
-            sender.sendMessage(ChatColor.AQUA + "Plugin Version: " + plugin.getVersion());
-            sender.sendMessage(ChatColor.AQUA + "Credits: " + StringUtils.join(plugin.util.getCredits(), ", "));
-            sender.sendMessage(ChatColor.AQUA + "Website: http://www.tranxcraft.com/");
-            sender.sendMessage(ChatColor.AQUA + "Forums: http://www.tranxcraft.com/forums");
-            sender.sendMessage(ChatColor.GREEN + "------------------------");
+            return true;
         }
 
         return true;

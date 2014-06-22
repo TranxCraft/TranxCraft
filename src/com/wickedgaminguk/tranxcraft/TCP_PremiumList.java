@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 public class TCP_PremiumList {
 
     private final TranxCraft plugin;
-    private final TCP_Util TCP_Util;
 
     public enum PremiumType {
 
@@ -17,7 +16,6 @@ public class TCP_PremiumList {
 
     public TCP_PremiumList(TranxCraft plugin) {
         this.plugin = plugin;
-        this.TCP_Util = new TCP_Util(plugin);
     }
 
     public PremiumType getRank(Player player) {
@@ -60,7 +58,7 @@ public class TCP_PremiumList {
     }
 
     public boolean isPlayerPremium(String player) {
-        return plugin.premiumConfig.contains("premium." + TCP_Util.playerToUUID(player).toString());
+        return plugin.premiumConfig.contains("premium." + plugin.util.playerToUuid(player).toString());
     }
 
     public void add(PremiumType at, Player player) {

@@ -10,14 +10,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class TCP_UCP extends BukkitRunnable {
 
     private final TranxCraft plugin;
-    private final TCP_Util TCP_Util;
-    private final TCP_Time TCP_Time;
     private final TCP_Logger logger;
 
     public TCP_UCP(TranxCraft instance) {
         this.plugin = instance;
-        this.TCP_Util = new TCP_Util(plugin);
-        this.TCP_Time = new TCP_Time();
         this.logger = plugin.tranxcraftLogger;
     }
 
@@ -31,7 +27,7 @@ public class TCP_UCP extends BukkitRunnable {
             try {
                 plugin.updateDatabase("DROP TABLE players");
                 plugin.updateDatabase("CREATE TABLE players ( ID INT NOT NULL AUTO_INCREMENT, InGameName CHAR(30), OnlineTime CHAR(30), Rank CHAR(30), LastUpdated CHAR(30), PRIMARY KEY(ID) )");
-                plugin.updateDatabase("INSERT INTO players (LastUpdated) VALUES ('" + TCP_Time.getUnixTimestamp() + "');");
+                plugin.updateDatabase("INSERT INTO players (LastUpdated) VALUES ('" + plugin.time.getUnixTimestamp() + "');");
                 logger.info(plugin, "Table Recreated");
             }
             catch (SQLException ex) {
@@ -56,7 +52,7 @@ public class TCP_UCP extends BukkitRunnable {
                 String playerPermission = null;
 
                 try {
-                    playerPermission = TCP_Util.getPlayerGroup(player);
+                    playerPermission = plugin.util.getPlayerGroup(player);
                 }
                 catch (Exception ex) {
 
@@ -73,7 +69,7 @@ public class TCP_UCP extends BukkitRunnable {
                 final long currentOnlineTime = (Unix - playerTime);
 
                 try {
-                    plugin.updateDatabase("INSERT INTO players (InGameName, OnlineTime, Rank, LastUpdated) VALUES ('" + playerName + "', " + currentOnlineTime + ", '" + playerPermission + "', '" + TCP_Time.getUnixTimestamp() + "');");
+                    plugin.updateDatabase("INSERT INTO players (InGameName, OnlineTime, Rank, LastUpdated) VALUES ('" + playerName + "', " + currentOnlineTime + ", '" + playerPermission + "', '" + plugin.time.getUnixTimestamp() + "');");
                 }
                 catch (SQLException ex) {
                     logger.severe(plugin, "SQL Connection Failed.");

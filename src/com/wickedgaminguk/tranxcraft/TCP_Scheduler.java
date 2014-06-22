@@ -14,6 +14,6 @@ public class TCP_Scheduler extends BukkitRunnable {
 
     @Override
     public void run() {
-        Bukkit.broadcastMessage(ChatUtils.colorize(plugin.getConfig().getString("prefix") + plugin.getConfig().getString("broadcast")));
+        Bukkit.broadcastMessage(ChatUtils.colorize(plugin.config.getString("prefix") + plugin.config.getString("broadcast")));
     }
 }

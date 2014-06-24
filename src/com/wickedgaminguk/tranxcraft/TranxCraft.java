@@ -6,6 +6,7 @@ import com.wickedgaminguk.tranxcraft.listeners.BlockListener;
 import com.wickedgaminguk.tranxcraft.listeners.EntityListener;
 import com.wickedgaminguk.tranxcraft.listeners.PlayerListener;
 import com.wickedgaminguk.tranxcraft.listeners.ServerListener;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -23,6 +24,7 @@ import net.pravian.bukkitlib.implementation.BukkitLogger;
 import net.pravian.bukkitlib.implementation.BukkitPlugin;
 import net.pravian.bukkitlib.metrics.Metrics;
 import net.pravian.bukkitlib.serializable.SerializableInventory;
+import net.pravian.bukkitlib.util.FileUtils;
 import net.pravian.bukkitlib.util.LoggerUtils;
 import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.Bukkit;
@@ -153,7 +155,10 @@ public class TranxCraft extends BukkitPlugin {
         catch (IOException ex) {
             LoggerUtils.info(ex.getMessage());
         }
-
+        
+        plugin.util.writeCommandsToFile();
+        plugin.util.sftpUpload(new File(FileUtils.getPluginDataFolder(plugin) + "/command.php"), "/var/www/html/tranxcraft.com/includes");
+        
         try {
             Metrics metrics = new Metrics(this);
             metrics.start();

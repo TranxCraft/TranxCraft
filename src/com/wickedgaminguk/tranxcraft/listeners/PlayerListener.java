@@ -352,7 +352,9 @@ public class PlayerListener implements Listener {
     public void onPreprocessCommand(PlayerCommandPreprocessEvent event) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (plugin.moderatorList.hasCommandViewerEnabled(player)) {
-                player.sendMessage(ChatColor.GRAY + ChatColor.stripColor(event.getPlayer().getName() + ": " + event.getMessage()));
+                if (event.getPlayer() != player) {
+                    player.sendMessage(ChatColor.GRAY + ChatColor.stripColor(event.getPlayer().getName() + ": " + event.getMessage()));
+                }
             }
         }
     }

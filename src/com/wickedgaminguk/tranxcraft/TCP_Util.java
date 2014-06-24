@@ -11,12 +11,15 @@ import com.jcraft.jsch.SftpException;
 import com.wickedgaminguk.tranxcraft.TCP_ModeratorList.AdminType;
 import com.wickedgaminguk.tranxcraft.TCP_PremiumList.PremiumType;
 import com.wickedgaminguk.tranxcraft.Updater.UpdateType;
+import fr.neatmonster.nocheatplus.command.CommandUtil;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -35,6 +38,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
 import me.confuser.barapi.BarAPI;
+import net.minecraft.util.org.apache.commons.lang3.StringEscapeUtils;
 import net.pravian.bukkitlib.serializable.SerializableInventory;
 import net.pravian.bukkitlib.util.FileUtils;
 import net.pravian.bukkitlib.util.LoggerUtils;
@@ -46,8 +50,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -619,56 +621,106 @@ public class TCP_Util {
         return uuid;
     }
 
-    public void getCommands() {
-        SimpleCommandMap scm = new SimpleCommandMap(Bukkit.getServer());
-
-        for (Command command : scm.getCommands()) {
-            LoggerUtils.info("Found Command " + command.getName());
-            PluginCommand pluginCommand = Bukkit.getServer().getPluginCommand(command.getName());
-
-            if (pluginCommand != null) {
-                Plugin p = pluginCommand.getPlugin();
-                String name = p.getName();
-                LoggerUtils.info(Bukkit.getServer().getPluginCommand(command.getName()).getPlugin().getName());
+    public void writeCommandsToFile() {
+        File file = new File(plugin.getDataFolder() + "/command.php");
+        file.delete();
+        
+        boolean odd = true;
+        write("<tbody>\n");
+        
+        for (Command command : CommandUtil.getCommands()) {
+            String pluginName;
+            
+            try {
+                if (command.getName().startsWith("/")) {
+                    pluginName = "WorldEdit";
+                }
+                else {
+                    pluginName = Bukkit.getServer().getPluginCommand(command.getName()).getPlugin().getName();
+                }
             }
+            catch (Exception ex) {
+                pluginName = "Craftbukkit Default";
+            }
+            
+            String description = StringEscapeUtils.escapeHtml4(command.getDescription());
+            String commandName = command.getName();
+            String usage = command.getUsage().replaceAll("<command>", commandName).replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+            
+            if (odd == true) {
+                write("<tr class='pure-table-odd'>\n<td>" + pluginName + "</td>\n<td>" + commandName + "</td>\n<td>" + description + "</td>\n<td>" + usage + "</td>\n</tr>\n");
+                odd = false;
+            }
+            else {
+                write("<tr>\n<td>" + pluginName + "</td>\n<td>" + commandName + "</td>\n<td>" + description + "</td>\n<td>" + usage + "</td>\n</tr>\n");
+                odd = true;
+            }
+        }
+        
+        write("</tbody>\n");
+    }
+    
+    private void write(String message) {
+        try {
+            File file = new File(plugin.getDataFolder() + "/command.php");
+
+            if (!(file.exists())) {
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+            try (BufferedWriter bw = new BufferedWriter(fw)) {
+                if (file.length() != 0) {
+                    bw.newLine();
+                }
+                bw.write(message);
+            }
+        }
+        catch (IOException ex) {
+
         }
     }
 
     public void sftpUpload(File file, String directory) {
-        try {
-            String host = plugin.config.getString("sftp_host");
-            int port = plugin.config.getInt("sftp_port");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    String host = plugin.config.getString("sftp_host");
+                    int port = plugin.config.getInt("sftp_port");
 
-            JSch jsch = new JSch();
-            LoggerUtils.info(plugin, "Connecting to " + host + port);
-            Session session = jsch.getSession(plugin.config.getString("sftp_user"), host, port);
-            session.setPassword(plugin.config.getString("sftp_pass"));
+                    JSch jsch = new JSch();
+                    LoggerUtils.info(plugin, "Connecting to " + host + ":" + port);
+                    Session session = jsch.getSession(plugin.config.getString("sftp_user"), host, port);
+                    session.setPassword(plugin.config.getString("sftp_pass"));
 
-            Properties config = new java.util.Properties();
-            config.put("StrictHostKeyChecking", "no");
+                    Properties config = new java.util.Properties();
+                    config.put("StrictHostKeyChecking", "no");
 
-            session.setConfig(config);
-            session.connect();
-            LoggerUtils.info(plugin, "Sucessfully connected to " + host + port);
+                    session.setConfig(config);
+                    session.connect();
+                    LoggerUtils.info(plugin, "Sucessfully connected to " + host + ":" + port);
 
-            LoggerUtils.info(plugin, "Opening SFTP Channel.");
-            Channel channel = session.openChannel("sftp");
-            channel.connect();
-            LoggerUtils.info(plugin, "SFTP Channel opened.");
+                    LoggerUtils.info(plugin, "Opening SFTP Channel.");
+                    Channel channel = session.openChannel("sftp");
+                    channel.connect();
+                    LoggerUtils.info(plugin, "SFTP Channel opened.");
 
-            ChannelSftp channelSftp = (ChannelSftp) channel;
-            channelSftp.cd(directory);
-            LoggerUtils.info(plugin, "Uploading " + file.getName() + " to " + directory);
-            channelSftp.put(new FileInputStream(file), file.getName(), ChannelSftp.OVERWRITE);
-            LoggerUtils.info(plugin, "Upload successful.");
-            channelSftp.exit();
+                    ChannelSftp channelSftp = (ChannelSftp) channel;
+                    channelSftp.cd(directory);
+                    LoggerUtils.info(plugin, "Uploading " + file.getName() + " to " + directory);
+                    channelSftp.put(new FileInputStream(file), file.getName(), ChannelSftp.OVERWRITE);
+                    LoggerUtils.info(plugin, "Upload successful.");
+                    channelSftp.exit();
 
-            session.disconnect();
-            LoggerUtils.info(plugin, "Closed connection.");
-        }
-        catch (FileNotFoundException | JSchException | SftpException ex) {
-            plugin.util.debug(ex);
-        }
+                    session.disconnect();
+                    LoggerUtils.info(plugin, "Closed connection.");
+                }
+                catch (FileNotFoundException | JSchException | SftpException ex) {
+                    plugin.util.debug(ex);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
     }
 
     public boolean hasBoughtBackpack(UUID uuid) {

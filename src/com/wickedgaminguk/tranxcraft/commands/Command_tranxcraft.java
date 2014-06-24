@@ -18,7 +18,6 @@ public class Command_tranxcraft extends BukkitCommand<TranxCraft> {
     @Override
     public boolean run(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (args.length == 0) {
-            plugin.util.getCommands();
             sender.sendMessage(ChatColor.GREEN + "-- Basic TranxCraft Information --");
             sender.sendMessage(ChatColor.AQUA + "Owner: WickedGamingUK");
             sender.sendMessage(ChatColor.AQUA + "Lead Developer: WickedGamingUK");
@@ -45,8 +44,10 @@ public class Command_tranxcraft extends BukkitCommand<TranxCraft> {
             }
         }
         else if (args[0].equalsIgnoreCase("debug")) {
-            if (!(plugin.util.hasPermission("tranxcraft.exec", AdminType.EXECUTIVE, (Player) sender))) {
-                return noPerms();
+            if (sender instanceof Player) {
+                if (!(plugin.util.hasPermission("tranxcraft.exec", AdminType.EXECUTIVE, (Player) sender))) {
+                    return noPerms();
+                }
             }
 
             if (plugin.logger.getDebugMode() == false) {
